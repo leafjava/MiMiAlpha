@@ -39,17 +39,17 @@ const mockModels: Model[] = [
   {
     id: '1',
     name: '黄金价格预测模型',
-    provider: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+    provider: 'TXbQ8vC34TytH56r9uV2xndg5NGPP8EiWn',
     description: '基于机器学习的黄金价格预测模型，夏普比率 2.5，历史准确率 82%',
     type: 'gold',
     sharpeRatio: 2.5,
     accuracy: 82,
     totalSignals: 100,
-    pricePerSignal: 5,
-    monthlySubscription: 50,
+    pricePerSignal: 1, // 改为 1 TRX
+    monthlySubscription: 1, // 改为 1 TRX
     stakedAmount: 100,
     avgConfidence: 78,
-    contractAddress: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
+    contractAddress: 'TTn6Y1UwTbqQGXmwZJPqXNi1x5BpdqHtFN',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ $2,100', confidence: 85, result: 'accurate' },
       { date: '2024-02-06', prediction: 'HOLD', confidence: 72, result: 'accurate' },
@@ -59,17 +59,17 @@ const mockModels: Model[] = [
   {
     id: '2',
     name: 'BTC 趋势预测',
-    provider: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+    provider: 'TXbQ8vC34TytH56r9uV2xndg5NGPP8EiWn',
     description: '比特币短期趋势预测，专注于 4 小时级别波动捕捉',
     type: 'crypto',
     sharpeRatio: 1.8,
     accuracy: 75,
     totalSignals: 150,
-    pricePerSignal: 3,
-    monthlySubscription: 30,
+    pricePerSignal: 1, // 改为 1 TRX
+    monthlySubscription: 1, // 改为 1 TRX
     stakedAmount: 80,
     avgConfidence: 72,
-    contractAddress: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
+    contractAddress: 'TTn6Y1UwTbqQGXmwZJPqXNi1x5BpdqHtFN',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ $45,000', confidence: 78, result: 'pending' },
       { date: '2024-02-06', prediction: 'SELL @ $44,500', confidence: 75, result: 'accurate' },
@@ -78,17 +78,17 @@ const mockModels: Model[] = [
   {
     id: '3',
     name: '美股大盘指数模型',
-    provider: '0x90F79bf6EB2c4f870365E785982E1f101E93b906',
+    provider: 'TXbQ8vC34TytH56r9uV2xndg5NGPP8EiWn',
     description: 'S&P 500 指数日内波动预测，适合日内交易者',
     type: 'stock',
     sharpeRatio: 2.1,
     accuracy: 79,
     totalSignals: 80,
-    pricePerSignal: 4,
-    monthlySubscription: 40,
+    pricePerSignal: 1, // 改为 1 TRX
+    monthlySubscription: 1, // 改为 1 TRX
     stakedAmount: 120,
     avgConfidence: 76,
-    contractAddress: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
+    contractAddress: 'TTn6Y1UwTbqQGXmwZJPqXNi1x5BpdqHtFN',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ 4,850', confidence: 82, result: 'pending' },
     ]
@@ -106,22 +106,64 @@ export function ModelMarket() {
   const { account, connectWallet, isConnected } = useContract();
   const { executePayment, loading: facilitatorLoading, isSuccess: facilitatorSuccess, hash: facilitatorHash } = useSmartFacilitator();
   
-  // 获取 ETH 余额
-  const { data: ethBalanceData } = useBalance({
-    address: account as `0x${string}` | undefined,
-  });
+  // 获取 TRX 余额
+  const [trxBalance, setTrxBalance] = useState<number>(0);
+
+  // 获取 TRX 余额
+  useEffect(() => {
+    const getTrxBalance = async () => {
+      try {
+        // 检查 TronWeb 是否可用
+        if (!window.tronWeb || !window.tronWeb.ready) {
+          console.log('⚠️ TronWeb 未就绪');
+          setTrxBalance(0);
+          return;
+        }
+
+        // 获取当前连接的地址
+        const currentAddress = window.tronWeb.defaultAddress?.base58;
+        
+        if (!currentAddress) {
+          console.log('⚠️ 未找到 TronLink 地址');
+          setTrxBalance(0);
+          return;
+        }
+
+        console.log('🔍 获取余额，地址:', currentAddress);
+        
+        // 获取余额
+        const balance = await window.tronWeb.trx.getBalance(currentAddress);
+        const balanceInTrx = window.tronWeb.fromSun(balance);
+        
+        console.log('✅ TRX 余额:', {
+          address: currentAddress,
+          balanceInSun: balance,
+          balanceInTrx: balanceInTrx
+        });
+        
+        setTrxBalance(parseFloat(balanceInTrx));
+      } catch (error) {
+        console.error('❌ 获取 TRX 余额失败:', error);
+        setTrxBalance(0);
+      }
+    };
+
+    getTrxBalance();
+    const interval = setInterval(getTrxBalance, 3000); // 每3秒更新一次
+
+    return () => clearInterval(interval);
+  }, [account, isConnected]);
   
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
   
-  // 使用 account 作为 walletAddress，使用 ETH 余额
+  // 使用 account 作为 walletAddress
   const walletAddress = account;
-  const ethBalance = ethBalanceData ? parseFloat(ethBalanceData.formatted) : 0;
   
   // 调试：打印余额
   useEffect(() => {
-    console.log('🔍 ModelMarket - ETH balance:', ethBalance, 'ETH');
-  }, [ethBalance]);
+    console.log('🔍 ModelMarket - TRX balance:', trxBalance, 'TRX');
+  }, [trxBalance]);
 
   // 删除旧的钱包初始化代码
   // useEffect 已被移除，使用 useContract hook 代替
@@ -217,25 +259,35 @@ export function ModelMarket() {
 
   // 购买单次信号
   const handlePurchaseSignal = async (model: Model) => {
-    if (!account) {
+    // 检查钱包连接
+    if (!isConnected || !window.tronWeb || !window.tronWeb.ready) {
+      alert('❌ 请先连接 TronLink 钱包');
       try {
         await connectWallet();
-        // 等待钱包连接后，检查并切换网络
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
-        alert('❌ 请先连接钱包');
         return;
       }
     }
 
-    // 检查是否在正确的网络
-    if (!isConnected) {
-      alert('❌ 钱包未连接');
+    // 再次检查连接状态
+    if (!window.tronWeb || !window.tronWeb.ready) {
+      alert('❌ TronLink 未就绪，请刷新页面重试');
       return;
     }
 
-    if (ethBalance < model.pricePerSignal) {
-      alert(`❌ ETH 余额不足\n\n当前余额: ${ethBalance.toFixed(4)} ETH\n需要: ${model.pricePerSignal} ETH`);
+    // 获取当前地址
+    const currentAddress = window.tronWeb.defaultAddress?.base58;
+    if (!currentAddress) {
+      alert('❌ 无法获取钱包地址，请确保 TronLink 已解锁');
+      return;
+    }
+
+    console.log('💰 当前 TRX 余额:', trxBalance, 'TRX');
+    console.log('💵 需要支付:', model.pricePerSignal, 'TRX');
+
+    if (trxBalance < model.pricePerSignal) {
+      alert(`❌ TRX 余额不足\n\n当前余额: ${trxBalance.toFixed(4)} TRX\n需要: ${model.pricePerSignal} TRX`);
       return;
     }
 
@@ -243,25 +295,27 @@ export function ModelMarket() {
 
     try {
       console.log('🚀 执行支付:', {
-        agentAddress: account,
-        recipient: model.provider,
+        from: currentAddress,
+        to: model.provider,
         amount: model.pricePerSignal.toString(),
         service: `Purchase signal from ${model.name}`
       });
 
-      // 使用 executePayment（和订阅市场一样）
-      await executePayment(
-        account,
+      // 使用 executePayment
+      const txHash = await executePayment(
+        currentAddress,
         model.provider,
         model.pricePerSignal.toString(),
         `Purchase signal from ${model.name}`
       );
 
-      console.log('✅ executePayment 调用完成');
+      console.log('✅ 交易已提交，哈希:', txHash);
       
-      alert(`✅ 购买交易已提交！\n\n服务：${model.name}\n金额：${model.pricePerSignal} ETH\n\n请在钱包中确认交易...`);
+      alert(`✅ 购买成功！\n\n服务：${model.name}\n金额：${model.pricePerSignal} TRX\n交易哈希：${txHash?.slice(0, 10)}...`);
       
-      // 不立即关闭弹窗，等待交易确认
+      setIsPurchasing(false);
+      setSelectedModel(null);
+      
     } catch (error: any) {
       console.error('❌ 购买失败:', error);
       alert(`❌ 购买失败\n\n${error.message || '未知错误'}`);
@@ -271,43 +325,60 @@ export function ModelMarket() {
 
   // 订阅模型
   const handleSubscribe = async (model: Model) => {
-    if (!account) {
+    // 检查钱包连接
+    if (!isConnected || !window.tronWeb || !window.tronWeb.ready) {
+      alert('❌ 请先连接 TronLink 钱包');
       try {
         await connectWallet();
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
-        alert('❌ 请先连接钱包');
         return;
       }
     }
 
-    if (ethBalance < model.monthlySubscription) {
-      alert(`❌ ETH 余额不足\n\n当前余额: ${ethBalance.toFixed(4)} ETH\n需要: ${model.monthlySubscription} ETH`);
+    // 再次检查连接状态
+    if (!window.tronWeb || !window.tronWeb.ready) {
+      alert('❌ TronLink 未就绪，请刷新页面重试');
+      return;
+    }
+
+    // 获取当前地址
+    const currentAddress = window.tronWeb.defaultAddress?.base58;
+    if (!currentAddress) {
+      alert('❌ 无法获取钱包地址，请确保 TronLink 已解锁');
+      return;
+    }
+
+    if (trxBalance < model.monthlySubscription) {
+      alert(`❌ TRX 余额不足\n\n当前余额: ${trxBalance.toFixed(4)} TRX\n需要: ${model.monthlySubscription} TRX`);
       return;
     }
 
     setIsSubscribing(true);
 
     try {
-      console.log('🚀 执行支付:', {
-        agentAddress: account,
-        recipient: model.provider,
+      console.log('🚀 执行订阅支付:', {
+        from: currentAddress,
+        to: model.provider,
         amount: model.monthlySubscription.toString(),
         service: `Subscribe to ${model.name} (30 days)`
       });
 
-      // 使用 executePayment（和订阅市场一样）
-      await executePayment(
-        account,
+      // 使用 executePayment
+      const txHash = await executePayment(
+        currentAddress,
         model.provider,
         model.monthlySubscription.toString(),
         `Subscribe to ${model.name} (30 days)`
       );
 
-      console.log('✅ executePayment 调用完成');
+      console.log('✅ 订阅交易已提交，哈希:', txHash);
       
-      alert(`✅ 订阅交易已提交！\n\n服务：${model.name}\n金额：${model.monthlySubscription} ETH\n有效期：30 天\n\n请在钱包中确认交易...`);
+      alert(`✅ 订阅成功！\n\n服务：${model.name}\n金额：${model.monthlySubscription} TRX\n有效期：30 天\n交易哈希：${txHash?.slice(0, 10)}...`);
       
-      // 不立即关闭弹窗，等待交易确认
+      setIsSubscribing(false);
+      setSelectedModel(null);
+      
     } catch (error: any) {
       console.error('❌ 订阅失败:', error);
       alert(`❌ 订阅失败\n\n${error.message || '未知错误'}`);
@@ -315,21 +386,9 @@ export function ModelMarket() {
     }
   };
   
-  // 监听交易成功
-  useEffect(() => {
-    if (facilitatorSuccess && facilitatorHash) {
-      console.log('✅ 交易成功！哈希:', facilitatorHash);
-      setIsPurchasing(false);
-      setIsSubscribing(false);
-      setSelectedModel(null);
-      alert(`🎉 交易确认成功！\n\n交易哈希: ${facilitatorHash.slice(0, 10)}...${facilitatorHash.slice(-8)}`);
-    }
-  }, [facilitatorSuccess, facilitatorHash]);
-
   // 添加网络提示
   useEffect(() => {
     if (isConnected && account) {
-      // 可以在这里添加网络检查逻辑
       console.log('✅ 钱包已连接:', account);
     }
   }, [isConnected, account]);
@@ -539,11 +598,11 @@ export function ModelMarket() {
                 <div className="model-pricing">
                   <div className="price-option">
                     <span className="price-label">单次信号</span>
-                    <span className="price-value">{model.pricePerSignal} ETH</span>
+                    <span className="price-value">{model.pricePerSignal} TRX</span>
                   </div>
                   <div className="price-option">
                     <span className="price-label">月度订阅</span>
-                    <span className="price-value">{model.monthlySubscription} ETH</span>
+                    <span className="price-value">{model.monthlySubscription} TRX</span>
                   </div>
                 </div>
 
@@ -710,7 +769,7 @@ export function ModelMarket() {
             <div className="modal-pricing">
               <div className="pricing-option">
                 <h4>单次购买</h4>
-                <div className="pricing-value">{selectedModel.pricePerSignal} ETH</div>
+                <div className="pricing-value">{selectedModel.pricePerSignal} TRX</div>
                 <p>购买单个信号</p>
                 <button 
                   className="subscribe-btn secondary"
@@ -723,7 +782,7 @@ export function ModelMarket() {
               <div className="pricing-option featured">
                 <div className="featured-badge">推荐</div>
                 <h4>月度订阅</h4>
-                <div className="pricing-value">{selectedModel.monthlySubscription} ETH</div>
+                <div className="pricing-value">{selectedModel.monthlySubscription} TRX</div>
                 <p>无限制接收所有信号</p>
                 <button 
                   className="subscribe-btn primary"
@@ -754,10 +813,10 @@ export function ModelMarket() {
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem' }}>
-                      ETH 余额
+                      TRX 余额
                     </div>
                     <div style={{ fontSize: '1.1rem', color: '#10B981', fontWeight: 600 }}>
-                      {ethBalance.toFixed(4)} ETH
+                      {trxBalance.toFixed(4)} TRX
                     </div>
                   </div>
                 </div>
