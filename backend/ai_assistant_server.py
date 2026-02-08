@@ -1,10 +1,10 @@
 """
-Hackathon AI 助手服务器 - 使用 Ollama 本地推理
+Hackathon AI 助手服务器 - 使用 OpenAI API
 基于 coconut-RustSentinel 的实现，适配 Hackathon 项目
 """
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import requests
+from openai import OpenAI
 import time
 import os
 from datetime import datetime
@@ -16,32 +16,31 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Ollama API 配置
-OLLAMA_API = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
-MODEL_NAME = os.getenv("MODEL_NAME", "qwen3:4b-instruct-2507-q4_K_M")
+# OpenAI API 配置
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+
+# 初始化 OpenAI 客户端
+client = OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL) if OPENAI_API_KEY else None
 
 print("=" * 60)
 print("Hackathon AI 助手服务器")
-print(f"推理引擎: Ollama")
-print(f"模型: {MODEL_NAME}")
-print(f"API: {OLLAMA_API}")
+print(f"推理引擎: OpenAI")
+print(f"模型: {OPENAI_MODEL}")
+print(f"API: {OPENAI_BASE_URL}")
 print("=" * 60)
 
 @app.route('/health', methods=['GET'])
 def health():
     """健康检查接口"""
-    # 检查 Ollama 是否运行
-    try:
-        response = requests.get("http://localhost:11434", timeout=2)
-        ollama_status = "running" if response.status_code == 200 else "error"
-    except:
-        ollama_status = "not running"
+    api_status = "configured" if client else "not configured"
     
     return jsonify({
         "status": "ok",
-        "engine": "Ollama",
-        "model": MODEL_NAME,
-        "ollama_status": ollama_status,
+        "engine": "OpenAI",
+        "model": OPENAI_MODEL,
+        "api_status": api_status,
         "timestamp": datetime.now().isoformat()
     })
 
@@ -199,18 +198,14 @@ A:
 6. 如果问题超出范围，建议用户查看文档或联系技术支持
 7. 重点介绍量化交易和AI模型的优势"""
     
-    # 构建完整的对话提示词
-    prompt = f"System: {system_prompt}\n\n"
+    # 构建消息列表（OpenAI格式）
+    openai_messages = [{"role": "system", "content": system_prompt}]
     
     for msg in messages:
         role = msg.get('role', '')
         content = msg.get('content', '')
-        if role == 'user':
-            prompt += f"User: {content}\n\n"
-        elif role == 'assistant':
-            prompt += f"Assistant: {content}\n\n"
-    
-    prompt += "请用中文简洁、专业地回答用户的问题。\n\nAssistant: "
+        if role in ['user', 'assistant']:
+            openai_messages.append({"role": role, "content": content})
     
     print(f"\n[{datetime.now().strftime('%H:%M:%S')}] 收到 AI 助手请求")
     print(f"问题长度: {len(messages[-1].get('content', ''))} 字符")
@@ -219,61 +214,41 @@ A:
     start_time = time.time()
     
     try:
-        # 调用 Ollama API
-        response = requests.post(
-            OLLAMA_API,
-            json={
-                "model": MODEL_NAME,
-                "prompt": prompt,
-                "stream": False,
-                "options": {
-                    "temperature": 0.7,      # 对话使用适中的温度
-                    "num_predict": 800,      # 限制回答长度
-                    "top_p": 0.9,
-                    "top_k": 40
-                }
-            },
-            timeout=120  # 2 分钟超时
+        if not client:
+            return jsonify({"error": "OpenAI API 未配置"}), 503
+        
+        # 调用 OpenAI API
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=openai_messages,
+            temperature=0.7,
+            max_tokens=800
         )
         
         inference_time = time.time() - start_time
         
-        if response.status_code == 200:
-            result = response.json()
-            assistant_response = result.get('response', '').strip()
-            
-            print(f"✅ 推理完成，耗时: {inference_time:.2f} 秒")
-            print(f"响应长度: {len(assistant_response)} 字符")
-            
-            return jsonify({
-                "choices": [{
-                    "message": {
-                        "role": "assistant",
-                        "content": assistant_response
-                    },
-                    "finish_reason": "stop"
-                }],
-                "usage": {
-                    "prompt_tokens": len(prompt),
-                    "completion_tokens": len(assistant_response),
-                    "total_tokens": len(prompt) + len(assistant_response)
+        assistant_response = response.choices[0].message.content.strip()
+        
+        print(f"✅ 推理完成，耗时: {inference_time:.2f} 秒")
+        print(f"响应长度: {len(assistant_response)} 字符")
+        
+        return jsonify({
+            "choices": [{
+                "message": {
+                    "role": "assistant",
+                    "content": assistant_response
                 },
-                "model": MODEL_NAME,
-                "inference_time": round(inference_time, 2)
-            })
-        else:
-            error_msg = f"Ollama API 错误: {response.status_code}"
-            print(f"❌ {error_msg}")
-            return jsonify({"error": error_msg}), 500
+                "finish_reason": "stop"
+            }],
+            "usage": {
+                "prompt_tokens": response.usage.prompt_tokens,
+                "completion_tokens": response.usage.completion_tokens,
+                "total_tokens": response.usage.total_tokens
+            },
+            "model": OPENAI_MODEL,
+            "inference_time": round(inference_time, 2)
+        })
             
-    except requests.exceptions.Timeout:
-        error_msg = "推理超时（120秒），请稍后重试"
-        print(f"❌ {error_msg}")
-        return jsonify({"error": error_msg}), 504
-    except requests.exceptions.ConnectionError:
-        error_msg = "无法连接到 Ollama 服务，请确保 Ollama 正在运行"
-        print(f"❌ {error_msg}")
-        return jsonify({"error": error_msg}), 503
     except Exception as e:
         error_msg = f"服务器错误: {str(e)}"
         print(f"❌ {error_msg}")
@@ -289,45 +264,24 @@ def chat_completions():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 Hackathon AI 助手服务器启动成功！")
+    print("🚀 Hackathon AI 助手服务器启动（OpenAI 版本）")
     print("="*60)
     print(f"📡 API 地址: http://localhost:8000")
     print(f"🔗 健康检查: http://localhost:8000/health")
     print(f"💬 对话接口: http://localhost:8000/v1/assistant/chat")
+    print(f"🤖 AI 模型: {OPENAI_MODEL}")
     print("="*60)
     
-    # 检查 Ollama 是否运行
-    print("\n🔍 检查 Ollama 服务状态...")
-    try:
-        response = requests.get("http://localhost:11434", timeout=2)
-        if response.status_code == 200:
-            print("✅ Ollama 服务正常运行")
-            
-            # 尝试获取模型列表
-            try:
-                models_response = requests.get("http://localhost:11434/api/tags", timeout=2)
-                if models_response.status_code == 200:
-                    models = models_response.json().get('models', [])
-                    model_names = [m.get('name', '') for m in models]
-                    
-                    if MODEL_NAME in model_names:
-                        print(f"✅ 模型 {MODEL_NAME} 已就绪")
-                    else:
-                        print(f"⚠️  警告: 模型 {MODEL_NAME} 未找到")
-                        print(f"   可用模型: {', '.join(model_names) if model_names else '无'}")
-                        print(f"   请运行: ollama pull {MODEL_NAME}")
-            except:
-                pass
-        else:
-            print("⚠️  警告: Ollama 服务响应异常")
-    except:
-        print("❌ 错误: 无法连接到 Ollama")
-        print("   请确保 Ollama 正在运行")
-        print("   启动命令: ollama serve")
-        print(f"   拉取模型: ollama pull {MODEL_NAME}")
+    if not client:
+        print("\n⚠️  警告: OPENAI_API_KEY 未配置")
+        print("   AI 功能将不可用")
+        print("   请在 .env 文件中设置 OPENAI_API_KEY\n")
+    else:
+        print(f"\n✅ OpenAI API Key 已配置\n")
     
-    print("\n" + "="*60)
+    print("="*60)
     print("服务器运行中... 按 Ctrl+C 停止")
     print("="*60 + "\n")
     
     app.run(host='0.0.0.0', port=8000, debug=False)
+

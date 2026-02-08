@@ -63,8 +63,6 @@ export const RiskAssessment = () => {
   const [isLoadingFlow, setIsLoadingFlow] = useState(false);
   const [isLoadingRelation, setIsLoadingRelation] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
-  const [ollamaUrl, setOllamaUrl] = useState('http://localhost:11434');
-  const [ollamaModel, setOllamaModel] = useState('qwen3:4b-instruct-2507-q4_K_M');
 
   // 开始分析
   const handleAnalyze = async () => {

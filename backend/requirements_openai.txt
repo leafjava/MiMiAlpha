@@ -1,0 +1,15 @@
+# Python 后端依赖（OpenAI 版本）
+
+# 核心框架
+flask==2.3.3
+flask-cors==4.0.0
+
+# OpenAI API
+openai==0.28.1
+
+# 工具库
+python-dotenv==1.0.0
+requests==2.31.0
+
+# 生产环境（可选）
+gunicorn==21.2.0
