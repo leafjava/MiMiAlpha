@@ -1,127 +1,211 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import './DisputeArbitration.css';
 
 interface Evidence {
-  type: 'text' | 'image' | 'tracking';
+  type: 'signal_data' | 'chain_record' | 'screenshot' | 'text';
   content: string;
   description?: string;
 }
 
+interface PurchaseRecord {
+  id: string;
+  model_name: string;
+  provider_address: string;
+  amount: number;
+  tx_hash: string;
+  purchase_date: string;
+  purchase_type: 'single' | 'monthly';
+}
+
 interface ArbitrationResult {
   case_id: string;
-  responsibility: string;
-  responsibility_text: string;
-  resolution: string;
-  resolution_text: string;
+  verdict: 'refund_full' | 'refund_partial' | 'reject' | 'need_more_evidence';
+  verdict_text: string;
+  refund_amount?: number;
   confidence: number;
-  detailed_reasons: string[];
-  evidence_summary: {
-    buyer_evidence_count: number;
-    seller_evidence_count: number;
-    chat_messages_count: number;
+  detailed_analysis: string[];
+  signal_accuracy_check?: {
+    predicted_value: string;
+    actual_value: string;
+    deviation_percentage: number;
+    is_within_threshold: boolean;
   };
   recommendations: string[];
+  human_review_suggested: boolean;
 }
 
 export const DisputeArbitration = () => {
-  const { t } = useTranslation();
   const [formData, setFormData] = useState({
-    amount: '',
-    description: '',
-    dispute_type: 'not_received',
-    buyer_claim: '',
-    seller_response: '',
-    chat_history: '',
+    model_name: '',
+    model_provider: '',
+    transaction_amount: '',
+    dispute_type: 'signal_inaccurate',
+    signal_date: '',
+    predicted_value: '',
+    actual_value: '',
+    subscriber_claim: '',
+    provider_response: '',
+    transaction_hash: '',
   });
   
-  const [buyerEvidence, setBuyerEvidence] = useState<Evidence[]>([]);
-  const [sellerEvidence, setSellerEvidence] = useState<Evidence[]>([]);
+  const [showPurchaseRecords, setShowPurchaseRecords] = useState(false);
+  const [purchaseRecords] = useState<PurchaseRecord[]>([
+    {
+      id: '1',
+      model_name: '黄金价格预测模型',
+      provider_address: 'TJFJTCgJCmq1ghzZEagDTifHNtNgK4rnRL',
+      amount: 5000,
+      tx_hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      purchase_date: '2026-02-01',
+      purchase_type: 'monthly'
+    },
+    {
+      id: '2',
+      model_name: 'BTC 趋势预测模型',
+      provider_address: 'TLPbmb5Qma7yLKJZWjD8PWdVDB6FhXy8Yx',
+      amount: 300,
+      tx_hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+      purchase_date: '2026-02-05',
+      purchase_type: 'single'
+    },
+    {
+      id: '3',
+      model_name: '原油价格预测模型',
+      provider_address: 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9',
+      amount: 3000,
+      tx_hash: '0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba',
+      purchase_date: '2026-01-28',
+      purchase_type: 'monthly'
+    }
+  ]);
+  
+  const [subscriberEvidence, setSubscriberEvidence] = useState<Evidence[]>([]);
+  const [providerEvidence, setProviderEvidence] = useState<Evidence[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<ArbitrationResult | null>(null);
+  const [humanReviewRequested, setHumanReviewRequested] = useState(false);
 
   const disputeTypes = [
-    { value: 'not_received', label: '未收到商品' },
-    { value: 'not_as_described', label: '商品与描述不符' },
-    { value: 'damaged', label: '商品损坏' },
-    { value: 'fake', label: '假货/仿品' },
-    { value: 'seller_no_ship', label: '卖家未发货' },
-    { value: 'buyer_no_pay', label: '买家未付款' },
+    { value: 'signal_inaccurate', label: '信号预测不准确' },
+    { value: 'signal_not_received', label: '未收到信号' },
+    { value: 'model_performance', label: '模型表现不符宣传' },
+    { value: 'subscription_issue', label: '订阅服务问题' },
+    { value: 'refund_request', label: '退款申请' },
     { value: 'other', label: '其他争议' },
   ];
 
-  const addEvidence = (party: 'buyer' | 'seller', type: Evidence['type']) => {
+  const handleSelectPurchaseRecord = (record: PurchaseRecord) => {
+    setFormData({
+      ...formData,
+      model_name: record.model_name,
+      model_provider: record.provider_address,
+      transaction_amount: record.amount.toString(),
+      transaction_hash: record.tx_hash,
+      signal_date: record.purchase_date,
+    });
+    setShowPurchaseRecords(false);
+  };
+
+  const addEvidence = (party: 'subscriber' | 'provider', type: Evidence['type']) => {
     const evidence: Evidence = {
       type,
       content: '',
       description: ''
     };
     
-    if (party === 'buyer') {
-      setBuyerEvidence([...buyerEvidence, evidence]);
+    if (party === 'subscriber') {
+      setSubscriberEvidence([...subscriberEvidence, evidence]);
     } else {
-      setSellerEvidence([...sellerEvidence, evidence]);
+      setProviderEvidence([...providerEvidence, evidence]);
     }
   };
 
   const updateEvidence = (
-    party: 'buyer' | 'seller',
+    party: 'subscriber' | 'provider',
     index: number,
     field: keyof Evidence,
     value: string
   ) => {
-    if (party === 'buyer') {
-      const updated = [...buyerEvidence];
+    if (party === 'subscriber') {
+      const updated = [...subscriberEvidence];
       updated[index] = { ...updated[index], [field]: value };
-      setBuyerEvidence(updated);
+      setSubscriberEvidence(updated);
     } else {
-      const updated = [...sellerEvidence];
+      const updated = [...providerEvidence];
       updated[index] = { ...updated[index], [field]: value };
-      setSellerEvidence(updated);
+      setProviderEvidence(updated);
     }
   };
 
-  const removeEvidence = (party: 'buyer' | 'seller', index: number) => {
-    if (party === 'buyer') {
-      setBuyerEvidence(buyerEvidence.filter((_, i) => i !== index));
+  const removeEvidence = (party: 'subscriber' | 'provider', index: number) => {
+    if (party === 'subscriber') {
+      setSubscriberEvidence(subscriberEvidence.filter((_, i) => i !== index));
     } else {
-      setSellerEvidence(sellerEvidence.filter((_, i) => i !== index));
+      setProviderEvidence(providerEvidence.filter((_, i) => i !== index));
     }
   };
 
   const handleAnalyze = async () => {
-    if (!formData.amount || !formData.buyer_claim) {
-      alert('请填写必要信息');
+    if (!formData.model_name || !formData.subscriber_claim) {
+      alert('请填写模型名称和订阅者主张');
       return;
     }
 
     setIsAnalyzing(true);
     setResult(null);
+    setHumanReviewRequested(false);
 
     try {
-      const chatHistory = formData.chat_history
-        .split('\n')
-        .filter(line => line.trim());
+      // 模拟 AI 仲裁分析（实际应该调用本地 Ollama）
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const response = await fetch('http://localhost:8002/api/dispute/analyze', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // 计算偏差百分比
+      const predicted = parseFloat(formData.predicted_value) || 0;
+      const actual = parseFloat(formData.actual_value) || 0;
+      const deviation = predicted !== 0 ? Math.abs((actual - predicted) / predicted * 100) : 0;
+      const isWithinThreshold = deviation <= 5; // 5% 阈值
+
+      // 生成模拟结果
+      const mockResult: ArbitrationResult = {
+        case_id: `DISPUTE-${Date.now()}`,
+        verdict: isWithinThreshold ? 'reject' : (deviation > 10 ? 'refund_full' : 'refund_partial'),
+        verdict_text: isWithinThreshold 
+          ? '驳回退款申请 - 信号在合理误差范围内'
+          : (deviation > 10 ? '全额退款 - 信号严重偏差' : '部分退款 - 信号存在偏差'),
+        refund_amount: isWithinThreshold ? 0 : (deviation > 10 ? parseFloat(formData.transaction_amount) : parseFloat(formData.transaction_amount) * 0.5),
+        confidence: isWithinThreshold ? 92 : (deviation > 10 ? 88 : 75),
+        detailed_analysis: [
+          `信号预测值: ${formData.predicted_value}`,
+          `实际市场值: ${formData.actual_value}`,
+          `偏差百分比: ${deviation.toFixed(2)}%`,
+          isWithinThreshold 
+            ? '✅ 偏差在 5% 阈值内，符合模型承诺的准确率范围'
+            : `❌ 偏差超过 5% 阈值（实际 ${deviation.toFixed(2)}%），不符合质量标准`,
+          `订阅者提供了 ${subscriberEvidence.length} 项证据`,
+          `提供者提供了 ${providerEvidence.length} 项证据`,
+          formData.transaction_hash ? `✅ 链上交易已验证: ${formData.transaction_hash.slice(0, 10)}...` : '⚠️ 未提供链上交易哈希',
+        ],
+        signal_accuracy_check: {
+          predicted_value: formData.predicted_value,
+          actual_value: formData.actual_value,
+          deviation_percentage: deviation,
+          is_within_threshold: isWithinThreshold,
         },
-        body: JSON.stringify({
-          ...formData,
-          chat_history: chatHistory,
-          buyer_evidence: buyerEvidence.filter(e => e.content),
-          seller_evidence: sellerEvidence.filter(e => e.content),
-        })
-      });
+        recommendations: isWithinThreshold 
+          ? [
+            '建议订阅者理解量化模型存在合理误差范围',
+            '可继续使用该模型服务',
+            '如对结果不满意，可申请人工复审',
+          ]
+          : [
+            '建议提供者改进模型准确率',
+            '建议订阅者获得退款后重新评估模型',
+            '如对 AI 判决不满意，双方均可申请人工介入',
+          ],
+        human_review_suggested: !isWithinThreshold && deviation > 8,
+      };
 
-      if (!response.ok) {
-        throw new Error('Arbitration analysis failed');
-      }
-
-      const data = await response.json();
-      setResult(data);
+      setResult(mockResult);
     } catch (error) {
       console.error('Arbitration error:', error);
       alert('仲裁服务暂时不可用，请稍后重试');
@@ -130,12 +214,17 @@ export const DisputeArbitration = () => {
     }
   };
 
-  const getResponsibilityColor = (responsibility: string) => {
-    switch (responsibility) {
-      case 'seller': return '#ef4444';
-      case 'buyer': return '#f59e0b';
-      case 'both': return '#8b5cf6';
-      case 'unclear': return '#6b7280';
+  const handleRequestHumanReview = () => {
+    setHumanReviewRequested(true);
+    alert('✅ 人工客服申请已提交\n\n客服人员将在 24 小时内审核此案件并给出最终处理方案。\n\n案件编号: ' + result?.case_id);
+  };
+
+  const getVerdictColor = (verdict: string) => {
+    switch (verdict) {
+      case 'refund_full': return '#10b981';
+      case 'refund_partial': return '#f59e0b';
+      case 'reject': return '#ef4444';
+      case 'need_more_evidence': return '#6b7280';
       default: return '#6b7280';
     }
   };
@@ -151,31 +240,192 @@ export const DisputeArbitration = () => {
       <div className="dispute-header">
         <h1 className="dispute-title">⚖️ 智能争议仲裁助手</h1>
         <p className="dispute-subtitle">AI 驱动的公正、透明、高效纠纷解决方案</p>
+        <div className="ainft-badge" style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 16px',
+          background: 'rgba(255, 165, 0, 0.1)',
+          border: '1px solid rgba(255, 165, 0, 0.3)',
+          borderRadius: '20px',
+          marginTop: '12px',
+          fontSize: '14px',
+          color: '#FFA500'
+        }}>
+          <span>🤖</span>
+          <span>本地 AI 模型分析 → 输出仲裁结果 → 不服可申请人工客服介入</span>
+        </div>
       </div>
 
       <div className="dispute-content">
-        {/* 左侧：信息输入 */}
+        {/* 左侧：争议信息输入 */}
         <div className="dispute-form-section">
           <h2 className="section-title">📋 争议信息</h2>
           
+          {/* 从交易记录选择 */}
+          <div style={{
+            marginBottom: '1.5rem',
+            padding: '1rem',
+            background: 'rgba(59, 130, 246, 0.1)',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            borderRadius: '8px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: showPurchaseRecords ? '1rem' : '0'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.2rem' }}>📜</span>
+                <span style={{ color: '#d4d4d8', fontSize: '0.95rem' }}>
+                  从我的交易记录中选择
+                </span>
+              </div>
+              <button
+                onClick={() => setShowPurchaseRecords(!showPurchaseRecords)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: showPurchaseRecords ? 'rgba(107, 114, 128, 0.3)' : 'rgba(59, 130, 246, 0.3)',
+                  border: '1px solid rgba(59, 130, 246, 0.5)',
+                  borderRadius: '6px',
+                  color: '#3B82F6',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s'
+                }}
+              >
+                {showPurchaseRecords ? '收起' : '展开'}
+              </button>
+            </div>
+            
+            {showPurchaseRecords && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.75rem',
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}>
+                {purchaseRecords.map((record) => (
+                  <div
+                    key={record.id}
+                    onClick={() => handleSelectPurchaseRecord(record)}
+                    style={{
+                      padding: '1rem',
+                      background: 'rgba(24, 24, 27, 0.8)',
+                      border: '1px solid rgba(63, 63, 70, 0.5)',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.8)';
+                      e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(63, 63, 70, 0.5)';
+                      e.currentTarget.style.background = 'rgba(24, 24, 27, 0.8)';
+                    }}
+                  >
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      marginBottom: '0.5rem'
+                    }}>
+                      <div style={{
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        color: '#d4d4d8'
+                      }}>
+                        {record.model_name}
+                      </div>
+                      <div style={{
+                        padding: '0.25rem 0.75rem',
+                        background: record.purchase_type === 'monthly' 
+                          ? 'rgba(245, 158, 11, 0.2)' 
+                          : 'rgba(16, 185, 129, 0.2)',
+                        border: `1px solid ${record.purchase_type === 'monthly' 
+                          ? 'rgba(245, 158, 11, 0.5)' 
+                          : 'rgba(16, 185, 129, 0.5)'}`,
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        color: record.purchase_type === 'monthly' ? '#f59e0b' : '#10b981'
+                      }}>
+                        {record.purchase_type === 'monthly' ? '月度订阅' : '单次购买'}
+                      </div>
+                    </div>
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '0.5rem',
+                      fontSize: '0.85rem',
+                      color: '#a1a1aa'
+                    }}>
+                      <div>
+                        <span>💰 金额：</span>
+                        <span style={{ color: '#d4d4d8', fontWeight: 500 }}>
+                          ${record.amount} USDT
+                        </span>
+                      </div>
+                      <div>
+                        <span>📅 日期：</span>
+                        <span style={{ color: '#d4d4d8' }}>{record.purchase_date}</span>
+                      </div>
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <span>🔗 交易：</span>
+                        <span style={{ color: '#d4d4d8', fontSize: '0.8rem' }}>
+                          {record.tx_hash.slice(0, 10)}...{record.tx_hash.slice(-8)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
           <div className="form-group">
-            <label>交易金额 (cUSD)</label>
+            <label>模型名称</label>
             <input
-              type="number"
-              value={formData.amount}
-              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-              placeholder="1000"
+              type="text"
+              value={formData.model_name}
+              onChange={(e) => setFormData({ ...formData, model_name: e.target.value })}
+              placeholder="例如：黄金价格预测模型"
               className="dispute-input"
             />
           </div>
 
           <div className="form-group">
-            <label>交易描述</label>
+            <label>模型提供者地址</label>
             <input
               type="text"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="购买 iPhone 15 Pro"
+              value={formData.model_provider}
+              onChange={(e) => setFormData({ ...formData, model_provider: e.target.value })}
+              placeholder="TJFJTCgJCmq1ghzZEagDTifHNtNgK4rnRL"
+              className="dispute-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>交易金额 (USDT)</label>
+            <input
+              type="number"
+              value={formData.transaction_amount}
+              onChange={(e) => setFormData({ ...formData, transaction_amount: e.target.value })}
+              placeholder="50"
+              className="dispute-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>交易哈希（TRON 链上）</label>
+            <input
+              type="text"
+              value={formData.transaction_hash}
+              onChange={(e) => setFormData({ ...formData, transaction_hash: e.target.value })}
+              placeholder="0x1234567890abcdef..."
               className="dispute-input"
             />
           </div>
@@ -194,61 +444,84 @@ export const DisputeArbitration = () => {
           </div>
 
           <div className="form-group">
-            <label>买家主张</label>
+            <label>信号发布日期</label>
+            <input
+              type="date"
+              value={formData.signal_date}
+              onChange={(e) => setFormData({ ...formData, signal_date: e.target.value })}
+              className="dispute-input"
+            />
+          </div>
+
+          <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="form-group">
+              <label>预测值</label>
+              <input
+                type="text"
+                value={formData.predicted_value}
+                onChange={(e) => setFormData({ ...formData, predicted_value: e.target.value })}
+                placeholder="例如：2100"
+                className="dispute-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>实际值</label>
+              <input
+                type="text"
+                value={formData.actual_value}
+                onChange={(e) => setFormData({ ...formData, actual_value: e.target.value })}
+                placeholder="例如：2050"
+                className="dispute-input"
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>订阅者主张</label>
             <textarea
-              value={formData.buyer_claim}
-              onChange={(e) => setFormData({ ...formData, buyer_claim: e.target.value })}
-              placeholder="描述买家的诉求和理由..."
+              value={formData.subscriber_claim}
+              onChange={(e) => setFormData({ ...formData, subscriber_claim: e.target.value })}
+              placeholder="描述您的诉求和理由，例如：信号预测严重偏差，要求退款..."
               className="dispute-textarea"
               rows={3}
             />
           </div>
 
           <div className="form-group">
-            <label>卖家回应</label>
+            <label>提供者回应</label>
             <textarea
-              value={formData.seller_response}
-              onChange={(e) => setFormData({ ...formData, seller_response: e.target.value })}
-              placeholder="描述卖家的回应..."
+              value={formData.provider_response}
+              onChange={(e) => setFormData({ ...formData, provider_response: e.target.value })}
+              placeholder="模型提供者的回应..."
               className="dispute-textarea"
               rows={3}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>聊天记录（每行一条消息）</label>
-            <textarea
-              value={formData.chat_history}
-              onChange={(e) => setFormData({ ...formData, chat_history: e.target.value })}
-              placeholder="买家: 什么时候发货？&#10;卖家: 已经发货了&#10;买家: 我没收到"
-              className="dispute-textarea"
-              rows={4}
             />
           </div>
 
           {/* 证据部分 */}
           <div className="evidence-section">
-            <h3 className="subsection-title">🔍 买家证据</h3>
-            {buyerEvidence.map((evidence, index) => (
+            <h3 className="subsection-title">🔍 订阅者证据</h3>
+            {subscriberEvidence.map((evidence, index) => (
               <div key={index} className="evidence-item">
                 <select
                   value={evidence.type}
-                  onChange={(e) => updateEvidence('buyer', index, 'type', e.target.value)}
+                  onChange={(e) => updateEvidence('subscriber', index, 'type', e.target.value)}
                   className="evidence-type-select"
                 >
+                  <option value="signal_data">信号数据</option>
+                  <option value="chain_record">链上记录</option>
+                  <option value="screenshot">截图证据</option>
                   <option value="text">文字说明</option>
-                  <option value="image">图片证据</option>
-                  <option value="tracking">物流信息</option>
                 </select>
                 <input
                   type="text"
                   value={evidence.content}
-                  onChange={(e) => updateEvidence('buyer', index, 'content', e.target.value)}
+                  onChange={(e) => updateEvidence('subscriber', index, 'content', e.target.value)}
                   placeholder="证据内容或链接"
                   className="evidence-input"
                 />
                 <button
-                  onClick={() => removeEvidence('buyer', index)}
+                  onClick={() => removeEvidence('subscriber', index)}
                   className="remove-btn"
                 >
                   ✕
@@ -256,35 +529,36 @@ export const DisputeArbitration = () => {
               </div>
             ))}
             <button
-              onClick={() => addEvidence('buyer', 'text')}
+              onClick={() => addEvidence('subscriber', 'signal_data')}
               className="add-evidence-btn"
             >
-              + 添加买家证据
+              + 添加订阅者证据
             </button>
           </div>
 
           <div className="evidence-section">
-            <h3 className="subsection-title">🔍 卖家证据</h3>
-            {sellerEvidence.map((evidence, index) => (
+            <h3 className="subsection-title">🔍 提供者证据</h3>
+            {providerEvidence.map((evidence, index) => (
               <div key={index} className="evidence-item">
                 <select
                   value={evidence.type}
-                  onChange={(e) => updateEvidence('seller', index, 'type', e.target.value)}
+                  onChange={(e) => updateEvidence('provider', index, 'type', e.target.value)}
                   className="evidence-type-select"
                 >
+                  <option value="signal_data">信号数据</option>
+                  <option value="chain_record">链上记录</option>
+                  <option value="screenshot">截图证据</option>
                   <option value="text">文字说明</option>
-                  <option value="image">图片证据</option>
-                  <option value="tracking">物流信息</option>
                 </select>
                 <input
                   type="text"
                   value={evidence.content}
-                  onChange={(e) => updateEvidence('seller', index, 'content', e.target.value)}
+                  onChange={(e) => updateEvidence('provider', index, 'content', e.target.value)}
                   placeholder="证据内容或链接"
                   className="evidence-input"
                 />
                 <button
-                  onClick={() => removeEvidence('seller', index)}
+                  onClick={() => removeEvidence('provider', index)}
                   className="remove-btn"
                 >
                   ✕
@@ -292,10 +566,10 @@ export const DisputeArbitration = () => {
               </div>
             ))}
             <button
-              onClick={() => addEvidence('seller', 'text')}
+              onClick={() => addEvidence('provider', 'signal_data')}
               className="add-evidence-btn"
             >
-              + 添加卖家证据
+              + 添加提供者证据
             </button>
           </div>
 
@@ -307,10 +581,10 @@ export const DisputeArbitration = () => {
             {isAnalyzing ? (
               <>
                 <span className="spinner"></span>
-                分析中...
+                AI 分析中...
               </>
             ) : (
-              '🔍 开始仲裁分析'
+              '🤖 启动 AI 仲裁分析'
             )}
           </button>
         </div>
@@ -318,32 +592,83 @@ export const DisputeArbitration = () => {
         {/* 右侧：仲裁结果 */}
         {result && (
           <div className="dispute-result-section">
-            <h2 className="section-title">⚖️ 仲裁结果</h2>
+            <h2 className="section-title">⚖️ AI 仲裁结果</h2>
             
             <div className="result-card">
               <div className="case-id">案件编号: {result.case_id}</div>
               
-              {/* 责任判定 */}
+              {/* 裁决结果 */}
               <div className="judgment-box" style={{
-                borderLeft: `4px solid ${getResponsibilityColor(result.responsibility)}`
+                borderLeft: `4px solid ${getVerdictColor(result.verdict)}`
               }}>
-                <div className="judgment-label">责任方判定</div>
+                <div className="judgment-label">AI 裁决</div>
                 <div className="judgment-value" style={{
-                  color: getResponsibilityColor(result.responsibility)
+                  color: getVerdictColor(result.verdict)
                 }}>
-                  {result.responsibility_text}
+                  {result.verdict_text}
                 </div>
+                {result.refund_amount !== undefined && result.refund_amount > 0 && (
+                  <div style={{
+                    marginTop: '0.5rem',
+                    fontSize: '1.2rem',
+                    fontWeight: 600,
+                    color: '#10b981'
+                  }}>
+                    退款金额: ${result.refund_amount.toFixed(2)} USDT
+                  </div>
+                )}
               </div>
 
-              {/* 处理方案 */}
-              <div className="resolution-box">
-                <div className="resolution-label">建议处理方案</div>
-                <div className="resolution-value">{result.resolution_text}</div>
-              </div>
+              {/* 信号准确性检查 */}
+              {result.signal_accuracy_check && (
+                <div className="accuracy-check-box" style={{
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  borderRadius: '8px',
+                  padding: '1rem',
+                  marginTop: '1rem'
+                }}>
+                  <h3 style={{ fontSize: '1rem', marginBottom: '0.75rem', color: '#3B82F6' }}>
+                    📊 信号准确性分析
+                  </h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.9rem' }}>
+                    <div>
+                      <div style={{ color: '#a1a1aa', marginBottom: '0.25rem' }}>预测值</div>
+                      <div style={{ fontWeight: 600, color: '#d4d4d8' }}>
+                        {result.signal_accuracy_check.predicted_value}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#a1a1aa', marginBottom: '0.25rem' }}>实际值</div>
+                      <div style={{ fontWeight: 600, color: '#d4d4d8' }}>
+                        {result.signal_accuracy_check.actual_value}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#a1a1aa', marginBottom: '0.25rem' }}>偏差百分比</div>
+                      <div style={{ 
+                        fontWeight: 600, 
+                        color: result.signal_accuracy_check.is_within_threshold ? '#10b981' : '#ef4444' 
+                      }}>
+                        {result.signal_accuracy_check.deviation_percentage.toFixed(2)}%
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#a1a1aa', marginBottom: '0.25rem' }}>是否在阈值内</div>
+                      <div style={{ 
+                        fontWeight: 600, 
+                        color: result.signal_accuracy_check.is_within_threshold ? '#10b981' : '#ef4444' 
+                      }}>
+                        {result.signal_accuracy_check.is_within_threshold ? '✅ 是（≤5%）' : '❌ 否（>5%）'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* 置信度 */}
               <div className="confidence-box">
-                <div className="confidence-label">置信度评分</div>
+                <div className="confidence-label">AI 置信度评分</div>
                 <div className="confidence-bar-container">
                   <div
                     className="confidence-bar"
@@ -360,33 +685,14 @@ export const DisputeArbitration = () => {
                 </div>
               </div>
 
-              {/* 详细理由 */}
+              {/* 详细分析 */}
               <div className="reasons-section">
-                <h3 className="reasons-title">📝 详细理由</h3>
+                <h3 className="reasons-title">📝 详细分析</h3>
                 <ul className="reasons-list">
-                  {result.detailed_reasons.map((reason, index) => (
+                  {result.detailed_analysis.map((reason, index) => (
                     <li key={index} className="reason-item">{reason}</li>
                   ))}
                 </ul>
-              </div>
-
-              {/* 证据汇总 */}
-              <div className="evidence-summary">
-                <h3 className="summary-title">📊 证据汇总</h3>
-                <div className="summary-grid">
-                  <div className="summary-item">
-                    <span className="summary-label">买家证据:</span>
-                    <span className="summary-value">{result.evidence_summary.buyer_evidence_count} 项</span>
-                  </div>
-                  <div className="summary-item">
-                    <span className="summary-label">卖家证据:</span>
-                    <span className="summary-value">{result.evidence_summary.seller_evidence_count} 项</span>
-                  </div>
-                  <div className="summary-item">
-                    <span className="summary-label">聊天记录:</span>
-                    <span className="summary-value">{result.evidence_summary.chat_messages_count} 条</span>
-                  </div>
-                </div>
               </div>
 
               {/* 操作建议 */}
@@ -398,9 +704,190 @@ export const DisputeArbitration = () => {
                   ))}
                 </ul>
               </div>
+
+              {/* 人工复审选项 */}
+              <div style={{
+                marginTop: '1.5rem',
+                padding: '1rem',
+                background: result.human_review_suggested 
+                  ? 'rgba(245, 158, 11, 0.1)' 
+                  : 'rgba(107, 114, 128, 0.1)',
+                border: `1px solid ${result.human_review_suggested ? 'rgba(245, 158, 11, 0.3)' : 'rgba(107, 114, 128, 0.3)'}`,
+                borderRadius: '8px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  marginBottom: '0.75rem',
+                  color: result.human_review_suggested ? '#f59e0b' : '#a1a1aa'
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>👨‍💼</span>
+                  <h3 style={{ fontSize: '1rem', margin: 0 }}>申请人工客服介入</h3>
+                </div>
+                {result.human_review_suggested ? (
+                  <p style={{ color: '#d4d4d8', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                    ⚠️ 此案件较为复杂，AI 建议申请人工客服介入以确保公正性
+                  </p>
+                ) : (
+                  <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                    如果您对 AI 仲裁结果不满意，可以申请人工客服介入处理
+                  </p>
+                )}
+                {!humanReviewRequested ? (
+                  <button
+                    onClick={handleRequestHumanReview}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      background: result.human_review_suggested 
+                        ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                        : 'rgba(107, 114, 128, 0.2)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '0.95rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    {result.human_review_suggested ? '🚨 申请人工客服介入（推荐）' : '申请人工客服介入'}
+                  </button>
+                ) : (
+                  <div style={{
+                    padding: '0.75rem',
+                    background: 'rgba(16, 185, 129, 0.1)',
+                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    borderRadius: '8px',
+                    color: '#10b981',
+                    textAlign: 'center',
+                    fontSize: '0.9rem'
+                  }}>
+                    ✅ 人工客服申请已提交，客服人员将在 24 小时内处理
+                  </div>
+                )}
+              </div>
+
+              {/* 链上执行 */}
+              {result.refund_amount && result.refund_amount > 0 && (
+                <div style={{ marginTop: '1.5rem' }}>
+                  <button
+                    style={{
+                      width: '100%',
+                      padding: '1rem',
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '1rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    🔗 执行链上退款（${result.refund_amount.toFixed(2)} USDT）
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
+      </div>
+
+      {/* 仲裁流程说明 */}
+      <div style={{
+        marginTop: '3rem',
+        padding: '2rem',
+        background: 'rgba(24, 24, 27, 0.8)',
+        border: '1px solid rgba(255, 165, 0, 0.2)',
+        borderRadius: '16px'
+      }}>
+        <h2 style={{
+          fontSize: '1.5rem',
+          marginBottom: '1.5rem',
+          color: '#FFA500'
+        }}>
+          📖 智能仲裁流程说明
+        </h2>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '1.5rem'
+        }}>
+          <div>
+            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>1️⃣</div>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#d4d4d8' }}>
+              提交争议信息
+            </h3>
+            <p style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.6' }}>
+              从交易记录选择或手动填写争议详情，上传双方证据（信号数据、链上记录、截图等）
+            </p>
+          </div>
+          <div>
+            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>2️⃣</div>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#d4d4d8' }}>
+              本地 AI 模型分析
+            </h3>
+            <p style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.6' }}>
+              Ollama 本地模型分析信号偏差、验证链上数据、评估证据权重，给出仲裁建议
+            </p>
+          </div>
+          <div>
+            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>3️⃣</div>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#d4d4d8' }}>
+              AI 输出仲裁结果
+            </h3>
+            <p style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.6' }}>
+              AI 给出仲裁建议（全额退款/部分退款/驳回），并提供详细分析依据和置信度评分
+            </p>
+          </div>
+          <div>
+            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>4️⃣</div>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#d4d4d8' }}>
+              人工客服介入（可选）
+            </h3>
+            <p style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.6' }}>
+              如对 AI 仲裁结果不满意，可申请人工客服介入处理，24 小时内响应并给出最终裁决
+            </p>
+          </div>
+        </div>
+        
+        <div style={{
+          marginTop: '2rem',
+          padding: '1.5rem',
+          background: 'rgba(59, 130, 246, 0.1)',
+          border: '1px solid rgba(59, 130, 246, 0.3)',
+          borderRadius: '12px'
+        }}>
+          <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#3B82F6' }}>
+            💡 为什么选择智能仲裁？
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '1rem',
+            fontSize: '0.9rem',
+            color: '#d4d4d8'
+          }}>
+            <div>
+              <div style={{ marginBottom: '0.5rem' }}>⚡ <strong>快速响应</strong></div>
+              <div style={{ color: '#a1a1aa' }}>AI 分析秒级完成，无需等待人工排队</div>
+            </div>
+            <div>
+              <div style={{ marginBottom: '0.5rem' }}>🎯 <strong>客观公正</strong></div>
+              <div style={{ color: '#a1a1aa' }}>基于数据和规则，避免人为偏见</div>
+            </div>
+            <div>
+              <div style={{ marginBottom: '0.5rem' }}>📊 <strong>透明可追溯</strong></div>
+              <div style={{ color: '#a1a1aa' }}>完整分析过程和依据，链上存储不可篡改</div>
+            </div>
+            <div>
+              <div style={{ marginBottom: '0.5rem' }}>🔄 <strong>双重保障</strong></div>
+              <div style={{ color: '#a1a1aa' }}>AI 初审 + 人工复审，确保公正性</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

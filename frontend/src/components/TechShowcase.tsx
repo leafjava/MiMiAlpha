@@ -183,17 +183,17 @@ export function TechShowcase() {
                 marginBottom: '16px',
                 lineHeight: '1.6'
               }}>
-                订阅权通过 AINFT Nova 封装为 Access Token
+                量化模型通过 TRON 链上智能合约进行管理和交易
               </p>
               <div style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.8' }}>
                 <div style={{ marginBottom: '8px' }}>
-                  ✅ 资产代币化
+                  ✅ 模型代币化
                 </div>
                 <div style={{ marginBottom: '8px' }}>
-                  ✅ 官方认证
+                  ✅ 链上验证
                 </div>
                 <div style={{ marginBottom: '8px' }}>
-                  ✅ 生态流通
+                  ✅ 透明交易
                 </div>
                 <div>
                   ✅ 安全托管
@@ -403,7 +403,7 @@ export function TechShowcase() {
               <div className="feature">✅ 无需签名</div>
             </div>
             <div className="tier-example">
-              示例：租赁 ChatGPT ($0.5)
+              示例：购买单个信号 ($5)
             </div>
           </div>
 
@@ -419,7 +419,7 @@ export function TechShowcase() {
               <div className="feature">⚡ 快速确认</div>
             </div>
             <div className="tier-example">
-              示例：购买单个信号 ($50)
+              示例：购买多个信号 ($50)
             </div>
           </div>
 
@@ -435,7 +435,7 @@ export function TechShowcase() {
               <div className="feature">📊 详细审计</div>
             </div>
             <div className="tier-example">
-              示例：月度订阅 ($500)
+              示例：月度订阅模型 ($50)
             </div>
           </div>
 
@@ -451,7 +451,7 @@ export function TechShowcase() {
               <div className="feature">🛡️ 最高安全</div>
             </div>
             <div className="tier-example">
-              示例：年度订阅 ($5,000)
+              示例：年度订阅模型 ($500)
             </div>
           </div>
         </div>
@@ -459,9 +459,9 @@ export function TechShowcase() {
 
       {/* Privacy Gateway */}
       <section className="privacy-section">
-        <h2>🔒 隐私网关：密码永不泄露</h2>
+        <h2>🔒 支付安全网关：资金永不失控</h2>
         <p className="section-description">
-          API Proxy 模式确保账号主的密码和个人信息永远不会暴露给租户
+          Smart Facilitator 拦截所有支付请求，确保 AI Agent 的支付行为受到严格控制
         </p>
         
         <div className="privacy-comparison">
@@ -469,24 +469,19 @@ export function TechShowcase() {
             <h3>❌ 传统方式（不安全）</h3>
             <div className="flow-diagram">
               <div className="flow-step">
-                <div className="step-icon">👤</div>
-                <div className="step-label">账号主</div>
-              </div>
-              <div className="flow-arrow">密码 →</div>
-              <div className="flow-step">
-                <div className="step-icon">👨‍💻</div>
-                <div className="step-label">租户</div>
-              </div>
-              <div className="flow-arrow">直接调用 →</div>
-              <div className="flow-step">
                 <div className="step-icon">🤖</div>
-                <div className="step-label">OpenAI</div>
+                <div className="step-label">AI Agent</div>
+              </div>
+              <div className="flow-arrow">直接支付 →</div>
+              <div className="flow-step">
+                <div className="step-icon">💰</div>
+                <div className="step-label">量化模型</div>
               </div>
             </div>
             <div className="risks">
-              <div className="risk-item">❌ 密码泄露风险</div>
-              <div className="risk-item">❌ 租户可以修改密码</div>
-              <div className="risk-item">❌ 租户可以访问个人信息</div>
+              <div className="risk-item">❌ 无限额控制</div>
+              <div className="risk-item">❌ 可能被恶意定价欺诈</div>
+              <div className="risk-item">❌ 程序漏洞导致资金耗尽</div>
             </div>
           </div>
 
@@ -494,25 +489,25 @@ export function TechShowcase() {
             <h3>✅ MiMiAlpha 方式（安全）</h3>
             <div className="flow-diagram">
               <div className="flow-step">
-                <div className="step-icon">👤</div>
-                <div className="step-label">账号主</div>
+                <div className="step-icon">🤖</div>
+                <div className="step-label">AI Agent</div>
               </div>
-              <div className="flow-arrow">Session Token →</div>
+              <div className="flow-arrow">支付请求 →</div>
               <div className="flow-step highlight">
                 <div className="step-icon">🛡️</div>
                 <div className="step-label">Facilitator</div>
-                <div className="step-sublabel">(Privacy Gateway)</div>
+                <div className="step-sublabel">(Payment Gateway)</div>
               </div>
-              <div className="flow-arrow">过滤请求 →</div>
+              <div className="flow-arrow">验证通过 →</div>
               <div className="flow-step">
-                <div className="step-icon">🤖</div>
-                <div className="step-label">OpenAI</div>
+                <div className="step-icon">💰</div>
+                <div className="step-label">量化模型</div>
               </div>
             </div>
             <div className="benefits">
-              <div className="benefit-item">✅ 密码永不泄露</div>
-              <div className="benefit-item">✅ 租户无法修改账号</div>
-              <div className="benefit-item">✅ 自动过滤敏感请求</div>
+              <div className="benefit-item">✅ 限额保护（$10/次，$100/月）</div>
+              <div className="benefit-item">✅ 价格仲裁（偏差&gt;30%熔断）</div>
+              <div className="benefit-item">✅ 黑白名单过滤</div>
             </div>
           </div>
         </div>
@@ -585,43 +580,24 @@ export function TechShowcase() {
 
       {/* Business Positioning */}
       <section className="positioning-section">
-        <h2>🎯 商业定位：降维打击</h2>
+        <h2>🎯 商业定位：智能互联网的财务治理层</h2>
         
         <div className="positioning-grid">
-          <div className="positioning-card engine-a">
-            <div className="card-icon">🔄</div>
-            <h3>引擎 A：闲置订阅权 RWA 化</h3>
-            <blockquote>
-              "基于 AINFT Nova 将订阅权封装为 Access Token，是该框架在订阅权管理领域的首个落地治理层"
-            </blockquote>
-            <div className="positioning-details">
-              <div className="detail-item">
-                <strong>技术融合:</strong> 采购/销售 Agent 基于 AINFT MAS 框架构建
-              </div>
-              <div className="detail-item">
-                <strong>商业融合:</strong> 通过 AINFT Nova 将订阅权代币化为 Access Token
-              </div>
-              <div className="detail-item">
-                <strong>价值:</strong> 不再只是租号，而是闲置订阅权的 RWA Token 交易所
-              </div>
-            </div>
-          </div>
-
-          <div className="positioning-card engine-b">
+          <div className="positioning-card engine-b" style={{ gridColumn: '1 / -1', maxWidth: '800px', margin: '0 auto' }}>
             <div className="card-icon">🧠</div>
-            <h3>引擎 B：智能互联网时代的透明金融</h3>
+            <h3>量化信号市场：透明的智能金融</h3>
             <blockquote>
               "响应 TRON 2025 战略升级，解决智能互联网时代最核心的矛盾：AI Agent 自主决策的高频性与人类资产安全的确定性之间的平衡"
             </blockquote>
             <div className="positioning-details">
               <div className="detail-item">
+                <strong>技术融合:</strong> 基于 AINFT MAS 框架构建量化 Agent
+              </div>
+              <div className="detail-item">
                 <strong>叙事融合:</strong> 从价值互联网到智能互联网的关键治理层
               </div>
               <div className="detail-item">
-                <strong>解决:</strong> Smart Facilitator 监控 AINFT Token 的财务安全
-              </div>
-              <div className="detail-item">
-                <strong>价值:</strong> 链上 Track Record + 质押机制，建立信任
+                <strong>核心价值:</strong> Smart Facilitator 监控支付安全，链上 Track Record 建立信任
               </div>
             </div>
           </div>

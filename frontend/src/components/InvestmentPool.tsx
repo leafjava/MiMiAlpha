@@ -110,8 +110,8 @@ export function InvestmentPool() {
             </p>
             <div className="vision-badges">
               <span className="vision-badge">🤝 AINFT MAS Framework</span>
-              <span className="vision-badge">💎 AINFT Nova 资产化</span>
               <span className="vision-badge">🔒 Smart Facilitator 治理</span>
+              <span className="vision-badge">📊 量化信号市场</span>
             </div>
           </div>
         </div>
@@ -157,9 +157,9 @@ export function InvestmentPool() {
         <h2>💵 月度收益来源</h2>
         <div className="revenue-grid">
           <div className="revenue-card">
-            <div className="revenue-icon">🔄</div>
+            <div className="revenue-icon">📊</div>
             <div className="revenue-info">
-              <div className="revenue-label">批发零售套利</div>
+              <div className="revenue-label">量化信号交易</div>
               <div className="revenue-amount">
                 ${overview.monthly_revenue.trading_profit.toLocaleString()}
               </div>
@@ -170,9 +170,9 @@ export function InvestmentPool() {
           </div>
 
           <div className="revenue-card">
-            <div className="revenue-icon">⏰</div>
+            <div className="revenue-icon">🔒</div>
             <div className="revenue-info">
-              <div className="revenue-label">分时租赁收入</div>
+              <div className="revenue-label">模型订阅收入</div>
               <div className="revenue-amount">
                 ${overview.monthly_revenue.rental_income.toLocaleString()}
               </div>
@@ -222,19 +222,34 @@ export function InvestmentPool() {
       <div className="assets-section">
         <h2>📦 资产组成</h2>
         <div className="assets-list">
-          {assets.map((asset, index) => (
-            <div key={index} className="asset-item">
-              <div className="asset-icon">{asset.icon}</div>
-              <div className="asset-info">
-                <div className="asset-name">{asset.name}</div>
-                <div className="asset-quantity">{asset.quantity} 件</div>
+          {assets.map((asset, index) => {
+            // 映射资产名称和图标
+            const assetMapping: { [key: string]: { name: string; icon: string } } = {
+              'ChatGPT Plus': { name: '黄金价格预测模型', icon: '🥇' },
+              'Claude Pro': { name: 'BTC 趋势预测模型', icon: '₿' },
+              'VPN Premium': { name: '美股指数预测模型', icon: '📈' },
+              'Steam 礼品卡': { name: '外汇波动预测模型', icon: '💱' },
+              'Netflix 4K': { name: '商品期货预测模型', icon: '📊' },
+              'Spotify Premium': { name: '加密货币预测模型', icon: '🪙' },
+              '瑜伽馆会员': { name: '量化策略组合', icon: '🎯' }
+            };
+
+            const mappedAsset = assetMapping[asset.name] || { name: asset.name, icon: asset.icon };
+
+            return (
+              <div key={index} className="asset-item">
+                <div className="asset-icon">{mappedAsset.icon}</div>
+                <div className="asset-info">
+                  <div className="asset-name">{mappedAsset.name}</div>
+                  <div className="asset-quantity">{asset.quantity} 个模型</div>
+                </div>
+                <div className="asset-value">
+                  <div className="asset-total">${asset.total_value.toLocaleString()}</div>
+                  <div className="asset-percentage">{asset.percentage.toFixed(1)}%</div>
+                </div>
               </div>
-              <div className="asset-value">
-                <div className="asset-total">${asset.total_value.toLocaleString()}</div>
-                <div className="asset-percentage">{asset.percentage.toFixed(1)}%</div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
