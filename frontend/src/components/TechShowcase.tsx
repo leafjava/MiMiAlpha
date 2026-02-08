@@ -7,10 +7,309 @@ export function TechShowcase() {
     <div className="tech-showcase">
       {/* Hero Section */}
       <section className="showcase-hero">
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 16px',
+          background: 'rgba(255, 165, 0, 0.1)',
+          border: '1px solid rgba(255, 165, 0, 0.3)',
+          borderRadius: '20px',
+          marginBottom: '20px',
+          fontSize: '14px',
+          color: '#FFA500'
+        }}>
+          <span>🤝</span>
+          <span>基于 AINFT 官方基础设施</span>
+        </div>
         <h1>🔬 技术展示：可视化的 Alpha</h1>
         <p className="hero-subtitle">
           直观的数据证明 · 实时的治理监控 · 不可篡改的业绩追溯
         </p>
+      </section>
+
+      {/* AINFT Integration Section */}
+      <section style={{
+        padding: '60px 20px',
+        background: 'linear-gradient(180deg, rgba(24, 24, 27, 0) 0%, rgba(255, 165, 0, 0.05) 100%)',
+        borderTop: '1px solid rgba(255, 165, 0, 0.1)',
+        borderBottom: '1px solid rgba(255, 165, 0, 0.1)'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: '2rem',
+            fontWeight: 700,
+            textAlign: 'center',
+            marginBottom: '1rem',
+            background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            🤝 基于 AINFT 官方基础设施
+          </h2>
+          <p style={{
+            textAlign: 'center',
+            color: '#a1a1aa',
+            marginBottom: '3rem',
+            fontSize: '1.1rem'
+          }}>
+            我们的技术栈建立在 TRON 官方的 AI 基础设施之上
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '2rem'
+          }}>
+            {/* AINFT Agent Framework */}
+            <div style={{
+              background: 'rgba(24, 24, 27, 0.8)',
+              border: '1px solid rgba(255, 165, 0, 0.2)',
+              borderRadius: '16px',
+              padding: '24px',
+              transition: 'all 0.3s'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px'
+                }}>
+                  🤖
+                </div>
+                <div>
+                  <h3 style={{
+                    fontSize: '1.2rem',
+                    fontWeight: 600,
+                    color: '#FFA500',
+                    marginBottom: '4px'
+                  }}>
+                    AINFT Agent Framework
+                  </h3>
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#a1a1aa',
+                    padding: '2px 8px',
+                    background: 'rgba(255, 165, 0, 0.1)',
+                    borderRadius: '8px',
+                    display: 'inline-block'
+                  }}>
+                    官方 MAS 框架
+                  </div>
+                </div>
+              </div>
+              <p style={{
+                color: '#d4d4d8',
+                marginBottom: '16px',
+                lineHeight: '1.6'
+              }}>
+                我们的所有 AI Agent 都基于 AINFT 多智能体系统框架构建
+              </p>
+              <div style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 库存监控 Agent
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 动态定价 Agent
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 调度分配 Agent
+                </div>
+                <div>
+                  ✅ 客服 Agent
+                </div>
+              </div>
+            </div>
+
+            {/* AINFT Nova */}
+            <div style={{
+              background: 'rgba(24, 24, 27, 0.8)',
+              border: '1px solid rgba(255, 165, 0, 0.2)',
+              borderRadius: '16px',
+              padding: '24px',
+              transition: 'all 0.3s'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px'
+                }}>
+                  💎
+                </div>
+                <div>
+                  <h3 style={{
+                    fontSize: '1.2rem',
+                    fontWeight: 600,
+                    color: '#FFA500',
+                    marginBottom: '4px'
+                  }}>
+                    AINFT Nova
+                  </h3>
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#a1a1aa',
+                    padding: '2px 8px',
+                    background: 'rgba(255, 165, 0, 0.1)',
+                    borderRadius: '8px',
+                    display: 'inline-block'
+                  }}>
+                    官方资产化平台
+                  </div>
+                </div>
+              </div>
+              <p style={{
+                color: '#d4d4d8',
+                marginBottom: '16px',
+                lineHeight: '1.6'
+              }}>
+                订阅权通过 AINFT Nova 封装为 Access Token
+              </p>
+              <div style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 资产代币化
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 官方认证
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 生态流通
+                </div>
+                <div>
+                  ✅ 安全托管
+                </div>
+              </div>
+            </div>
+
+            {/* Smart Facilitator */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%)',
+              border: '2px solid rgba(255, 165, 0, 0.5)',
+              borderRadius: '16px',
+              padding: '24px',
+              transition: 'all 0.3s',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: '#FFA500',
+                color: '#000',
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: 600
+              }}>
+                ⭐ 我们的创新
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px'
+                }}>
+                  🛡️
+                </div>
+                <div>
+                  <h3 style={{
+                    fontSize: '1.2rem',
+                    fontWeight: 600,
+                    color: '#FFA500',
+                    marginBottom: '4px'
+                  }}>
+                    Smart Facilitator
+                  </h3>
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#a1a1aa',
+                    padding: '2px 8px',
+                    background: 'rgba(255, 165, 0, 0.2)',
+                    borderRadius: '8px',
+                    display: 'inline-block'
+                  }}>
+                    MiMiAlpha 核心创新
+                  </div>
+                </div>
+              </div>
+              <p style={{
+                color: '#d4d4d8',
+                marginBottom: '16px',
+                lineHeight: '1.6'
+              }}>
+                为 AINFT Agent 提供财务治理和风险控制
+              </p>
+              <div style={{ color: '#d4d4d8', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 多维支付策略
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 风险识别
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ 微支付聚合
+                </div>
+                <div>
+                  ✅ 语义化审计
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 生态定位说明 */}
+          <div style={{
+            marginTop: '3rem',
+            padding: '24px',
+            background: 'rgba(24, 24, 27, 0.8)',
+            border: '1px solid rgba(255, 165, 0, 0.3)',
+            borderRadius: '16px',
+            textAlign: 'center'
+          }}>
+            <p style={{
+              color: '#d4d4d8',
+              fontSize: '1.1rem',
+              lineHeight: '1.8',
+              maxWidth: '900px',
+              margin: '0 auto'
+            }}>
+              <strong style={{ color: '#FFA500' }}>AINFT</strong> 提供了 Agent 框架和资产化工具，
+              <strong style={{ color: '#FFA500' }}> MiMiAlpha</strong> 提供了财务治理和商业化场景。
+              <br />
+              我们是 <strong style={{ color: '#FFA500' }}>TRON AI 生态的关键拼图</strong>。
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Architecture Overview */}

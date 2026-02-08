@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { AppProvider } from './AppContext';
 import { ConnectWallet } from './components/ConnectWallet';
-import { TradeCreator } from './components/TradeCreator';
-import { TradeList } from './components/TradeList';
-import { Faucet } from './components/Faucet';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { PopupAssistant } from './components/PopupAssistant';
 import { LandingPage } from './components/LandingPage';
@@ -11,26 +8,31 @@ import { RiskAssessment } from './components/RiskAssessment';
 import { DisputeArbitration } from './components/DisputeArbitration';
 import { CreditScore } from './components/CreditScore';
 import { InvestmentPool } from './components/InvestmentPool';
-import { Marketplace } from './components/Marketplace';
 import { FacilitatorXHome } from './components/FacilitatorXHome';
 import { SubscriptionMarket } from './components/SubscriptionMarket';
 import { ModelMarket } from './components/ModelMarket';
 import { TechShowcase } from './components/TechShowcase';
-import { Logo } from './components/Logo';
-import { useTranslation } from 'react-i18next';
 import './index.css';
 
 type Page = 'home' | 'subscription' | 'model' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit';
 
 function AppContent() {
-  const { t } = useTranslation();
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
-  const [showLanding, setShowLanding] = useState(true);
+  const [showSplineLanding, setShowSplineLanding] = useState(true);
+  const [showMiMiAlphaHome, setShowMiMiAlphaHome] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>('home');
 
-  // Show FacilitatorX landing page first
-  if (showLanding) {
-    return <FacilitatorXHome onEnter={() => setShowLanding(false)} />;
+  // Show Spline 3D landing page first
+  if (showSplineLanding) {
+    return <LandingPage onEnter={() => {
+      setShowSplineLanding(false);
+      setShowMiMiAlphaHome(true);
+    }} />;
+  }
+
+  // Show MiMiAlpha home page after Spline
+  if (showMiMiAlphaHome) {
+    return <FacilitatorXHome onEnter={() => setShowMiMiAlphaHome(false)} />;
   }
 
   return (
@@ -59,7 +61,10 @@ function AppContent() {
             fontWeight: 700, 
             color: '#FFA500',
             cursor: 'pointer'
-          }} onClick={() => setShowLanding(true)}>
+          }} onClick={() => {
+            setShowSplineLanding(true);
+            setShowMiMiAlphaHome(false);
+          }}>
             🚀 MiMiAlpha
           </div>
           
@@ -224,7 +229,7 @@ function AppContent() {
       </nav>
 
       {/* 主内容区域 */}
-      <div style={{ paddingTop: '70px' }}>
+      <div style={{ paddingTop: '70px', minHeight: 'calc(100vh - 70px)' }}>
         {currentPage === 'home' && <InvestmentPool />}
         
         {currentPage === 'subscription' && <SubscriptionMarket />}
@@ -239,6 +244,134 @@ function AppContent() {
         
         {currentPage === 'credit' && <CreditScore />}
       </div>
+
+      {/* Footer - AINFT Ecosystem Badge */}
+      <footer style={{
+        background: 'rgba(24, 24, 27, 0.95)',
+        backdropFilter: 'blur(10px)',
+        borderTop: '1px solid rgba(255, 165, 0, 0.2)',
+        padding: '32px 20px',
+        marginTop: '60px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px'
+        }}>
+          {/* Powered by AINFT */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            padding: '16px',
+            background: 'rgba(255, 165, 0, 0.05)',
+            border: '1px solid rgba(255, 165, 0, 0.2)',
+            borderRadius: '12px'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '20px'
+            }}>
+              🤝
+            </div>
+            <div>
+              <div style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#FFA500',
+                marginBottom: '4px'
+              }}>
+                Powered by AINFT Agent Framework & TRON Ecosystem
+              </div>
+              <div style={{
+                fontSize: '13px',
+                color: '#a1a1aa'
+              }}>
+                MiMiAlpha is built on AINFT MAS Framework and integrates with AINFT Nova for asset tokenization
+              </div>
+            </div>
+          </div>
+
+          {/* Ecosystem Links */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '32px',
+            flexWrap: 'wrap'
+          }}>
+            <a
+              href="https://ainft.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: '#a1a1aa',
+                textDecoration: 'none',
+                fontSize: '14px',
+                transition: 'color 0.3s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#FFA500'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#a1a1aa'}
+            >
+              AINFT Official →
+            </a>
+            <a
+              href="https://tron.network"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: '#a1a1aa',
+                textDecoration: 'none',
+                fontSize: '14px',
+                transition: 'color 0.3s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#FFA500'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#a1a1aa'}
+            >
+              TRON Network →
+            </a>
+            <a
+              href="https://developers.tron.network"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: '#a1a1aa',
+                textDecoration: 'none',
+                fontSize: '14px',
+                transition: 'color 0.3s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#FFA500'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#a1a1aa'}
+            >
+              TRON Developers →
+            </a>
+          </div>
+
+          {/* Copyright */}
+          <div style={{
+            textAlign: 'center',
+            color: '#71717a',
+            fontSize: '13px',
+            paddingTop: '16px',
+            borderTop: '1px solid rgba(255, 165, 0, 0.1)'
+          }}>
+            <p style={{ margin: '0 0 8px 0' }}>
+              © 2026 MiMiAlpha. TRON AI 生态的财务治理层.
+            </p>
+            <p style={{ margin: 0, fontSize: '12px' }}>
+              官方提供基建，我们提供治理 · 智能互联网的最后一块拼图
+            </p>
+          </div>
+        </div>
+      </footer>
 
       {/* AI Assistant 弹窗 */}
       <PopupAssistant 

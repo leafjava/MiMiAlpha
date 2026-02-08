@@ -10,31 +10,344 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
 
   return (
     <div className="facilitatorx-home">
+      {/* AINFT Ecosystem Badge */}
+      <div style={{
+        position: 'fixed',
+        top: '80px',
+        right: '20px',
+        background: 'rgba(24, 24, 27, 0.95)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 165, 0, 0.3)',
+        borderRadius: '12px',
+        padding: '12px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        zIndex: 999,
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+      }}>
+        <div style={{
+          width: '32px',
+          height: '32px',
+          background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '18px'
+        }}>
+          🤝
+        </div>
+        <div style={{ fontSize: '12px', color: '#a1a1aa' }}>
+          <div style={{ fontWeight: 600, color: '#FFA500', marginBottom: '2px' }}>
+            Powered by AINFT
+          </div>
+          <div style={{ fontSize: '10px' }}>
+            TRON AI Ecosystem
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
+          {/* AINFT Ecosystem Tag */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            background: 'rgba(255, 165, 0, 0.1)',
+            border: '1px solid rgba(255, 165, 0, 0.3)',
+            borderRadius: '20px',
+            marginBottom: '20px',
+            fontSize: '14px',
+            color: '#FFA500'
+          }}>
+            <span>🤝</span>
+            <span>基于 AINFT 官方基础设施</span>
+          </div>
+
           <h1 className="hero-title">
             <span className="gradient-text">MiMiAlpha</span>
           </h1>
           <p className="hero-subtitle">
-            AI 数字资产交易所 · 双引擎驱动
+            TRON AI 生态的财务治理层 · 双引擎驱动
           </p>
           <p className="hero-description">
-            算力资产化 + 知识变现 · 基于 TRON 的 Smart Facilitator
+            官方提供基建，我们提供治理 · 智能互联网的最后一块拼图
           </p>
           
           <div className="hero-stats">
             <div className="stat-item">
-              <div className="stat-value">1000万+</div>
-              <div className="stat-label">潜在用户</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-value">$140M+</div>
-              <div className="stat-label">月浪费金额</div>
+              <div className="stat-value">$1.5T</div>
+              <div className="stat-label">智能互联网市场</div>
+              <div style={{ fontSize: '10px', color: '#a1a1aa', marginTop: '4px' }}>
+                AINFT 官方数据
+              </div>
             </div>
             <div className="stat-item">
               <div className="stat-value">200%</div>
               <div className="stat-label">符合挑战2</div>
+              <div style={{ fontSize: '10px', color: '#a1a1aa', marginTop: '4px' }}>
+                完美契合
+              </div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-value">最后拼图</div>
+              <div className="stat-label">生态定位</div>
+              <div style={{ fontSize: '10px', color: '#a1a1aa', marginTop: '4px' }}>
+                财务治理层
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AINFT Ecosystem Positioning */}
+      <section style={{
+        padding: '60px 20px',
+        background: 'linear-gradient(180deg, rgba(24, 24, 27, 0) 0%, rgba(255, 165, 0, 0.05) 100%)',
+        borderTop: '1px solid rgba(255, 165, 0, 0.1)',
+        borderBottom: '1px solid rgba(255, 165, 0, 0.1)'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: '2rem',
+            fontWeight: 700,
+            textAlign: 'center',
+            marginBottom: '1rem',
+            background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            🤝 MiMiAlpha 在 AINFT 生态中的定位
+          </h2>
+          <p style={{
+            textAlign: 'center',
+            color: '#a1a1aa',
+            marginBottom: '3rem',
+            fontSize: '1.1rem'
+          }}>
+            响应 TRON 2025 战略升级：从"价值互联网"到"智能互联网"
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem',
+            marginBottom: '3rem'
+          }}>
+            {/* 官方提供 */}
+            <div style={{
+              background: 'rgba(24, 24, 27, 0.8)',
+              border: '1px solid rgba(255, 165, 0, 0.2)',
+              borderRadius: '16px',
+              padding: '24px',
+              transition: 'all 0.3s'
+            }}>
+              <div style={{
+                fontSize: '2rem',
+                marginBottom: '12px'
+              }}>
+                🏗️
+              </div>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: 600,
+                marginBottom: '12px',
+                color: '#FFA500'
+              }}>
+                AINFT 官方提供
+              </h3>
+              <div style={{ color: '#d4d4d8', lineHeight: '1.8' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ <strong>AINFT Agent Framework</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    多智能体系统（MAS）框架
+                  </div>
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ <strong>AINFT Nova</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    AI Agent 资产化平台
+                  </div>
+                </div>
+                <div>
+                  ✅ <strong>$1.5T 智能互联网愿景</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    官方战略和市场规模
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 生态空白 */}
+            <div style={{
+              background: 'rgba(24, 24, 27, 0.8)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '16px',
+              padding: '24px',
+              transition: 'all 0.3s'
+            }}>
+              <div style={{
+                fontSize: '2rem',
+                marginBottom: '12px'
+              }}>
+                ⚠️
+              </div>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: 600,
+                marginBottom: '12px',
+                color: '#ef4444'
+              }}>
+                官方缺失
+              </h3>
+              <div style={{ color: '#d4d4d8', lineHeight: '1.8' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  ❌ <strong>AI Agent 财务治理</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    Agent 自主决策的安全管理
+                  </div>
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ❌ <strong>高频微支付安全</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    微支付聚合和风险控制
+                  </div>
+                </div>
+                <div>
+                  ❌ <strong>商业化落地场景</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    具体的应用和收益模式
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* MiMiAlpha 填补 */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%)',
+              border: '2px solid rgba(255, 165, 0, 0.5)',
+              borderRadius: '16px',
+              padding: '24px',
+              transition: 'all 0.3s',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: '#FFA500',
+                color: '#000',
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: 600
+              }}>
+                ⭐ 我们的创新
+              </div>
+              <div style={{
+                fontSize: '2rem',
+                marginBottom: '12px'
+              }}>
+                🛡️
+              </div>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: 600,
+                marginBottom: '12px',
+                color: '#FFA500'
+              }}>
+                MiMiAlpha 填补空白
+              </h3>
+              <div style={{ color: '#d4d4d8', lineHeight: '1.8' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ <strong>Smart Facilitator 治理层</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    多维支付策略和风险控制
+                  </div>
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  ✅ <strong>订阅权 RWA Token 交易所</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    基于 AINFT Nova 的资产化
+                  </div>
+                </div>
+                <div>
+                  ✅ <strong>双引擎商业化场景</strong>
+                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
+                    订阅共享 + 量化模型市场
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 核心矛盾 */}
+          <div style={{
+            background: 'rgba(24, 24, 27, 0.8)',
+            border: '1px solid rgba(255, 165, 0, 0.3)',
+            borderRadius: '16px',
+            padding: '32px',
+            textAlign: 'center'
+          }}>
+            <h3 style={{
+              fontSize: '1.5rem',
+              fontWeight: 600,
+              marginBottom: '16px',
+              color: '#FFA500'
+            }}>
+              🎯 解决智能互联网的核心矛盾
+            </h3>
+            <div style={{
+              fontSize: '1.2rem',
+              color: '#d4d4d8',
+              marginBottom: '16px',
+              lineHeight: '1.8'
+            }}>
+              <strong style={{ color: '#FFA500' }}>AI Agent 自主决策的高频性</strong>
+              <span style={{ margin: '0 16px', color: '#a1a1aa' }}>vs</span>
+              <strong style={{ color: '#FFA500' }}>人类资产安全的确定性</strong>
+            </div>
+            <p style={{
+              color: '#a1a1aa',
+              fontSize: '1rem',
+              maxWidth: '800px',
+              margin: '0 auto'
+            }}>
+              MiMiAlpha 的 Smart Facilitator 让 Agent 可以自主决策（高频微支付），
+              但受到多维治理策略的约束（资产安全）
+            </p>
+          </div>
+
+          {/* 核心金句 */}
+          <div style={{
+            marginTop: '3rem',
+            padding: '32px',
+            background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%)',
+            border: '2px solid rgba(255, 165, 0, 0.3)',
+            borderRadius: '16px',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '1.5rem',
+              fontWeight: 600,
+              color: '#FFA500',
+              marginBottom: '16px',
+              lineHeight: '1.6'
+            }}>
+              "官方提供了'车（Agent）'和'货（Tokenized Assets）'，<br />
+              我们提供了'交通规则和减震器（Smart Facilitator）'"
+            </div>
+            <div style={{
+              fontSize: '1.2rem',
+              color: '#d4d4d8',
+              fontWeight: 600
+            }}>
+              我们是 TRON AI 生态落地大规模商业化的最后一块拼图
             </div>
           </div>
         </div>

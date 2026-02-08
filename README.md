@@ -1,46 +1,164 @@
 # 🚀 MiMiAlpha: AI 数字资产交易所
 
-## 📌 项目定位
+## 🤝 基于 AINFT 官方基础设施
 
-**MiMiAlpha** 是基于 TRON 的 AI 数字资产交易所，通过 Smart Facilitator 中间件实现双引擎驱动：
+**MiMiAlpha 不是独立项目，而是 TRON AI 生态的关键组成部分。**
 
-### 引擎 A：C2C 闲置 AI 订阅共享（AI 版闲鱼）
-- 个人用户的闲置 ChatGPT、Claude、Midjourney 订阅
-- 高频微额交易（$0.1/次）
-- 微支付聚合，节省 98% Energy
+### 响应 TRON 2025 战略升级
+从"价值互联网"（Value Internet）转向"智能互联网"（Intelligent Internet）
 
-### 引擎 B：量化模型信号交易（AI 版彭博终端）
-- 高夏普比率量化模型信号
-- 低频高额交易（$500/信号）
-- 链上 Track Record，质押机制
+### 基于官方基础设施
+- **AINFT Agent Framework**：我们的 AI Agent 基于官方 MAS 框架构建
+- **AINFT Nova**：订阅权通过官方平台封装为 Access Token
+- **市场规模**：$1.5T 智能互联网市场（官方预测）
+
+### 生态定位
+```
+AINFT 官方：提供基础设施（Agent 框架 + 资产化平台）
+    ↓
+MiMiAlpha：提供财务治理层（Smart Facilitator）
+    ↓
+完整的 TRON AI 生态：安全、可信、可商业化
+```
+
+### 核心矛盾
+**AI Agent 自主决策的高频性 vs 人类资产安全的确定性**
+
+MiMiAlpha 的 Smart Facilitator 解决这个矛盾：
+- Agent 可以自主决策（高频微支付）
+- 但受到多维治理策略的约束（资产安全）
+
+> **"官方提供了'车（Agent）'和'货（Tokenized Assets）'，我们提供了'交通规则和减震器（Smart Facilitator）'。我们是 TRON AI 生态落地大规模商业化的最后一块拼图。"**
 
 ---
 
-## 🎯 核心价值
+## 📌 项目定位
 
-### 算力资产化
-- 1000 万+ ChatGPT Plus 用户
-- 70-90% 闲置率
-- $140M+/月 浪费
+**MiMiAlpha** 不是一个简单的 C2C 共享平台，而是**数字订阅的 Uniswap** —— 全球首个订阅资产流动性协议。
+
+### 🎯 核心理念
+
+**重新定义数字资产**：订阅不是消费品，是可流动的时间资产
+- 全球订阅经济：$1.5 万亿
+- 平均利用率：<40%
+- 闲置价值：**$9000 亿美元**
+
+**挑战平台垄断**：用区块链打破中心化平台的信任壁垒
+- 智能合约托管 → 代码即信任
+- 链上信誉系统 → 不可篡改
+- 去中心化仲裁 → 社区治理
+
+**创造新市场**：从 AI 订阅到所有数字服务
+- 今天：VPN、AI 会员
+- 明天：SaaS 软件、流媒体
+- 未来：任何基于时间的数字服务
+
+### 🚀 双引擎驱动
+
+#### 引擎 A：订阅资产共享（微小交易）
+- 闲置 ChatGPT、Claude、Midjourney 订阅
+- 高频微额交易（$0.1/次）
+- 微支付聚合，节省 98% Energy
 - **让闲置算力变成收益**
 
-### 知识变现
-- 量化模型开发者有技术但缺资金
-- 机构有资金但缺优质信号
-- **链上业绩追溯，建立信任**
+#### 引擎 B：量化模型信号（超额收益）
+- 高夏普比率量化模型信号
+- 低频高额交易（$500/信号）
+- 链上 Track Record，质押机制
+- **让知识变现**
+
+**MiMiAlpha = 微小交易（MiMi）+ 超额收益（Alpha）**
+
+---
+
+## 💡 为什么是 MiMiAlpha？
+
+### 市场机会：$9000 亿美元
+
+```
+全球订阅经济：$1.5T
+├─ SaaS 软件：$500B
+├─ 流媒体：$300B
+├─ AI 服务：$200B
+├─ VPN/工具：$100B
+└─ 其他：$400B
+
+平均利用率：40%
+闲置价值：$1.5T × 60% = $900B
+
+MiMiAlpha 目标市场：$900B
+```
+
+### 对标分析
+
+| 维度 | Airbnb | Uber | MiMiAlpha |
+|------|--------|------|-----------|
+| 闲置资产 | 房产 | 车辆 | **订阅** |
+| 市场规模 | $100B | $150B | **$900B** |
+| 流动性 | 低 | 中 | **高** |
+| 边际成本 | 高 | 中 | **极低** |
+| 网络效应 | 强 | 强 | **极强** |
+
+**MiMiAlpha 的市场规模是 Airbnb 的 9 倍！**
+
+### 核心价值主张
+
+**对供给方（账号主）**：
+- 闲置资产变现
+- 自动化收益
+- 零风险（智能合约托管）
+
+**对需求方（租户）**：
+- 按需使用，降低成本
+- 安全可靠（链上信誉）
+- 全球无障碍访问
+
+**对平台**：
+- 手续费收入
+- 网络效应
+- 数据价值
 
 ---
 
 ## 📚 文档导航
 
-### 🚀 快速开始
-1. **[FACILITATORX_DUAL_ENGINE.md](./FACILITATORX_DUAL_ENGINE.md)** ⭐⭐⭐ 必读
+### 🌟 核心叙事（必读）
+1. **[VISION_NARRATIVE.md](./VISION_NARRATIVE.md)** ⭐⭐⭐⭐⭐ 强烈推荐
+   - 从 C2C 到"数字订阅的 Uniswap"
+   - 重新定义数字资产
+   - 挑战平台垄断
+   - 创造 $900B 新市场
+   - **阅读时间：15 分钟**
+
+2. **[MARKET_OPPORTUNITY.md](./MARKET_OPPORTUNITY.md)** ⭐⭐⭐⭐⭐
+   - 全球订阅经济分析
+   - TAM/SAM/SOM 计算
+   - 竞争分析
+   - 收入模型
+   - **阅读时间：20 分钟**
+
+3. **[FUTURE_ROADMAP.md](./FUTURE_ROADMAP.md)** ⭐⭐⭐⭐⭐
+   - 从 C2C 到基础设施的演进
+   - 订阅 NFT 化
+   - 动态定价协议
+   - 服务商合作
+   - **阅读时间：25 分钟**
+
+4. **[PITCH_DECK_SCRIPT.md](./PITCH_DECK_SCRIPT.md)** ⭐⭐⭐⭐⭐
+   - 5 分钟演讲稿
+   - 应对评委质疑
+   - PPT 大纲
+   - 演讲技巧
+   - **阅读时间：30 分钟**
+
+### 🚀 技术文档
+5. **[FACILITATORX_DUAL_ENGINE.md](./FACILITATORX_DUAL_ENGINE.md)** ⭐⭐⭐
    - 双引擎业务模式
    - 技术架构
    - 核心创新点
    - **阅读时间：30 分钟**
 
-2. **[FACILITATORX_IMPLEMENTATION_GUIDE.md](./FACILITATORX_IMPLEMENTATION_GUIDE.md)**
+6. **[FACILITATORX_IMPLEMENTATION_GUIDE.md](./FACILITATORX_IMPLEMENTATION_GUIDE.md)**
    - 实施路线图
    - 核心代码示例
    - Demo 演示脚本
