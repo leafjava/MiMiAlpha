@@ -34,7 +34,13 @@ function AppContent() {
 
   // Show MiMiAlpha home page after Spline
   if (showMiMiAlphaHome) {
-    return <FacilitatorXHome onEnter={() => setShowMiMiAlphaHome(false)} />;
+    return <FacilitatorXHome 
+      onEnter={() => setShowMiMiAlphaHome(false)} 
+      onNavigate={(page) => {
+        setShowMiMiAlphaHome(false);
+        setCurrentPage(page);
+      }}
+    />;
   }
 
   return (

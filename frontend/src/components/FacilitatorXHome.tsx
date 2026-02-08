@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import './FacilitatorXHome.css';
 
+type PageType = 'subscription' | 'model' | 'tech' | 'risk' | 'dispute' | 'agent';
+
 interface FacilitatorXHomeProps {
   onEnter?: () => void;
+  onNavigate?: (page: PageType) => void;
 }
 
-export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
+export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps) {
   const [hoveredEngine, setHoveredEngine] = useState<'A' | 'B' | null>(null);
 
   return (
@@ -403,7 +406,13 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
               </div>
             </div>
             
-            <button className="engine-button" onClick={onEnter}>
+            <button className="engine-button" onClick={() => {
+              if (onNavigate) {
+                onNavigate('subscription');
+              } else if (onEnter) {
+                onEnter();
+              }
+            }}>
               进入订阅市场 →
             </button>
           </div>
@@ -452,7 +461,13 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
               </div>
             </div>
             
-            <button className="engine-button" onClick={onEnter}>
+            <button className="engine-button" onClick={() => {
+              if (onNavigate) {
+                onNavigate('model');
+              } else if (onEnter) {
+                onEnter();
+              }
+            }}>
               进入模型市场 →
             </button>
           </div>
@@ -465,28 +480,60 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
         <p className="section-subtitle">完美契合 TRON 挑战2，实现三大核心功能</p>
         
         <div className="facilitator-grid">
-          <div className="facilitator-card">
+          <div 
+            className="facilitator-card"
+            onClick={() => {
+              if (onNavigate) {
+                onNavigate('risk');
+              }
+            }}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="facilitator-icon">🔐</div>
             <h3>x402 支付拦截与治理</h3>
             <p>拦截所有 x402 支付请求</p>
             <p>限额/配额/黑白名单验证</p>
           </div>
           
-          <div className="facilitator-card">
+          <div 
+            className="facilitator-card"
+            onClick={() => {
+              if (onNavigate) {
+                onNavigate('tech');
+              }
+            }}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="facilitator-icon">⚡</div>
             <h3>x402 微支付聚合</h3>
             <p>50 笔聚合为 1 笔链上交易</p>
             <p>节省 98% Energy 消耗</p>
           </div>
           
-          <div className="facilitator-card">
+          <div 
+            className="facilitator-card"
+            onClick={() => {
+              if (onNavigate) {
+                onNavigate('agent');
+              }
+            }}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="facilitator-icon">📝</div>
             <h3>x402 语义化审计</h3>
             <p>原始 Hex → 人类可读报告</p>
             <p>"Agent_A 调用 DeepL，支付 0.5 USDD"</p>
           </div>
           
-          <div className="facilitator-card">
+          <div 
+            className="facilitator-card"
+            onClick={() => {
+              if (onNavigate) {
+                onNavigate('dispute');
+              }
+            }}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="facilitator-icon">🛡️</div>
             <h3>动态定价仲裁</h3>
             <p>对比 x402 服务市场均价</p>
