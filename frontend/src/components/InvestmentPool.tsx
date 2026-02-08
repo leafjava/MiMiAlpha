@@ -225,8 +225,6 @@ export function InvestmentPool() {
           {assets.map((asset, index) => {
             // 映射资产名称和图标
             const assetMapping: { [key: string]: { name: string; icon: string } } = {
-              'ChatGPT Plus': { name: '黄金价格预测模型', icon: '🥇' },
-              'Claude Pro': { name: 'BTC 趋势预测模型', icon: '₿' },
               'VPN Premium': { name: '美股指数预测模型', icon: '📈' },
               'Steam 礼品卡': { name: '外汇波动预测模型', icon: '💱' },
               'Netflix 4K': { name: '商品期货预测模型', icon: '📊' },

@@ -63,12 +63,6 @@ export function AuditStream() {
         details: '触发多签验证，等待用户确认'
       },
       {
-        type: 'verify',
-        category: 'subscription',
-        message: '账号健康检查：Claude Pro',
-        details: '剩余额度 85%，状态正常'
-      },
-      {
         type: 'intercept',
         category: 'model',
         message: '拦截低置信度信号：置信度 58%',

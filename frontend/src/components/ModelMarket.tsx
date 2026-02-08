@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import './ModelMarket.css';
 import { useContract } from '../hooks/useContract';
 import { useSmartFacilitator } from '../hooks/useSmartFacilitator';
-import { useBalance } from 'wagmi';
 
 interface Model {
   id: string;
@@ -35,7 +34,7 @@ interface TronStats {
   energyPrice: number;
 }
 
-const mockModels: Model[] = [
+const initialMockModels: Model[] = [
   {
     id: '1',
     name: '黄金价格预测模型',
@@ -104,10 +103,24 @@ export function ModelMarket() {
 
   // 使用订阅市场相同的 hooks
   const { account, connectWallet, isConnected } = useContract();
-  const { executePayment, loading: facilitatorLoading, isSuccess: facilitatorSuccess, hash: facilitatorHash } = useSmartFacilitator();
+  const { executePayment } = useSmartFacilitator();
   
   // 获取 TRX 余额
   const [trxBalance, setTrxBalance] = useState<number>(0);
+
+  // 模型列表状态（可动态添加）
+  const [models, setModels] = useState<Model[]>(initialMockModels);
+
+  // 发布模型表单状态
+  const [publishForm, setPublishForm] = useState({
+    name: '',
+    type: 'gold' as 'gold' | 'crypto' | 'stock' | 'forex',
+    description: '',
+    pricePerSignal: '',
+    monthlySubscription: '',
+    stakeAmount: '',
+  });
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // 获取 TRX 余额
   useEffect(() => {
@@ -211,8 +224,8 @@ export function ModelMarket() {
   }, []);
 
   const filteredModels = filterType === 'all' 
-    ? mockModels 
-    : mockModels.filter(m => m.type === filterType);
+    ? models 
+    : models.filter(m => m.type === filterType);
 
   const getTypeIcon = (type: string) => {
     switch(type) {
@@ -393,6 +406,132 @@ export function ModelMarket() {
     }
   }, [isConnected, account]);
 
+  // 处理发布表单输入
+  const handlePublishFormChange = (field: string, value: string) => {
+    setPublishForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // 发布模型并质押
+  const handlePublishModel = async () => {
+    // 检查钱包连接
+    if (!isConnected || !window.tronWeb || !window.tronWeb.ready) {
+      alert('❌ 请先连接 TronLink 钱包');
+      try {
+        await connectWallet();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } catch (error) {
+        return;
+      }
+    }
+
+    // 表单验证
+    if (!publishForm.name.trim()) {
+      alert('❌ 请输入模型名称');
+      return;
+    }
+    if (!publishForm.description.trim()) {
+      alert('❌ 请输入模型描述');
+      return;
+    }
+    if (!publishForm.pricePerSignal || parseFloat(publishForm.pricePerSignal) <= 0) {
+      alert('❌ 请输入有效的单次信号价格');
+      return;
+    }
+    if (!publishForm.monthlySubscription || parseFloat(publishForm.monthlySubscription) <= 0) {
+      alert('❌ 请输入有效的月度订阅价格');
+      return;
+    }
+    if (!publishForm.stakeAmount || parseFloat(publishForm.stakeAmount) < 10) {
+      alert('❌ 质押金额最低 10 TRX');
+      return;
+    }
+
+    // 检查余额
+    const totalRequired = parseFloat(publishForm.stakeAmount);
+    if (trxBalance < totalRequired) {
+      alert(`❌ TRX 余额不足\n\n当前余额: ${trxBalance.toFixed(4)} TRX\n需要质押: ${totalRequired} TRX`);
+      return;
+    }
+
+    // 获取当前地址
+    const currentAddress = window.tronWeb.defaultAddress?.base58;
+    if (!currentAddress) {
+      alert('❌ 无法获取钱包地址，请确保 TronLink 已解锁');
+      return;
+    }
+
+    setIsPublishing(true);
+
+    try {
+      console.log('📤 发布模型:', {
+        name: publishForm.name,
+        type: publishForm.type,
+        pricePerSignal: publishForm.pricePerSignal,
+        monthlySubscription: publishForm.monthlySubscription,
+        stakeAmount: publishForm.stakeAmount,
+        provider: currentAddress
+      });
+
+      // 质押 TRX 到合约地址
+      const contractAddress = 'TTn6Y1UwTbqQGXmwZJPqXNi1x5BpdqHtFN';
+      
+      const txHash = await executePayment(
+        currentAddress,
+        contractAddress,
+        publishForm.stakeAmount,
+        `Stake for model: ${publishForm.name}`
+      );
+
+      console.log('✅ 模型发布成功，交易哈希:', txHash);
+      
+      // 创建新模型对象
+      const newModel: Model = {
+        id: `model-${Date.now()}`,
+        name: publishForm.name,
+        provider: currentAddress,
+        description: publishForm.description,
+        type: publishForm.type,
+        sharpeRatio: 0, // 新模型暂无数据
+        accuracy: 0,
+        totalSignals: 0,
+        pricePerSignal: parseFloat(publishForm.pricePerSignal),
+        monthlySubscription: parseFloat(publishForm.monthlySubscription),
+        stakedAmount: parseFloat(publishForm.stakeAmount),
+        avgConfidence: 0,
+        contractAddress: contractAddress,
+        recentSignals: []
+      };
+
+      // 添加到模型列表（显示在最前面）
+      setModels(prevModels => [newModel, ...prevModels]);
+      
+      alert(`✅ 模型发布成功！\n\n模型名称：${publishForm.name}\n质押金额：${publishForm.stakeAmount} TRX\n交易哈希：${txHash?.slice(0, 10)}...\n\n模型已上线，可在浏览标签中查看`);
+      
+      // 重置表单
+      setPublishForm({
+        name: '',
+        type: 'gold',
+        description: '',
+        pricePerSignal: '',
+        monthlySubscription: '',
+        stakeAmount: '',
+      });
+      
+      setIsPublishing(false);
+      
+      // 切换回浏览标签，展示新发布的模型
+      setActiveTab('browse');
+      
+    } catch (error: any) {
+      console.error('❌ 发布失败:', error);
+      alert(`❌ 发布失败\n\n${error.message || '未知错误'}`);
+      setIsPublishing(false);
+    }
+  };
+
   return (
     <div className="model-market">
       {/* TRON Network Stats Banner */}
@@ -550,6 +689,25 @@ export function ModelMarket() {
           <div className="model-grid">
             {filteredModels.map(model => (
               <div key={model.id} className="model-card">
+                {/* 新发布标记 */}
+                {model.id.startsWith('model-') && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    background: 'linear-gradient(135deg, #10B981, #059669)',
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: '12px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                    zIndex: 10
+                  }}>
+                    🎉 新发布
+                  </div>
+                )}
+                
                 <div className="model-card-header">
                   <div className="model-type-icon">{getTypeIcon(model.type)}</div>
                   <h3>{model.name}</h3>
@@ -636,15 +794,53 @@ export function ModelMarket() {
               将你的高夏普比率模型变现，通过链上业绩追溯建立信任
             </p>
 
+            {/* 钱包状态提示 */}
+            {isConnected && (
+              <div style={{
+                marginBottom: '1.5rem',
+                padding: '1rem',
+                background: 'rgba(16, 185, 129, 0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(16, 185, 129, 0.2)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem' }}>
+                      钱包地址
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: '#10B981', fontFamily: 'monospace' }}>
+                      {formatAddress(account)}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem' }}>
+                      可用余额
+                    </div>
+                    <div style={{ fontSize: '1.1rem', color: '#10B981', fontWeight: 600 }}>
+                      {trxBalance.toFixed(4)} TRX
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="publish-form">
               <div className="form-group">
                 <label>模型名称</label>
-                <input type="text" placeholder="例如：黄金价格预测模型" />
+                <input 
+                  type="text" 
+                  placeholder="例如：黄金价格预测模型"
+                  value={publishForm.name}
+                  onChange={(e) => handlePublishFormChange('name', e.target.value)}
+                />
               </div>
 
               <div className="form-group">
                 <label>模型类型</label>
-                <select>
+                <select
+                  value={publishForm.type}
+                  onChange={(e) => handlePublishFormChange('type', e.target.value)}
+                >
                   <option value="gold">🥇 黄金</option>
                   <option value="crypto">₿ 加密货币</option>
                   <option value="stock">📈 股票</option>
@@ -657,23 +853,46 @@ export function ModelMarket() {
                 <textarea 
                   rows={4} 
                   placeholder="描述你的模型策略、适用场景、历史表现等..."
+                  value={publishForm.description}
+                  onChange={(e) => handlePublishFormChange('description', e.target.value)}
                 />
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>单次信号价格 (USDT)</label>
-                  <input type="number" placeholder="500" />
+                  <label>单次信号价格 (TRX)</label>
+                  <input 
+                    type="number" 
+                    placeholder="1"
+                    value={publishForm.pricePerSignal}
+                    onChange={(e) => handlePublishFormChange('pricePerSignal', e.target.value)}
+                    min="0.1"
+                    step="0.1"
+                  />
                 </div>
                 <div className="form-group">
-                  <label>月度订阅价格 (USDT)</label>
-                  <input type="number" placeholder="5000" />
+                  <label>月度订阅价格 (TRX)</label>
+                  <input 
+                    type="number" 
+                    placeholder="10"
+                    value={publishForm.monthlySubscription}
+                    onChange={(e) => handlePublishFormChange('monthlySubscription', e.target.value)}
+                    min="1"
+                    step="1"
+                  />
                 </div>
               </div>
 
               <div className="form-group">
-                <label>质押金额 (USDT)</label>
-                <input type="number" placeholder="最低 10 USDT" />
+                <label>质押金额 (TRX)</label>
+                <input 
+                  type="number" 
+                  placeholder="最低 10 TRX"
+                  value={publishForm.stakeAmount}
+                  onChange={(e) => handlePublishFormChange('stakeAmount', e.target.value)}
+                  min="10"
+                  step="1"
+                />
                 <small className="form-hint">
                   质押金用于保证信号质量，如果连续出现错误信号将被罚没
                 </small>
@@ -682,7 +901,7 @@ export function ModelMarket() {
               <div className="stake-info">
                 <h3>💎 质押机制说明</h3>
                 <ul>
-                  <li>✓ 最低质押：10 USDT</li>
+                  <li>✓ 最低质押：10 TRX</li>
                   <li>✓ 信号准确率 &lt; 70%：罚没 10%</li>
                   <li>✓ 连续 3 次错误：自动退款订阅者 50%</li>
                   <li>✓ 质押金不足：模型自动暂停</li>
@@ -697,8 +916,12 @@ export function ModelMarket() {
                 </p>
               </div>
 
-              <button className="publish-btn">
-                发布模型并质押
+              <button 
+                className="publish-btn"
+                onClick={handlePublishModel}
+                disabled={isPublishing || !isConnected}
+              >
+                {isPublishing ? '发布中...' : isConnected ? '发布模型并质押' : '请先连接钱包'}
               </button>
             </div>
           </div>
