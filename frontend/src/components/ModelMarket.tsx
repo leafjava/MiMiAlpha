@@ -119,8 +119,8 @@ export function ModelMarket() {
 
     initWallet();
 
-    // 监听账户变化
-    if (window.tronLink) {
+    // 监听账户变化（如果 TronLink 支持）
+    if (window.tronLink && typeof window.tronLink.on === 'function') {
       window.tronLink.on('accountsChanged', () => {
         initWallet();
       });
