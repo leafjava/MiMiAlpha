@@ -15,9 +15,10 @@ import { ModelMarket } from './components/ModelMarket';
 import { ModelMarket2 } from './components/ModelMarket2';
 import { TechShowcase } from './components/TechShowcase';
 import { AgentManager } from './components/AgentManager';
+import { PitchDeck } from './components/PitchDeck';
 import './index.css';
 
-type Page = 'home' | 'subscription' | 'model' | 'model2' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit' | 'agent';
+type Page = 'home' | 'subscription' | 'model' | 'model2' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit' | 'agent' | 'pitch';
 
 function AppContent() {
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
@@ -157,6 +158,22 @@ function AppContent() {
             >
               ⚖️ 争议仲裁
             </button>
+            
+            <button
+              onClick={() => setCurrentPage('pitch')}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: currentPage === 'pitch' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'pitch' ? '#fff' : '#a1a1aa',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              📊 Pitch Deck
+            </button>
           </div>
         </div>
 
@@ -224,6 +241,8 @@ function AppContent() {
         {currentPage === 'credit' && <CreditScore />}
         
         {currentPage === 'agent' && <AgentManager />}
+        
+        {currentPage === 'pitch' && <PitchDeck />}
       </div>
 
       {/* Footer - AINFT Ecosystem Badge */}
