@@ -72,10 +72,10 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
             <span className="gradient-text">MiMiAlpha</span>
           </h1>
           <p className="hero-subtitle">
-            TRON AI 生态的财务治理层 · 双引擎驱动
+            AI Agent 与 x402 服务端之间的非侵入式中间件
           </p>
           <p className="hero-description">
-            官方提供基建，我们提供治理 · 智能互联网的最后一块拼图
+            拦截/审计/优化 x402 支付请求 · 让用户放心把钱包授权给 AI
           </p>
           
           <div className="hero-stats">
@@ -356,7 +356,7 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
       {/* Dual Engine Section */}
       <section className="dual-engine-section">
         <h2 className="section-title">双引擎驱动</h2>
-        <p className="section-subtitle">覆盖高频微额 + 低频高额，打造完整的 AI 资产交易生态</p>
+        <p className="section-subtitle">基于 AINFT Agent Framework 构建，打造完整的 AI 资产交易生态</p>
         
         <div className="engines-grid">
           {/* Engine A */}
@@ -368,15 +368,15 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
             <div className="engine-header">
               <div className="engine-icon">🔄</div>
               <h3 className="engine-title">引擎 A</h3>
-              <p className="engine-subtitle">C2C 闲置 AI 订阅共享</p>
+              <p className="engine-subtitle">基于 AINFT MAS 框架的订阅权管理</p>
             </div>
             
-            <div className="engine-badge">AI 版闲鱼</div>
+            <div className="engine-badge">闲置订阅权 RWA Token 交易所</div>
             
             <div className="engine-features">
               <div className="feature-item">
-                <span className="feature-icon">💰</span>
-                <span className="feature-text">高频微额交易（$0.1/次）</span>
+                <span className="feature-icon">🪙</span>
+                <span className="feature-text">通过 AINFT Nova 将订阅权封装为 Access Token</span>
               </div>
               <div className="feature-item">
                 <span className="feature-icon">⚡</span>
@@ -387,8 +387,8 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
                 <span className="feature-text">API Proxy 模式，密码不泄露</span>
               </div>
               <div className="feature-item">
-                <span className="feature-icon">📊</span>
-                <span className="feature-text">速率限制，保护账号安全</span>
+                <span className="feature-icon">🤖</span>
+                <span className="feature-text">采购/销售 Agent 基于 MAS 框架构建</span>
               </div>
             </div>
             
@@ -417,10 +417,10 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
             <div className="engine-header">
               <div className="engine-icon">📈</div>
               <h3 className="engine-title">引擎 B</h3>
-              <p className="engine-subtitle">量化模型信号交易</p>
+              <p className="engine-subtitle">基于 AINFT MAS 框架的量化信号治理</p>
             </div>
             
-            <div className="engine-badge">AI 版彭博终端</div>
+            <div className="engine-badge">智能互联网时代的透明金融</div>
             
             <div className="engine-features">
               <div className="feature-item">
@@ -461,36 +461,36 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
 
       {/* Smart Facilitator Section */}
       <section className="facilitator-section">
-        <h2 className="section-title">Smart Facilitator 双级风控</h2>
-        <p className="section-subtitle">完美契合 TRON 挑战2，200% 符合度</p>
+        <h2 className="section-title">Smart Facilitator：AI Agent 与 x402 之间的中间件</h2>
+        <p className="section-subtitle">完美契合 TRON 挑战2，实现三大核心功能</p>
         
         <div className="facilitator-grid">
           <div className="facilitator-card">
             <div className="facilitator-icon">🔐</div>
-            <h3>多维支付治理</h3>
-            <p>引擎 A：速率限制、账号保护</p>
-            <p>引擎 B：多签权限、大额风控</p>
+            <h3>x402 支付拦截与治理</h3>
+            <p>拦截所有 x402 支付请求</p>
+            <p>限额/配额/黑白名单验证</p>
           </div>
           
           <div className="facilitator-card">
             <div className="facilitator-icon">⚡</div>
-            <h3>高频微支付处理</h3>
-            <p>$0.1/次，聚合 50 笔</p>
-            <p>节省 98% Energy</p>
+            <h3>x402 微支付聚合</h3>
+            <p>50 笔聚合为 1 笔链上交易</p>
+            <p>节省 98% Energy 消耗</p>
           </div>
           
           <div className="facilitator-card">
             <div className="facilitator-icon">📝</div>
-            <h3>语义化审计流水</h3>
-            <p>"用户 A 的闲置算力被调用 5 次"</p>
-            <p>"模型产生金价信号，机构支付 $500"</p>
+            <h3>x402 语义化审计</h3>
+            <p>原始 Hex → 人类可读报告</p>
+            <p>"Agent_A 调用 DeepL，支付 0.5 USDD"</p>
           </div>
           
           <div className="facilitator-card">
             <div className="facilitator-icon">🛡️</div>
-            <h3>风险识别</h3>
-            <p>速率限制、异常检测</p>
-            <p>定价拦截、自动仲裁</p>
+            <h3>动态定价仲裁</h3>
+            <p>对比 x402 服务市场均价</p>
+            <p>偏差 &gt;30% 自动熔断</p>
           </div>
         </div>
       </section>

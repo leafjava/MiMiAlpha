@@ -590,38 +590,38 @@ export function TechShowcase() {
         <div className="positioning-grid">
           <div className="positioning-card engine-a">
             <div className="card-icon">🔄</div>
-            <h3>引擎 A：金融平权</h3>
+            <h3>引擎 A：闲置订阅权 RWA 化</h3>
             <blockquote>
-              "让没钱订阅昂贵工具的开发者也能用上顶尖 AI"
+              "基于 AINFT Nova 将订阅权封装为 Access Token，是该框架在订阅权管理领域的首个落地治理层"
             </blockquote>
             <div className="positioning-details">
               <div className="detail-item">
-                <strong>痛点:</strong> ChatGPT Plus $20/月，很多人用不起
+                <strong>技术融合:</strong> 采购/销售 Agent 基于 AINFT MAS 框架构建
               </div>
               <div className="detail-item">
-                <strong>解决:</strong> 按需付费 $0.5/次，降低 95% 门槛
+                <strong>商业融合:</strong> 通过 AINFT Nova 将订阅权代币化为 Access Token
               </div>
               <div className="detail-item">
-                <strong>价值:</strong> 普惠 AI，让技术触手可及
+                <strong>价值:</strong> 不再只是租号，而是闲置订阅权的 RWA Token 交易所
               </div>
             </div>
           </div>
 
           <div className="positioning-card engine-b">
             <div className="card-icon">🧠</div>
-            <h3>引擎 B：透明金融</h3>
+            <h3>引擎 B：智能互联网时代的透明金融</h3>
             <blockquote>
-              "消灭量化交易中'黑盒模型'的欺诈，用波场链上业绩作为唯一的信用背书"
+              "响应 TRON 2025 战略升级，解决智能互联网时代最核心的矛盾：AI Agent 自主决策的高频性与人类资产安全的确定性之间的平衡"
             </blockquote>
             <div className="positioning-details">
               <div className="detail-item">
-                <strong>痛点:</strong> 量化模型业绩可以造假
+                <strong>叙事融合:</strong> 从价值互联网到智能互联网的关键治理层
               </div>
               <div className="detail-item">
-                <strong>解决:</strong> 链上 Track Record，不可篡改
+                <strong>解决:</strong> Smart Facilitator 监控 AINFT Token 的财务安全
               </div>
               <div className="detail-item">
-                <strong>价值:</strong> 建立信任，让知识变现
+                <strong>价值:</strong> 链上 Track Record + 质押机制，建立信任
               </div>
             </div>
           </div>
