@@ -14,7 +14,7 @@ export function FacilitatorXHome({ onEnter }: FacilitatorXHomeProps) {
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">
-            <span className="gradient-text">FacilitatorX</span>
+            <span className="gradient-text">MiMiAlpha</span>
           </h1>
           <p className="hero-subtitle">
             AI 数字资产交易所 · 双引擎驱动

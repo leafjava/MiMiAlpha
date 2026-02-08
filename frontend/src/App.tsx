@@ -15,11 +15,12 @@ import { Marketplace } from './components/Marketplace';
 import { FacilitatorXHome } from './components/FacilitatorXHome';
 import { SubscriptionMarket } from './components/SubscriptionMarket';
 import { ModelMarket } from './components/ModelMarket';
+import { TechShowcase } from './components/TechShowcase';
 import { Logo } from './components/Logo';
 import { useTranslation } from 'react-i18next';
 import './index.css';
 
-type Page = 'home' | 'subscription' | 'model' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit';
+type Page = 'home' | 'subscription' | 'model' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit';
 
 function AppContent() {
   const { t } = useTranslation();
@@ -59,7 +60,7 @@ function AppContent() {
             color: '#FFA500',
             cursor: 'pointer'
           }} onClick={() => setShowLanding(true)}>
-            🚀 FacilitatorX
+            🚀 MiMiAlpha
           </div>
           
           <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -109,6 +110,22 @@ function AppContent() {
               }}
             >
               🧠 模型市场
+            </button>
+            
+            <button
+              onClick={() => setCurrentPage('tech')}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: currentPage === 'tech' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'tech' ? '#fff' : '#a1a1aa',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              🔬 技术展示
             </button>
             
             <button
@@ -213,6 +230,8 @@ function AppContent() {
         {currentPage === 'subscription' && <SubscriptionMarket />}
         
         {currentPage === 'model' && <ModelMarket />}
+        
+        {currentPage === 'tech' && <TechShowcase />}
 
         {currentPage === 'risk' && <RiskAssessment />}
         

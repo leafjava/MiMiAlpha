@@ -1,8 +1,8 @@
-# 🚀 FacilitatorX: 双引擎 AI 数字资产交易所
+# 🚀 MiMiAlpha: 双引擎 AI 数字资产交易所
 
 ## 💡 核心定位
 
-**FacilitatorX** 是基于 TRON 的 AI 数字资产交易所，通过 Smart Facilitator 中间件实现：
+**MiMiAlpha** 是基于 TRON 的 AI 数字资产交易所，通过 Smart Facilitator 中间件实现：
 1. **引擎 A**：C2C 闲置 AI 订阅共享（高频微额）
 2. **引擎 B**：量化模型信号交易（低频高额）
 
@@ -641,7 +641,7 @@ FacilitatorX 方式：
 ## 🎯 最终定位
 
 ### 一句话介绍
-> "FacilitatorX 是基于 TRON 的 AI 数字资产交易所，通过 Smart Facilitator 实现闲置 AI 订阅共享和量化模型信号交易的双引擎驱动。"
+> "MiMiAlpha 是基于 TRON 的 AI 数字资产交易所，通过 Smart Facilitator 实现闲置 AI 订阅共享和量化模型信号交易的双引擎驱动。"
 
 ### 核心价值
 - **AI 版闲鱼**：C2C 订阅共享，让闲置资产变现

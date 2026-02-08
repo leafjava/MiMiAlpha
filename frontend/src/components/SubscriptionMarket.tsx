@@ -312,7 +312,7 @@ export function SubscriptionMarket() {
           </div>
 
           <div className="list-benefits">
-            <h3>为什么选择 FacilitatorX？</h3>
+            <h3>为什么选择 MiMiAlpha？</h3>
             <div className="benefit-item">
               <span className="benefit-icon">🔒</span>
               <div>
