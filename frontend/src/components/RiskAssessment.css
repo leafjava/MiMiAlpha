@@ -311,3 +311,370 @@
     font-size: 2.5rem;
   }
 }
+
+/* 标签页导航 */
+.risk-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 2rem;
+  overflow-x: auto;
+}
+
+.risk-tab {
+  padding: 0.75rem 1.5rem;
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 8px;
+  color: #a1a1aa;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.risk-tab:hover {
+  border-color: #FFA500;
+  color: #FFA500;
+}
+
+.risk-tab.active {
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  border-color: #FFA500;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
+
+/* 交易历史列表 */
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.transaction-item {
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.transaction-item:hover {
+  border-color: #FFA500;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.2);
+}
+
+.transaction-hash {
+  font-family: 'Courier New', monospace;
+  color: #FFA500;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.transaction-addresses {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+.transaction-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #10b981;
+  margin: 0.5rem 0;
+}
+
+.transaction-time {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.transaction-status {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.transaction-status.success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.transaction-status.failed {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* 黑名单检测结果 */
+.blacklist-result {
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+}
+
+.blacklist-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.blacklist-icon {
+  font-size: 3rem;
+}
+
+.blacklist-text {
+  flex: 1;
+}
+
+.blacklist-text h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.blacklist-text.safe h3 {
+  color: #10b981;
+}
+
+.blacklist-text.danger h3 {
+  color: #ef4444;
+}
+
+.risk-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.risk-tag {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: 20px;
+  color: #FFA500;
+  font-size: 0.85rem;
+}
+
+.blacklist-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.blacklist-stat {
+  padding: 1rem;
+  background: rgba(255, 165, 0, 0.05);
+  border-radius: 8px;
+}
+
+.blacklist-stat-label {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  margin-bottom: 0.5rem;
+}
+
+.blacklist-stat-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #FFA500;
+}
+
+/* 资金流动分析 */
+.fund-flow-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.fund-flow-card {
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.fund-flow-label {
+  font-size: 0.9rem;
+  color: #a1a1aa;
+  margin-bottom: 0.75rem;
+}
+
+.fund-flow-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFA500;
+}
+
+.suspicious-patterns {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.suspicious-patterns h3 {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.pattern-list {
+  list-style: none;
+  padding: 0;
+}
+
+.pattern-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.pattern-item:last-child {
+  border-bottom: none;
+}
+
+.pattern-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.pattern-text {
+  color: #fca5a5;
+  font-size: 0.95rem;
+}
+
+/* 地址关联分析 */
+.relation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.relation-item {
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.relation-item:hover {
+  border-color: #FFA500;
+  transform: translateY(-2px);
+}
+
+.relation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.relation-address {
+  font-family: 'Courier New', monospace;
+  color: #FFA500;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.relation-risk-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.relation-risk-badge.low {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.relation-risk-badge.medium {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.relation-risk-badge.high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.relation-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.relation-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.relation-detail-label {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+.relation-detail-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #a1a1aa;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 165, 0, 0.2);
+  border-top-color: #FFA500;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #a1a1aa;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: 1.1rem;
+}
