@@ -267,22 +267,16 @@ export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps)
                 MiMiAlpha 填补空白
               </h3>
               <div style={{ color: '#d4d4d8', lineHeight: '1.8' }}>
-                <div style={{ marginBottom: '8px' }}>
+                <div>
                   ✅ <strong>Smart Facilitator 治理层</strong>
                   <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
                     多维支付策略和风险控制
                   </div>
                 </div>
-                <div style={{ marginBottom: '8px' }}>
-                  ✅ <strong>订阅权 RWA Token 交易所</strong>
-                  <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
-                    基于 AINFT Nova 的资产化
-                  </div>
-                </div>
                 <div>
-                  ✅ <strong>双引擎商业化场景</strong>
+                  ✅ <strong>量化金融商业化场景</strong>
                   <div style={{ fontSize: '0.9rem', color: '#a1a1aa', marginLeft: '24px' }}>
-                    订阅共享 + 量化模型市场
+                    透明的量化信号市场
                   </div>
                 </div>
               </div>
@@ -358,66 +352,11 @@ export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps)
 
       {/* Dual Engine Section */}
       <section className="dual-engine-section">
-        <h2 className="section-title">双引擎驱动</h2>
-        <p className="section-subtitle">基于 AINFT Agent Framework 构建，打造完整的 AI 资产交易生态</p>
+        <h2 className="section-title">核心引擎</h2>
+        <p className="section-subtitle">基于 AINFT Agent Framework 构建，打造透明的量化金融生态</p>
         
-        <div className="engines-grid">
-          {/* Engine A */}
-          <div 
-            className={`engine-card ${hoveredEngine === 'A' ? 'hovered' : ''}`}
-            onMouseEnter={() => setHoveredEngine('A')}
-            onMouseLeave={() => setHoveredEngine(null)}
-          >
-            <div className="engine-header">
-              <div className="engine-icon">🔄</div>
-              <h3 className="engine-title">引擎 A</h3>
-              <p className="engine-subtitle">基于 AINFT MAS 框架的订阅权管理</p>
-            </div>
-            
-            <div className="engine-badge">闲置订阅权 RWA Token 交易所</div>
-            
-            <div className="engine-features">
-              <div className="feature-item">
-                <span className="feature-icon">🪙</span>
-                <span className="feature-text">通过 AINFT Nova 将订阅权封装为 Access Token</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">⚡</span>
-                <span className="feature-text">微支付聚合，节省 98% Energy</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🔒</span>
-                <span className="feature-text">API Proxy 模式，密码不泄露</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🤖</span>
-                <span className="feature-text">采购/销售 Agent 基于 MAS 框架构建</span>
-              </div>
-            </div>
-            
-            <div className="engine-stats">
-              <div className="engine-stat">
-                <div className="stat-number">1000万+</div>
-                <div className="stat-desc">ChatGPT Plus 用户</div>
-              </div>
-              <div className="engine-stat">
-                <div className="stat-number">70-90%</div>
-                <div className="stat-desc">平均闲置率</div>
-              </div>
-            </div>
-            
-            <button className="engine-button" onClick={() => {
-              if (onNavigate) {
-                onNavigate('subscription');
-              } else if (onEnter) {
-                onEnter();
-              }
-            }}>
-              进入订阅市场 →
-            </button>
-          </div>
-
-          {/* Engine B */}
+        <div className="engines-grid" style={{ gridTemplateColumns: '1fr', maxWidth: '800px', margin: '0 auto' }}>
+          {/* Engine B - 量化模型市场 */}
           <div 
             className={`engine-card ${hoveredEngine === 'B' ? 'hovered' : ''}`}
             onMouseEnter={() => setHoveredEngine('B')}
@@ -425,7 +364,7 @@ export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps)
           >
             <div className="engine-header">
               <div className="engine-icon">📈</div>
-              <h3 className="engine-title">引擎 B</h3>
+              <h3 className="engine-title">量化信号市场</h3>
               <p className="engine-subtitle">基于 AINFT MAS 框架的量化信号治理</p>
             </div>
             
@@ -434,7 +373,7 @@ export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps)
             <div className="engine-features">
               <div className="feature-item">
                 <span className="feature-icon">💎</span>
-                <span className="feature-text">低频高额交易（$500/信号）</span>
+                <span className="feature-text">低频高额交易（$5/信号）</span>
               </div>
               <div className="feature-item">
                 <span className="feature-icon">🔗</span>
@@ -549,40 +488,14 @@ export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps)
         <div className="use-cases-grid">
           <div className="use-case-card">
             <div className="use-case-header">
-              <span className="use-case-icon">👨‍💻</span>
-              <h3>小明出租闲置订阅</h3>
-            </div>
-            <div className="use-case-content">
-              <p>ChatGPT Plus $20/月，只用 4 次</p>
-              <p>上架剩余 36 次，定价 $0.5/次</p>
-              <p className="highlight">月收入 $15，实际成本 $5</p>
-              <p className="success">节省 75%！</p>
-            </div>
-          </div>
-          
-          <div className="use-case-card">
-            <div className="use-case-header">
-              <span className="use-case-icon">👩‍🎓</span>
-              <h3>小红临时租赁</h3>
-            </div>
-            <div className="use-case-content">
-              <p>需要翻译论文，需要 5 次调用</p>
-              <p>租用小明的账号，支付 $2.5</p>
-              <p className="highlight">vs 买整月 $20</p>
-              <p className="success">节省 $17.5（87.5%）</p>
-            </div>
-          </div>
-          
-          <div className="use-case-card">
-            <div className="use-case-header">
               <span className="use-case-icon">📊</span>
               <h3>量化大师卖信号</h3>
             </div>
             <div className="use-case-content">
               <p>高夏普比率金价模型（2.5）</p>
-              <p>质押 $10,000，发布信号</p>
+              <p>质押 $100，发布信号</p>
               <p className="highlight">月产生 20 个信号</p>
-              <p className="success">月收入 $100,000</p>
+              <p className="success">月收入 $100</p>
             </div>
           </div>
           
@@ -594,8 +507,34 @@ export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps)
             <div className="use-case-content">
               <p>查看链上 Track Record</p>
               <p>准确率 82%，夏普比率 2.5</p>
-              <p className="highlight">订阅费 $5,000/月</p>
+              <p className="highlight">订阅费 $50/月</p>
               <p className="success">ROI 900%</p>
+            </div>
+          </div>
+
+          <div className="use-case-card">
+            <div className="use-case-header">
+              <span className="use-case-icon">🤖</span>
+              <h3>AI Agent 自动交易</h3>
+            </div>
+            <div className="use-case-content">
+              <p>Agent 订阅多个量化模型</p>
+              <p>Smart Facilitator 监控支付</p>
+              <p className="highlight">限额保护 $100/月</p>
+              <p className="success">安全可控</p>
+            </div>
+          </div>
+
+          <div className="use-case-card">
+            <div className="use-case-header">
+              <span className="use-case-icon">🔒</span>
+              <h3>质押金保障</h3>
+            </div>
+            <div className="use-case-content">
+              <p>模型提供者质押 $100</p>
+              <p>错误信号自动罚没</p>
+              <p className="highlight">准确率 &lt; 70% 罚 10%</p>
+              <p className="success">质量保证</p>
             </div>
           </div>
         </div>
@@ -604,13 +543,13 @@ export function FacilitatorXHome({ onEnter, onNavigate }: FacilitatorXHomeProps)
       {/* CTA Section */}
       <section className="cta-section">
         <h2>准备好开始了吗？</h2>
-        <p>选择适合你的引擎，开启 AI 资产交易之旅</p>
+        <p>进入量化信号市场，开启透明金融之旅</p>
         <div className="cta-buttons">
           <button className="cta-button primary" onClick={onEnter}>
-            出租闲置订阅 →
+            发布量化模型 →
           </button>
           <button className="cta-button secondary" onClick={onEnter}>
-            发布量化模型 →
+            订阅信号服务 →
           </button>
         </div>
       </section>

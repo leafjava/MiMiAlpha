@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './ModelMarket.css';
+import { modelContractService } from '../services/modelContractService';
 
 interface Model {
   id: string;
@@ -99,6 +100,33 @@ export function ModelMarket() {
   const [tronStats, setTronStats] = useState<TronStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 
+  // 合约交互状态
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [usdtBalance, setUsdtBalance] = useState<number>(0);
+  const [isPurchasing, setIsPurchasing] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  // 初始化钱包
+  useEffect(() => {
+    const initWallet = async () => {
+      const address = await modelContractService.getCurrentAddress();
+      if (address) {
+        setWalletAddress(address);
+        const balance = await modelContractService.getUSDTBalance(address);
+        setUsdtBalance(balance);
+      }
+    };
+
+    initWallet();
+
+    // 监听账户变化
+    if (window.tronLink) {
+      window.tronLink.on('accountsChanged', () => {
+        initWallet();
+      });
+    }
+  }, []);
+
   // 获取 TRON 链上数据
   useEffect(() => {
     const fetchTronStats = async () => {
@@ -178,6 +206,90 @@ export function ModelMarket() {
       return `${(num / 1000).toFixed(2)}K`;
     }
     return num.toString();
+  };
+
+  // 购买单次信号
+  const handlePurchaseSignal = async (model: Model) => {
+    if (!walletAddress) {
+      alert('❌ 请先连接 TronLink 钱包');
+      return;
+    }
+
+    if (usdtBalance < model.pricePerSignal) {
+      alert(`❌ USDT 余额不足\n\n当前余额: ${usdtBalance.toFixed(2)} USDT\n需要: ${model.pricePerSignal} USDT\n\n💡 请前往 https://nileex.io 获取测试币`);
+      return;
+    }
+
+    setIsPurchasing(true);
+
+    try {
+      const result = await modelContractService.purchaseSignal(
+        model.contractAddress || '',
+        model.provider,
+        model.pricePerSignal
+      );
+
+      if (result.success) {
+        const txLink = modelContractService.getTronScanLink(result.txId || '', true);
+        alert(`✅ 购买成功！\n\n交易哈希: ${result.txId}\n\n查看交易: ${txLink}`);
+        
+        // 更新余额
+        const newBalance = await modelContractService.getUSDTBalance(walletAddress);
+        setUsdtBalance(newBalance);
+        
+        // 关闭弹窗
+        setSelectedModel(null);
+      } else {
+        alert(`❌ 购买失败\n\n${result.error}`);
+      }
+    } catch (error: any) {
+      console.error('购买失败:', error);
+      alert(`❌ 购买失败\n\n${error.message || '未知错误'}`);
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
+
+  // 订阅模型
+  const handleSubscribe = async (model: Model) => {
+    if (!walletAddress) {
+      alert('❌ 请先连接 TronLink 钱包');
+      return;
+    }
+
+    if (usdtBalance < model.monthlySubscription) {
+      alert(`❌ USDT 余额不足\n\n当前余额: ${usdtBalance.toFixed(2)} USDT\n需要: ${model.monthlySubscription} USDT\n\n💡 请前往 https://nileex.io 获取测试币`);
+      return;
+    }
+
+    setIsSubscribing(true);
+
+    try {
+      const result = await modelContractService.subscribeModel(
+        model.contractAddress || '',
+        model.provider,
+        model.monthlySubscription
+      );
+
+      if (result.success) {
+        const txLink = modelContractService.getTronScanLink(result.txId || '', true);
+        alert(`✅ 订阅成功！\n\n交易哈希: ${result.txId}\n\n查看交易: ${txLink}\n\n您现在可以接收该模型的所有信号（30 天有效期）`);
+        
+        // 更新余额
+        const newBalance = await modelContractService.getUSDTBalance(walletAddress);
+        setUsdtBalance(newBalance);
+        
+        // 关闭弹窗
+        setSelectedModel(null);
+      } else {
+        alert(`❌ 订阅失败\n\n${result.error}`);
+      }
+    } catch (error: any) {
+      console.error('订阅失败:', error);
+      alert(`❌ 订阅失败\n\n${error.message || '未知错误'}`);
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (
@@ -558,8 +670,12 @@ export function ModelMarket() {
                 <h4>单次购买</h4>
                 <div className="pricing-value">${selectedModel.pricePerSignal}</div>
                 <p>购买单个信号</p>
-                <button className="subscribe-btn secondary">
-                  购买信号
+                <button 
+                  className="subscribe-btn secondary"
+                  onClick={() => handlePurchaseSignal(selectedModel)}
+                  disabled={isPurchasing}
+                >
+                  {isPurchasing ? '处理中...' : '购买信号'}
                 </button>
               </div>
               <div className="pricing-option featured">
@@ -567,11 +683,44 @@ export function ModelMarket() {
                 <h4>月度订阅</h4>
                 <div className="pricing-value">${selectedModel.monthlySubscription}</div>
                 <p>无限制接收所有信号</p>
-                <button className="subscribe-btn primary">
-                  立即订阅
+                <button 
+                  className="subscribe-btn primary"
+                  onClick={() => handleSubscribe(selectedModel)}
+                  disabled={isSubscribing}
+                >
+                  {isSubscribing ? '处理中...' : '立即订阅'}
                 </button>
               </div>
             </div>
+
+            {walletAddress && (
+              <div style={{
+                marginTop: '1rem',
+                padding: '1rem',
+                background: 'rgba(59, 130, 246, 0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(59, 130, 246, 0.2)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem' }}>
+                      钱包地址
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: '#3B82F6', fontFamily: 'monospace' }}>
+                      {formatAddress(walletAddress)}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem' }}>
+                      USDT 余额
+                    </div>
+                    <div style={{ fontSize: '1.1rem', color: '#10B981', fontWeight: 600 }}>
+                      ${usdtBalance.toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="modal-guarantee">
               <h4>🛡️ 质量保证</h4>
