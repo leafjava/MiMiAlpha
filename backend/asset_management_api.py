@@ -1,6 +1,6 @@
 """
-虚拟商品资产管理 API
-管理虚拟商品库存、定价、采购、销售和租赁
+量化模型资产管理 API
+管理量化模型库存、定价、采购、销售和订阅
 """
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -19,153 +19,21 @@ CORS(app)
 OLLAMA_API = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
 MODEL_NAME = os.getenv("MODEL_NAME", "qwen3:4b-instruct-2507-q4_K_M")
 
-# 虚拟商品类型定义
+# 量化模型定义（只保留量化交易相关）
 VIRTUAL_GOODS = {
-    "chatgpt_plus": {
-        "name": "ChatGPT Plus",
-        "category": "AI工具",
-        "wholesale_price": 15.0,
-        "retail_price": 25.0,
-        "rental_price_per_day": 2.0,
-        "profit_margin": 0.67,
-        "rental_margin": 3.0,
-        "icon": "🤖",
-        "description": "OpenAI ChatGPT Plus 会员，支持 GPT-4 和更快响应"
-    },
-    "claude_pro": {
-        "name": "Claude Pro",
-        "category": "AI工具",
-        "wholesale_price": 18.0,
-        "retail_price": 28.0,
-        "rental_price_per_day": 2.5,
-        "profit_margin": 0.56,
-        "rental_margin": 3.17,
-        "icon": "🧠",
-        "description": "Anthropic Claude Pro 会员，200K 上下文窗口"
-    },
-    "vizard_ai": {
-        "name": "Vizard AI",
-        "category": "AI工具",
-        "wholesale_price": 12.0,
-        "retail_price": 20.0,
-        "rental_price_per_day": 1.8,
-        "profit_margin": 0.67,
-        "rental_margin": 3.5,
-        "icon": "🎬",
-        "description": "AI 视频到文本转换器，自动生成字幕和剪辑"
-    },
-    "spline_pro": {
-        "name": "Spline Pro",
-        "category": "设计工具",
-        "wholesale_price": 10.0,
-        "retail_price": 18.0,
-        "rental_price_per_day": 1.5,
-        "profit_margin": 0.80,
-        "rental_margin": 3.5,
-        "icon": "🎨",
-        "description": "3D 设计工具，轻松创建交互式 3D 体验"
-    },
-    "vpn_premium": {
-        "name": "VPN Premium",
-        "category": "网络工具",
-        "wholesale_price": 3.0,
-        "retail_price": 8.0,
-        "rental_price_per_day": 0.5,
-        "profit_margin": 1.67,
-        "rental_margin": 4.0,
-        "icon": "🔒",
-        "description": "高速 VPN 服务，支持全球节点"
-    },
-    "92ziyuan": {
-        "name": "92资源站会员",
-        "category": "资源站",
-        "wholesale_price": 5.0,
-        "retail_price": 12.0,
-        "rental_price_per_day": 0.8,
-        "profit_margin": 1.40,
-        "rental_margin": 3.8,
-        "icon": "📚",
-        "description": "92资源站 VIP 会员，海量资源免费下载"
-    },
-    "666root": {
-        "name": "666ROOT会员",
-        "category": "资源站",
-        "wholesale_price": 6.0,
-        "retail_price": 15.0,
-        "rental_price_per_day": 1.0,
-        "profit_margin": 1.50,
-        "rental_margin": 4.0,
-        "icon": "🔓",
-        "description": "666ROOT 破解资源站会员，安卓应用破解版"
-    },
-    "kebaiwan": {
-        "name": "课百万会员",
-        "category": "资源站",
-        "wholesale_price": 8.0,
-        "retail_price": 18.0,
-        "rental_price_per_day": 1.2,
-        "profit_margin": 1.25,
-        "rental_margin": 3.5,
-        "icon": "📖",
-        "description": "课百万在线课程平台会员，海量课程资源"
-    },
-    "steam_card_50": {
-        "name": "Steam $50 礼品卡",
-        "category": "游戏",
-        "wholesale_price": 47.5,
-        "retail_price": 50.0,
-        "rental_price_per_day": 0,
-        "profit_margin": 0.05,
-        "rental_margin": 0,
-        "icon": "🎮",
-        "description": "Steam 平台 $50 美元礼品卡"
-    },
-    "netflix_4k": {
-        "name": "Netflix 4K",
-        "category": "流媒体",
-        "wholesale_price": 12.0,
-        "retail_price": 20.0,
-        "rental_price_per_day": 1.5,
-        "profit_margin": 0.67,
-        "rental_margin": 2.75,
-        "icon": "🎬",
-        "description": "Netflix 4K 高级会员，支持 4 屏同看"
-    },
-    "spotify_premium": {
-        "name": "Spotify Premium",
-        "category": "流媒体",
-        "wholesale_price": 8.0,
-        "retail_price": 15.0,
-        "rental_price_per_day": 1.0,
-        "profit_margin": 0.88,
-        "rental_margin": 2.75,
-        "icon": "🎵",
-        "description": "Spotify 高级会员，无广告高音质"
-    },
-    "game_auto_script": {
-        "name": "游戏自动化脚本",
-        "category": "游戏工具",
-        "wholesale_price": 20.0,
-        "retail_price": 50.0,
-        "rental_price_per_day": 3.0,
-        "profit_margin": 1.50,
-        "rental_margin": 3.5,
-        "icon": "🎮",
-        "description": "游戏自动跑刀脚本，支持多款热门游戏，24小时挂机"
-    },
     "quant_model_gold": {
-        "name": "黄金量化模型",
+        "name": "黄金价格预测模型",
         "category": "量化交易",
         "wholesale_price": 100.0,
         "retail_price": 200.0,
         "rental_price_per_day": 15.0,
         "profit_margin": 1.00,
         "rental_margin": 3.5,
-        "icon": "📈",
-        "description": "黄金价格预测量化模型，夏普比率 2.8，年化收益 45%，云端运行"
+        "icon": "🥇",
+        "description": "黄金价格预测量化模型，夏普比率 2.8，年化收益 45%"
     },
     "quant_model_btc": {
-        "name": "BTC量化模型",
+        "name": "BTC趋势预测模型",
         "category": "量化交易",
         "wholesale_price": 150.0,
         "retail_price": 300.0,
@@ -173,18 +41,117 @@ VIRTUAL_GOODS = {
         "profit_margin": 1.00,
         "rental_margin": 3.0,
         "icon": "₿",
-        "description": "比特币交易量化模型，夏普比率 3.2，年化收益 68%，实时信号"
+        "description": "比特币交易量化模型，夏普比率 3.2，年化收益 68%"
+    },
+    "quant_model_eth": {
+        "name": "ETH波动预测模型",
+        "category": "量化交易",
+        "wholesale_price": 120.0,
+        "retail_price": 240.0,
+        "rental_price_per_day": 18.0,
+        "profit_margin": 1.00,
+        "rental_margin": 3.2,
+        "icon": "💎",
+        "description": "以太坊波动预测模型，夏普比率 2.9，年化收益 52%"
     },
     "quant_model_stock": {
-        "name": "A股量化模型",
+        "name": "美股指数预测模型",
         "category": "量化交易",
         "wholesale_price": 80.0,
         "retail_price": 180.0,
         "rental_price_per_day": 12.0,
         "profit_margin": 1.25,
         "rental_margin": 3.5,
+        "icon": "📈",
+        "description": "标普500指数预测模型，夏普比率 2.5，年化收益 38%"
+    },
+    "quant_model_forex": {
+        "name": "外汇波动预测模型",
+        "category": "量化交易",
+        "wholesale_price": 60.0,
+        "retail_price": 150.0,
+        "rental_price_per_day": 10.0,
+        "profit_margin": 1.50,
+        "rental_margin": 3.8,
+        "icon": "💱",
+        "description": "外汇市场波动预测，夏普比率 2.3，年化收益 35%"
+    },
+    "quant_model_commodity": {
+        "name": "商品期货预测模型",
+        "category": "量化交易",
+        "wholesale_price": 90.0,
+        "retail_price": 200.0,
+        "rental_price_per_day": 14.0,
+        "profit_margin": 1.22,
+        "rental_margin": 3.6,
         "icon": "📊",
-        "description": "A股市场量化模型，夏普比率 2.5，年化收益 38%，选股策略"
+        "description": "商品期货价格预测，夏普比率 2.6，年化收益 42%"
+    },
+    "quant_model_crypto": {
+        "name": "加密货币组合预测",
+        "category": "量化交易",
+        "wholesale_price": 120.0,
+        "retail_price": 260.0,
+        "rental_price_per_day": 18.0,
+        "profit_margin": 1.17,
+        "rental_margin": 3.4,
+        "icon": "🪙",
+        "description": "多币种组合策略，夏普比率 3.0，年化收益 58%"
+    },
+    "quant_strategy_astock": {
+        "name": "A股量化策略",
+        "category": "量化交易",
+        "wholesale_price": 70.0,
+        "retail_price": 160.0,
+        "rental_price_per_day": 11.0,
+        "profit_margin": 1.29,
+        "rental_margin": 3.7,
+        "icon": "🎯",
+        "description": "A股市场选股策略，夏普比率 2.4，年化收益 36%"
+    },
+    "quant_strategy_hkstock": {
+        "name": "港股量化策略",
+        "category": "量化交易",
+        "wholesale_price": 75.0,
+        "retail_price": 170.0,
+        "rental_price_per_day": 12.0,
+        "profit_margin": 1.27,
+        "rental_margin": 3.6,
+        "icon": "🇭🇰",
+        "description": "港股市场量化策略，夏普比率 2.3，年化收益 34%"
+    },
+    "quant_strategy_options": {
+        "name": "期权策略模型",
+        "category": "量化交易",
+        "wholesale_price": 180.0,
+        "retail_price": 400.0,
+        "rental_price_per_day": 28.0,
+        "profit_margin": 1.22,
+        "rental_margin": 3.5,
+        "icon": "📉",
+        "description": "期权交易策略，夏普比率 2.7，年化收益 48%"
+    },
+    "quant_strategy_arbitrage": {
+        "name": "套利策略组合",
+        "category": "量化交易",
+        "wholesale_price": 110.0,
+        "retail_price": 250.0,
+        "rental_price_per_day": 16.0,
+        "profit_margin": 1.27,
+        "rental_margin": 3.5,
+        "icon": "⚖️",
+        "description": "跨市场套利策略，夏普比率 2.8，年化收益 44%"
+    },
+    "quant_strategy_hft": {
+        "name": "高频交易模型",
+        "category": "量化交易",
+        "wholesale_price": 200.0,
+        "retail_price": 450.0,
+        "rental_price_per_day": 32.0,
+        "profit_margin": 1.25,
+        "rental_margin": 3.8,
+        "icon": "⚡",
+        "description": "高频交易策略，夏普比率 3.1，年化收益 62%"
     }
 }
 
