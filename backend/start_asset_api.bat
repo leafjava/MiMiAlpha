@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo Starting Credit Score API (Port 8003)
+echo Starting Asset Management API (Port 8004)
 echo ========================================
-python credit_score_api.py
+python asset_management_api.py
 pause

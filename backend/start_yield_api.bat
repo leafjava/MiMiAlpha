@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo Starting Credit Score API (Port 8003)
+echo Starting Yield Calculation API (Port 8005)
 echo ========================================
-python credit_score_api.py
+python yield_calculation_api.py
 pause

@@ -10,11 +10,13 @@ import { LandingPage } from './components/LandingPage';
 import { RiskAssessment } from './components/RiskAssessment';
 import { DisputeArbitration } from './components/DisputeArbitration';
 import { CreditScore } from './components/CreditScore';
+import { InvestmentPool } from './components/InvestmentPool';
+import { Marketplace } from './components/Marketplace';
 import { Logo } from './components/Logo';
 import { useTranslation } from 'react-i18next';
 import './index.css';
 
-type Page = 'home' | 'risk' | 'dispute' | 'credit' | 'trades';
+type Page = 'home' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit';
 
 function AppContent() {
   const { t } = useTranslation();
@@ -54,7 +56,7 @@ function AppContent() {
             color: '#FFA500',
             cursor: 'pointer'
           }} onClick={() => setCurrentPage('home')}>
-            CSTPG
+            💎 VirtualVault
           </div>
           
           <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -71,7 +73,39 @@ function AppContent() {
                 transition: 'all 0.3s'
               }}
             >
-              {t('nav.home')}
+              🏠 首页
+            </button>
+            
+            <button
+              onClick={() => setCurrentPage('pool')}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: currentPage === 'pool' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'pool' ? '#fff' : '#a1a1aa',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              💰 投资池
+            </button>
+            
+            <button
+              onClick={() => setCurrentPage('market')}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: currentPage === 'market' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'market' ? '#fff' : '#a1a1aa',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              🛒 市场
             </button>
             
             <button
@@ -87,7 +121,7 @@ function AppContent() {
                 transition: 'all 0.3s'
               }}
             >
-              {t('nav.risk_assessment')}
+              🛡️ 风险评估
             </button>
             
             <button
@@ -171,37 +205,11 @@ function AppContent() {
 
       {/* 主内容区域 */}
       <div style={{ paddingTop: '70px' }}>
-        {currentPage === 'home' && (
-          <div>
-            <h1 style={{ 
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
-              fontWeight: 700,
-              color: '#FFA500',
-              marginBottom: '0.5rem',
-              letterSpacing: '-0.02em',
-              marginTop: '2rem'
-            }}>
-              {t('app.title')}
-            </h1>
-            <div style={{ 
-              fontSize: 'clamp(1rem, 2vw, 1.25rem)', 
-              fontWeight: 300, 
-              color: '#a1a1aa', 
-              marginBottom: '3rem',
-              maxWidth: '800px',
-              margin: '0 auto 3rem'
-            }}>
-              {t('app.subtitle')}
-            </div>
-
-            <div className="grid-cols-2">
-              <TradeCreator />
-              <TradeList />
-            </div>
-
-            <Faucet />
-          </div>
-        )}
+        {currentPage === 'home' && <InvestmentPool />}
+        
+        {currentPage === 'pool' && <InvestmentPool />}
+        
+        {currentPage === 'market' && <Marketplace />}
 
         {currentPage === 'risk' && <RiskAssessment />}
         

@@ -1,0 +1,421 @@
+.investment-pool {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.pool-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.pool-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #FFA500;
+  margin-bottom: 0.5rem;
+}
+
+.pool-subtitle {
+  font-size: 1.1rem;
+  color: #a1a1aa;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 核心指标 */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  background: rgba(39, 39, 42, 0.8);
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s;
+}
+
+.metric-card.highlight {
+  background: linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 140, 0, 0.05) 100%);
+  border-color: rgba(255, 165, 0, 0.3);
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.metric-icon {
+  font-size: 2.5rem;
+}
+
+.metric-content {
+  flex: 1;
+}
+
+.metric-label {
+  font-size: 0.9rem;
+  color: #a1a1aa;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.metric-value.apy {
+  color: #10b981;
+}
+
+/* 收益来源 */
+.revenue-section {
+  margin-bottom: 3rem;
+}
+
+.revenue-section h2 {
+  font-size: 1.5rem;
+  color: #FFA500;
+  margin-bottom: 1.5rem;
+}
+
+.revenue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.revenue-card {
+  background: rgba(39, 39, 42, 0.8);
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.revenue-card.total {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.revenue-icon {
+  font-size: 2.5rem;
+}
+
+.revenue-info {
+  flex: 1;
+}
+
+.revenue-label {
+  font-size: 0.9rem;
+  color: #a1a1aa;
+  margin-bottom: 0.5rem;
+}
+
+.revenue-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.revenue-percentage {
+  font-size: 0.85rem;
+  color: #10b981;
+}
+
+/* 费用结构 */
+.fees-section {
+  margin-bottom: 3rem;
+}
+
+.fees-section h2 {
+  font-size: 1.5rem;
+  color: #FFA500;
+  margin-bottom: 1.5rem;
+}
+
+.fees-grid {
+  background: rgba(39, 39, 42, 0.8);
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.fee-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #3f3f46;
+}
+
+.fee-item:last-child {
+  border-bottom: none;
+}
+
+.fee-item.total {
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.fee-item.net {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #10b981;
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
+  border-top: 2px solid #3f3f46;
+}
+
+.fee-label {
+  color: #a1a1aa;
+}
+
+.fee-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* 资产组成 */
+.assets-section {
+  margin-bottom: 3rem;
+}
+
+.assets-section h2 {
+  font-size: 1.5rem;
+  color: #FFA500;
+  margin-bottom: 1.5rem;
+}
+
+.assets-list {
+  background: rgba(39, 39, 42, 0.8);
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.asset-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #3f3f46;
+  transition: background 0.2s;
+}
+
+.asset-item:last-child {
+  border-bottom: none;
+}
+
+.asset-item:hover {
+  background: rgba(255, 165, 0, 0.05);
+}
+
+.asset-icon {
+  font-size: 2rem;
+}
+
+.asset-info {
+  flex: 1;
+}
+
+.asset-name {
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.asset-quantity {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+.asset-value {
+  text-align: right;
+}
+
+.asset-total {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.asset-percentage {
+  font-size: 0.85rem;
+  color: #10b981;
+}
+
+/* 投资计算器 */
+.calculator-section {
+  margin-bottom: 3rem;
+}
+
+.calculator-section h2 {
+  font-size: 1.5rem;
+  color: #FFA500;
+  margin-bottom: 1.5rem;
+}
+
+.calculator-card {
+  background: rgba(39, 39, 42, 0.8);
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.calculator-input {
+  margin-bottom: 1.5rem;
+}
+
+.calculator-input label {
+  display: block;
+  font-size: 0.9rem;
+  color: #a1a1aa;
+  margin-bottom: 0.5rem;
+}
+
+.calculator-input input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.calculator-input input:focus {
+  outline: none;
+  border-color: #FFA500;
+}
+
+.calculate-btn {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.calculate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(255, 165, 0, 0.3);
+}
+
+.calculator-result {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #3f3f46;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  color: #a1a1aa;
+}
+
+.result-item.highlight {
+  background: rgba(16, 185, 129, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+}
+
+.result-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #10b981;
+}
+
+/* 投资按钮 */
+.invest-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.invest-btn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.invest-btn.primary {
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  color: #fff;
+}
+
+.invest-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 165, 0, 0.4);
+}
+
+.invest-btn.secondary {
+  background: rgba(39, 39, 42, 0.8);
+  border: 1px solid #FFA500;
+  color: #FFA500;
+}
+
+.invest-btn.secondary:hover {
+  background: rgba(255, 165, 0, 0.1);
+}
+
+/* 加载和错误状态 */
+.investment-pool-loading,
+.investment-pool-error {
+  text-align: center;
+  padding: 4rem 2rem;
+  font-size: 1.2rem;
+  color: #a1a1aa;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .investment-pool {
+    padding: 1rem;
+  }
+
+  .pool-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .revenue-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .invest-actions {
+    flex-direction: column;
+  }
+
+  .invest-btn {
+    width: 100%;
+  }
+}
