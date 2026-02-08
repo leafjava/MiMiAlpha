@@ -9,7 +9,7 @@ type BillingMode = 'per-use' | 'per-time';
 interface Subscription {
   id: string;
   owner: string;
-  service: 'ChatGPT Plus' | 'Claude Pro' | 'Midjourney' | 'DeepL' | 'Mureka AI' | 'Vizard' | 'Astrill VPN' | 'ELSA Speak';
+  service: 'ChatGPT Plus' | 'Claude Pro' | 'Midjourney' | 'DeepL' | 'Mureka AI' | 'Vizard' | 'Astrill VPN' | 'ELSA Speak' | 'EaseMate AI' | 'SameAI' | 'Gamma AI';
   billingMode: BillingMode;
   billingUnit: string; // '次' for per-use, '天' or '小时' for per-time
   totalQuota: number;
@@ -23,7 +23,84 @@ interface Subscription {
 }
 
 const mockSubscriptions: Subscription[] = [
-  // 按次计费 (Per Use) - AI 对话和生成类
+  // 按次计费 (Per Use) - 新增热门服务优先展示
+  {
+    id: '4',
+    owner: '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65',
+    service: 'Mureka AI',
+    billingMode: 'per-use',
+    billingUnit: '次',
+    totalQuota: 100,
+    availableQuota: 85,
+    pricePerUnit: 0.036,
+    rating: 4.8,
+    reviews: 89,
+    availableHours: '全天候',
+    ownerCredit: 880,
+    description: 'AI 音乐生成器，文本生成音乐，按生成次数计费'
+  },
+  {
+    id: '5',
+    owner: '0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc',
+    service: 'Vizard',
+    billingMode: 'per-use',
+    billingUnit: '次',
+    totalQuota: 60,
+    availableQuota: 52,
+    pricePerUnit: 0.07,
+    rating: 4.9,
+    reviews: 76,
+    availableHours: '工作日 9:00-22:00',
+    ownerCredit: 910,
+    description: '视频转文本工具，支持 30+ 语言，按转换次数计费'
+  },
+  {
+    id: '8',
+    owner: '0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f',
+    service: 'EaseMate AI',
+    billingMode: 'per-use',
+    billingUnit: '次',
+    totalQuota: 80,
+    availableQuota: 68,
+    pricePerUnit: 0.045,
+    rating: 4.8,
+    reviews: 142,
+    availableHours: '全天候',
+    ownerCredit: 870,
+    description: 'AI 故事生成器，创意写作助手，按生成次数计费'
+  },
+  {
+    id: '9',
+    owner: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720',
+    service: 'SameAI',
+    billingMode: 'per-use',
+    billingUnit: '次',
+    totalQuota: 50,
+    availableQuota: 42,
+    pricePerUnit: 0.055,
+    rating: 4.9,
+    reviews: 98,
+    availableHours: '全天候',
+    ownerCredit: 920,
+    description: 'AI 克隆网站工具，一键复制网站设计，按克隆次数计费'
+  },
+  {
+    id: '10',
+    owner: '0xBcd4042DE499D14e55001CcbB24a551F3b954096',
+    service: 'Gamma AI',
+    billingMode: 'per-use',
+    billingUnit: '次',
+    totalQuota: 70,
+    availableQuota: 58,
+    pricePerUnit: 0.05,
+    rating: 4.9,
+    reviews: 156,
+    availableHours: '全天候',
+    ownerCredit: 940,
+    description: 'AI 生成 PPT 工具，一键生成精美演示文稿，按生成次数计费'
+  },
+  
+  // 经典 AI 对话和生成类
   {
     id: '1',
     owner: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
@@ -32,7 +109,7 @@ const mockSubscriptions: Subscription[] = [
     billingUnit: '次',
     totalQuota: 40,
     availableQuota: 35,
-    pricePerUnit: 0.5,
+    pricePerUnit: 0.04,
     rating: 4.9,
     reviews: 128,
     availableHours: '工作日 9:00-18:00',
@@ -47,7 +124,7 @@ const mockSubscriptions: Subscription[] = [
     billingUnit: '次',
     totalQuota: 50,
     availableQuota: 42,
-    pricePerUnit: 0.6,
+    pricePerUnit: 0.05,
     rating: 4.8,
     reviews: 95,
     availableHours: '全天候',
@@ -62,42 +139,12 @@ const mockSubscriptions: Subscription[] = [
     billingUnit: '次',
     totalQuota: 200,
     availableQuota: 180,
-    pricePerUnit: 0.3,
+    pricePerUnit: 0.03,
     rating: 4.7,
     reviews: 156,
     availableHours: '工作日 18:00-24:00',
     ownerCredit: 780,
     description: '实时解析请求内容，按图片生成次数计费'
-  },
-  {
-    id: '4',
-    owner: '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65',
-    service: 'Mureka AI',
-    billingMode: 'per-use',
-    billingUnit: '次',
-    totalQuota: 100,
-    availableQuota: 85,
-    pricePerUnit: 0.4,
-    rating: 4.8,
-    reviews: 89,
-    availableHours: '全天候',
-    ownerCredit: 880,
-    description: '实时解析请求内容，按音乐生成次数计费'
-  },
-  {
-    id: '5',
-    owner: '0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc',
-    service: 'Vizard',
-    billingMode: 'per-use',
-    billingUnit: '次',
-    totalQuota: 60,
-    availableQuota: 52,
-    pricePerUnit: 0.8,
-    rating: 4.9,
-    reviews: 76,
-    availableHours: '工作日 9:00-22:00',
-    ownerCredit: 910,
-    description: '实时解析请求内容，按视频转换次数计费'
   },
   
   // 按时计费 (Per Time) - VPN 和持续使用类
@@ -109,12 +156,12 @@ const mockSubscriptions: Subscription[] = [
     billingUnit: '天',
     totalQuota: 30,
     availableQuota: 22,
-    pricePerUnit: 0.3,
+    pricePerUnit: 0.03,
     rating: 4.9,
     reviews: 234,
     availableHours: '全天候',
     ownerCredit: 950,
-    description: '租约到期后自动撤销 Session，按天计费'
+    description: '高速 VPN 服务，租约到期自动撤销，按天计费'
   },
   {
     id: '7',
@@ -124,12 +171,12 @@ const mockSubscriptions: Subscription[] = [
     billingUnit: '天',
     totalQuota: 30,
     availableQuota: 25,
-    pricePerUnit: 0.15,
+    pricePerUnit: 0.016,
     rating: 4.7,
     reviews: 167,
     availableHours: '全天候',
     ownerCredit: 890,
-    description: 'AI 口语练习，租约到期后自动撤销访问权限'
+    description: 'AI 口语练习 APP，智能纠音，按天计费'
   }
 ];
 
@@ -162,15 +209,18 @@ export function SubscriptionMarket() {
 
   const services = [
     { value: 'all', label: '全部服务', icon: '🌐' },
-    // 按次计费
+    // 按次计费 - 新服务优先
+    { value: 'Mureka AI', label: 'Mureka AI 音乐', icon: '🎵', mode: 'per-use' },
+    { value: 'Vizard', label: 'Vizard 视频转文本', icon: '🎬', mode: 'per-use' },
+    { value: 'EaseMate AI', label: 'EaseMate 故事', icon: '📖', mode: 'per-use' },
+    { value: 'SameAI', label: 'SameAI 克隆网站', icon: '🌐', mode: 'per-use' },
+    { value: 'Gamma AI', label: 'Gamma AI 生成PPT', icon: '📊', mode: 'per-use' },
     { value: 'ChatGPT Plus', label: 'ChatGPT Plus', icon: '🤖', mode: 'per-use' },
     { value: 'Claude Pro', label: 'Claude Pro', icon: '🧠', mode: 'per-use' },
     { value: 'Midjourney', label: 'Midjourney', icon: '🎨', mode: 'per-use' },
-    { value: 'Mureka AI', label: 'Mureka AI', icon: '🎵', mode: 'per-use' },
-    { value: 'Vizard', label: 'Vizard', icon: '🎬', mode: 'per-use' },
     // 按时计费
     { value: 'Astrill VPN', label: 'Astrill VPN', icon: '🔒', mode: 'per-time' },
-    { value: 'ELSA Speak', label: 'ELSA Speak', icon: '🗣️', mode: 'per-time' }
+    { value: 'ELSA Speak', label: 'ELSA 口语 APP', icon: '🗣️', mode: 'per-time' }
   ];
 
   const filteredSubscriptions = mockSubscriptions.filter(s => {
@@ -269,16 +319,16 @@ export function SubscriptionMarket() {
         
         <div className="header-stats">
           <div className="stat-box">
-            <div className="stat-value">40+</div>
+            <div className="stat-value">70+</div>
             <div className="stat-label">可用账号</div>
           </div>
           <div className="stat-box">
-            <div className="stat-value">$0.15-0.8</div>
-            <div className="stat-label">价格范围</div>
+            <div className="stat-value">¢1.6-7</div>
+            <div className="stat-label">白菜价格</div>
           </div>
           <div className="stat-box">
-            <div className="stat-value">2 种</div>
-            <div className="stat-label">计费模式</div>
+            <div className="stat-value">10 种</div>
+            <div className="stat-label">AI 服务</div>
           </div>
           <div className="stat-box">
             <div className="stat-value">&lt; 1 分钟</div>
