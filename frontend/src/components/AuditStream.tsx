@@ -163,7 +163,6 @@ export function AuditStream() {
                 <div className="log-header">
                   <span className="log-icon">{getLogIcon(log.type)}</span>
                   <span className="log-timestamp">[{log.timestamp}]</span>
-                  <span className="log-label">[FACILITATOR]</span>
                   <span 
                     className="log-category"
                     style={{ backgroundColor: badge.color }}

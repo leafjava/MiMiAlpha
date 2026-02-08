@@ -111,22 +111,6 @@ function AppContent() {
             </button>
             
             <button
-              onClick={() => setCurrentPage('model2')}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: currentPage === 'model2' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
-                color: currentPage === 'model2' ? '#fff' : '#a1a1aa',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-            >
-              🤖 模型市场二
-            </button>
-            
-            <button
               onClick={() => setCurrentPage('tech')}
               style={{
                 padding: '0.5rem 1rem',

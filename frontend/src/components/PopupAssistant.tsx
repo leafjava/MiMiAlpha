@@ -16,7 +16,7 @@ interface Message {
 export function PopupAssistant({ isOpen, onClose }: PopupAssistantProps) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: '你好！我是 Hackathon 智能助手，有什么可以帮您？', sender: 'assistant' }
+    { id: 1, text: '你好！我是 MiMiAlpha 智能助手，专注于量化交易和AI模型服务。有什么可以帮您？', sender: 'assistant' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<AIMessage[]>([]);
@@ -25,9 +25,9 @@ export function PopupAssistant({ isOpen, onClose }: PopupAssistantProps) {
   
   // 开场白按钮选项
   const quickActions = [
-    '如何连接钱包？',
-    '如何获取测试币？',
-    '交易需要多长时间？',
+    '如何使用量化模型？',
+    '如何购买AI模型？',
+    '模型收益如何计算？',
     '支持哪些钱包？'
   ];
   
@@ -146,7 +146,7 @@ export function PopupAssistant({ isOpen, onClose }: PopupAssistantProps) {
             fontWeight: '600',
             color: '#FFA500',
             margin: 0
-          }}>Hackathon AI</h2>
+          }}>MiMiAlpha</h2>
           <button
             onClick={onClose}
             style={{
@@ -187,7 +187,7 @@ export function PopupAssistant({ isOpen, onClose }: PopupAssistantProps) {
               </svg>
             </div>
             <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#e2e8f0' }}>
-              Hackathon AI Assistant
+              MiMiAlpha AI Assistant
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
