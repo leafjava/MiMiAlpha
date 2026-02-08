@@ -56,13 +56,14 @@ async function main() {
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     
     const SmartFacilitator = await hre.ethers.getContractFactory("SmartFacilitator");
-    const facilitator = await SmartFacilitator.deploy();
+    const facilitator = await SmartFacilitator.deploy(mockTokenAddress);
     await facilitator.waitForDeployment();
     const facilitatorAddress = await facilitator.getAddress();
     
     console.log("✅ SmartFacilitator 部署成功!");
     console.log("   地址:", facilitatorAddress);
     console.log("   交易:", facilitator.deploymentTransaction().hash);
+    console.log("   USDT 地址:", mockTokenAddress);
     
     deployedContracts.SmartFacilitator = facilitatorAddress;
 

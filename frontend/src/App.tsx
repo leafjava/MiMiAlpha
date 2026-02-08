@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AppProvider } from './AppContext';
+import { WagmiProvider } from './providers/WagmiProvider';
 import { ConnectWallet } from './components/ConnectWallet';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { PopupAssistant } from './components/PopupAssistant';
@@ -12,9 +13,10 @@ import { FacilitatorXHome } from './components/FacilitatorXHome';
 import { SubscriptionMarket } from './components/SubscriptionMarket';
 import { ModelMarket } from './components/ModelMarket';
 import { TechShowcase } from './components/TechShowcase';
+import { AgentManager } from './components/AgentManager';
 import './index.css';
 
-type Page = 'home' | 'subscription' | 'model' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit';
+type Page = 'home' | 'subscription' | 'model' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit' | 'agent';
 
 function AppContent() {
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
@@ -180,6 +182,22 @@ function AppContent() {
             >
               🏆 信用评分
             </button>
+            
+            <button
+              onClick={() => setCurrentPage('agent')}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: currentPage === 'agent' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'agent' ? '#fff' : '#a1a1aa',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              🤖 Agent 管理
+            </button>
           </div>
         </div>
 
@@ -243,6 +261,8 @@ function AppContent() {
         {currentPage === 'dispute' && <DisputeArbitration />}
         
         {currentPage === 'credit' && <CreditScore />}
+        
+        {currentPage === 'agent' && <AgentManager />}
       </div>
 
       {/* Footer - AINFT Ecosystem Badge */}
@@ -384,9 +404,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
+    <WagmiProvider>
+      <AppProvider>
+        <AppContent />
+      </AppProvider>
+    </WagmiProvider>
   )
 }
 

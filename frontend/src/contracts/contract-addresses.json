@@ -1,4 +1,12 @@
 {
-  "MockERC20": "cfxtest:acdu4z2cxzy6rsyhu2jdrvc844bnpvtkdyrcz4jud6",
-  "Escrow": "cfxtest:acb4efumsr9am9z7e628umag65xprfkm16r456tgc6"
+  "network": "localhost",
+  "chainId": "1337",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "timestamp": "2026-02-08T10:38:44.123Z",
+  "contracts": {
+    "MockERC20": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    "Escrow": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+    "SmartFacilitator": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+  },
+  "blockNumber": 5
 }

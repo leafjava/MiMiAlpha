@@ -1,0 +1,463 @@
+.agent-manager {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.not-connected {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(24, 24, 27, 0.5);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 165, 0, 0.2);
+}
+
+.not-connected h2 {
+  color: #FFA500;
+  margin-bottom: 16px;
+}
+
+.not-connected p {
+  color: #a1a1aa;
+}
+
+/* AINFT Badge */
+.ainft-badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 165, 0, 0.05);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 12px;
+  margin-bottom: 32px;
+}
+
+.badge-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.badge-text {
+  flex: 1;
+}
+
+.badge-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFA500;
+  margin-bottom: 4px;
+}
+
+.badge-subtitle {
+  font-size: 13px;
+  color: #a1a1aa;
+}
+
+/* Create Agent Section */
+.create-agent-section {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.create-agent-section h2 {
+  color: #FFA500;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.description {
+  text-align: center;
+  color: #a1a1aa;
+  margin-bottom: 32px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  color: #e4e4e7;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.agent-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 8px;
+  color: #e4e4e7;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.agent-input:focus {
+  outline: none;
+  border-color: #FFA500;
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.1);
+}
+
+.create-button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 32px;
+}
+
+.create-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+}
+
+.create-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.feature-card {
+  padding: 20px;
+  background: rgba(24, 24, 27, 0.5);
+  border: 1px solid rgba(255, 165, 0, 0.1);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.feature-card h4 {
+  color: #e4e4e7;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.feature-card p {
+  color: #a1a1aa;
+  font-size: 12px;
+  margin: 0;
+}
+
+/* Agent Info Card */
+.agent-info-card {
+  background: rgba(24, 24, 27, 0.5);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 165, 0, 0.1);
+}
+
+.card-header h3 {
+  color: #FFA500;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-label {
+  color: #a1a1aa;
+  font-size: 13px;
+}
+
+.info-value {
+  color: #e4e4e7;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.info-value.highlight {
+  color: #FFA500;
+}
+
+.info-value.credit-score {
+  color: #22c55e;
+}
+
+/* Quota Card */
+.quota-card {
+  background: rgba(24, 24, 27, 0.5);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.quota-card h3 {
+  color: #FFA500;
+  margin-bottom: 24px;
+}
+
+.quota-section {
+  margin-bottom: 20px;
+}
+
+.quota-section:last-child {
+  margin-bottom: 0;
+}
+
+.quota-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: #e4e4e7;
+  font-size: 14px;
+}
+
+.quota-bar {
+  height: 8px;
+  background: rgba(255, 165, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.quota-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFA500 0%, #FF8C00 100%);
+  transition: width 0.3s;
+}
+
+/* Deposit Card */
+.deposit-card {
+  background: rgba(24, 24, 27, 0.5);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.deposit-card h3 {
+  color: #FFA500;
+  margin-bottom: 8px;
+}
+
+.deposit-description {
+  color: #a1a1aa;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.deposit-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.deposit-input {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 8px;
+  color: #e4e4e7;
+  font-size: 14px;
+}
+
+.deposit-input:focus {
+  outline: none;
+  border-color: #FFA500;
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.1);
+}
+
+.deposit-button {
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.deposit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
+
+.deposit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quick-amounts {
+  display: flex;
+  gap: 8px;
+}
+
+.quick-btn {
+  flex: 1;
+  padding: 8px;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 6px;
+  color: #FFA500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-btn:hover {
+  background: rgba(255, 165, 0, 0.2);
+  border-color: #FFA500;
+}
+
+/* Narrative Card */
+.narrative-card {
+  background: linear-gradient(135deg, rgba(255, 165, 0, 0.05) 0%, rgba(255, 140, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.narrative-card h3 {
+  color: #FFA500;
+  margin-bottom: 16px;
+}
+
+.narrative-card p {
+  color: #e4e4e7;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.narrative-card strong {
+  color: #FFA500;
+}
+
+.narrative-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.narrative-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(24, 24, 27, 0.5);
+  border-radius: 8px;
+  color: #e4e4e7;
+  font-size: 13px;
+}
+
+.narrative-icon {
+  font-size: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .agent-manager {
+    padding: 20px 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .deposit-form {
+    flex-direction: column;
+  }
+
+  .narrative-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Success Banner */
+.success-banner {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+  font-weight: 600;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Transaction Info */
+.tx-info {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 8px;
+}
+
+.tx-info p {
+  color: #FFA500;
+  font-size: 13px;
+  margin: 0;
+  font-family: monospace;
+}

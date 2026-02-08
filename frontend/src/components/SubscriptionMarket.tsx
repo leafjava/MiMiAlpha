@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useContract } from '../hooks/useContract';
+import { useSmartFacilitator } from '../hooks/useSmartFacilitator';
+import { useToken } from '../hooks/useToken';
 import './SubscriptionMarket.css';
 
 interface Subscription {
@@ -54,10 +57,15 @@ const mockSubscriptions: Subscription[] = [
 ];
 
 export function SubscriptionMarket() {
+  const { account, connectWallet, isConnected, isHardhatNetwork, switchToHardhat } = useContract();
+  const { executePayment, loading: facilitatorLoading, isSuccess, hash } = useSmartFacilitator();
+  const { balance } = useToken();
+  
   const [activeTab, setActiveTab] = useState<'rent' | 'list'>('rent');
   const [selectedService, setSelectedService] = useState<string>('all');
   const [rentQuantity, setRentQuantity] = useState(5);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // List subscription form state
   const [listForm, setListForm] = useState({
@@ -119,6 +127,25 @@ export function SubscriptionMarket() {
           </div>
         </div>
       </div>
+
+      {/* Wallet Status */}
+      {isConnected && (
+        <div className="wallet-status-bar">
+          <div className="status-item">
+            <span className="status-label">账户：</span>
+            <span className="status-value">{account.slice(0, 6)}...{account.slice(-4)}</span>
+          </div>
+          <div className="status-item">
+            <span className="status-label">余额：</span>
+            <span className="status-value highlight">{balance} cUSD</span>
+          </div>
+          {!isHardhatNetwork && (
+            <button onClick={switchToHardhat} className="switch-network-btn">
+              切换到 Hardhat 网络
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="market-tabs">
@@ -207,8 +234,9 @@ export function SubscriptionMarket() {
                 <button 
                   className="rent-button"
                   onClick={() => handleRent(subscription)}
+                  disabled={facilitatorLoading}
                 >
-                  立即租用 →
+                  {facilitatorLoading ? '处理中...' : '立即租用 →'}
                 </button>
               </div>
             ))}

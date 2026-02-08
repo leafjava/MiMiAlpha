@@ -1,27 +1,19 @@
 import { http, createConfig } from 'wagmi';
-import { confluxESpace } from 'wagmi/chains';
+import { localhost } from 'wagmi/chains';
 import { injected } from 'wagmi/connectors';
 
-// Conflux eSpace 测试网配置
-const confluxESpaceTestnet = {
-  id: 71,
-  name: 'Conflux eSpace Testnet',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'CFX',
-    symbol: 'CFX',
-  },
+// Hardhat 本地网络配置
+const hardhatLocal = {
+  ...localhost,
+  id: 1337,
+  name: 'Hardhat Local',
   rpcUrls: {
-    default: { http: ['https://evmtestnet.confluxrpc.com'] },
-    public: { http: ['https://evmtestnet.confluxrpc.com'] },
+    default: { http: ['http://127.0.0.1:8545'] },
+    public: { http: ['http://127.0.0.1:8545'] },
   },
-  blockExplorers: {
-    default: { name: 'ConfluxScan', url: 'https://evmtestnet.confluxscan.io' },
-  },
-  testnet: true,
-} as const;
+};
 
-// 仅使用 injected 连接器（支持 MetaMask、OKX 等）
+// 仅使用 injected（MetaMask/OKX）
 const connectors = [
   injected({
     shimDisconnect: true,
@@ -30,10 +22,10 @@ const connectors = [
 
 // 配置 Wagmi
 export const wagmiConfig = createConfig({
-  chains: [confluxESpaceTestnet],
+  chains: [hardhatLocal],
   connectors,
   transports: {
-    [confluxESpaceTestnet.id]: http('https://evmtestnet.confluxrpc.com'),
+    [hardhatLocal.id]: http('http://127.0.0.1:8545'),
   },
   ssr: false,
 });
