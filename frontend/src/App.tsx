@@ -12,11 +12,14 @@ import { DisputeArbitration } from './components/DisputeArbitration';
 import { CreditScore } from './components/CreditScore';
 import { InvestmentPool } from './components/InvestmentPool';
 import { Marketplace } from './components/Marketplace';
+import { FacilitatorXHome } from './components/FacilitatorXHome';
+import { SubscriptionMarket } from './components/SubscriptionMarket';
+import { ModelMarket } from './components/ModelMarket';
 import { Logo } from './components/Logo';
 import { useTranslation } from 'react-i18next';
 import './index.css';
 
-type Page = 'home' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit';
+type Page = 'home' | 'subscription' | 'model' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit';
 
 function AppContent() {
   const { t } = useTranslation();
@@ -24,9 +27,9 @@ function AppContent() {
   const [showLanding, setShowLanding] = useState(true);
   const [currentPage, setCurrentPage] = useState<Page>('home');
 
-  // Show landing page first
+  // Show FacilitatorX landing page first
   if (showLanding) {
-    return <LandingPage onEnter={() => setShowLanding(false)} />;
+    return <FacilitatorXHome onEnter={() => setShowLanding(false)} />;
   }
 
   return (
@@ -55,8 +58,8 @@ function AppContent() {
             fontWeight: 700, 
             color: '#FFA500',
             cursor: 'pointer'
-          }} onClick={() => setCurrentPage('home')}>
-            💎 VirtualVault
+          }} onClick={() => setShowLanding(true)}>
+            🚀 FacilitatorX
           </div>
           
           <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -77,35 +80,35 @@ function AppContent() {
             </button>
             
             <button
-              onClick={() => setCurrentPage('pool')}
+              onClick={() => setCurrentPage('subscription')}
               style={{
                 padding: '0.5rem 1rem',
                 borderRadius: '8px',
                 border: 'none',
-                background: currentPage === 'pool' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
-                color: currentPage === 'pool' ? '#fff' : '#a1a1aa',
+                background: currentPage === 'subscription' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'subscription' ? '#fff' : '#a1a1aa',
                 fontWeight: 500,
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
             >
-              💰 投资池
+              🔄 订阅共享
             </button>
             
             <button
-              onClick={() => setCurrentPage('market')}
+              onClick={() => setCurrentPage('model')}
               style={{
                 padding: '0.5rem 1rem',
                 borderRadius: '8px',
                 border: 'none',
-                background: currentPage === 'market' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
-                color: currentPage === 'market' ? '#fff' : '#a1a1aa',
+                background: currentPage === 'model' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'model' ? '#fff' : '#a1a1aa',
                 fontWeight: 500,
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
             >
-              🛒 市场
+              🧠 模型市场
             </button>
             
             <button
@@ -207,9 +210,9 @@ function AppContent() {
       <div style={{ paddingTop: '70px' }}>
         {currentPage === 'home' && <InvestmentPool />}
         
-        {currentPage === 'pool' && <InvestmentPool />}
+        {currentPage === 'subscription' && <SubscriptionMarket />}
         
-        {currentPage === 'market' && <Marketplace />}
+        {currentPage === 'model' && <ModelMarket />}
 
         {currentPage === 'risk' && <RiskAssessment />}
         
