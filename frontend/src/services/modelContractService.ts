@@ -20,7 +20,7 @@ declare global {
 // 本地测试模式（不需要真实钱包）
 // 设置为 true：使用模拟模式，无需钱包
 // 设置为 false：使用真实钱包（TronLink 或 OKX）
-const LOCAL_TEST_MODE = true; // 暂时改回测试模式，等钱包问题解决后再改为 false
+const LOCAL_TEST_MODE = false; // 使用真实钱包连接 TRON Nile 测试网
 
 // USDT TRC20 合约地址（Nile 测试网）
 const USDT_CONTRACT = 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj'; // Nile testnet USDT

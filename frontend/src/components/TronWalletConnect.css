@@ -1,0 +1,113 @@
+.tron-wallet-connect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.connect-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.connect-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.connect-button:active {
+  transform: translateY(0);
+}
+
+.wallet-icon {
+  font-size: 1.2rem;
+}
+
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  min-width: 300px;
+}
+
+.wallet-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.wallet-address,
+.wallet-network,
+.wallet-balance {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.address-icon,
+.network-icon,
+.balance-icon {
+  font-size: 1.2rem;
+}
+
+.address-text,
+.network-text,
+.balance-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.disconnect-button {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 59, 48, 0.8);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.disconnect-button:hover {
+  background: rgba(255, 59, 48, 1);
+  transform: translateY(-1px);
+}
+
+.wallet-hint {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  max-width: 300px;
+}
+
+.wallet-hint p {
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.wallet-hint strong {
+  color: #ffc107;
+  font-weight: 600;
+}
