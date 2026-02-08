@@ -168,12 +168,8 @@ export function SubscriptionMarket() {
       {/* Header */}
       <div className="market-header">
         <div className="header-content">
-          <h1>🔄 闲置订阅权 RWA Token 交易所</h1>
-          <p>基于 AINFT Nova 资产化平台 · 订阅权管理领域的首个治理层</p>
-          <div className="ainft-integration-badge">
-            <span className="badge-icon">🤝</span>
-            <span className="badge-text">Powered by AINFT Nova & MAS Framework</span>
-          </div>
+          <h1>🔄 引擎 A：C2C 订阅共享市场</h1>
+          <p>让闲置 AI 订阅变成收益 · AI 版闲鱼</p>
         </div>
         
         <div className="header-stats">

@@ -97,7 +97,25 @@ export function InvestmentPool() {
   return (
     <div className="investment-pool">
       <div className="pool-header">
-        <h1>💎 虚拟商品资产投资池</h1>
+        <h1>💎 MiMiAlpha - TRON AI 生态的财务治理层</h1>
+        <p className="pool-subtitle">
+          响应 TRON 2025 战略升级，解决智能互联网时代的核心矛盾
+        </p>
+        <div className="ainft-vision-card">
+          <div className="vision-icon">🎯</div>
+          <div className="vision-content">
+            <h3>智能互联网的财务治理</h3>
+            <p>
+              从"价值互联网"到"智能互联网"，MiMiAlpha 致力于解决 AI Agent 自主决策的高频性与人类资产安全的确定性之间的平衡。
+            </p>
+            <div className="vision-badges">
+              <span className="vision-badge">🤝 AINFT MAS Framework</span>
+              <span className="vision-badge">💎 AINFT Nova 资产化</span>
+              <span className="vision-badge">🔒 Smart Facilitator 治理</span>
+            </div>
+          </div>
+        </div>
+      </div>
         <p className="pool-subtitle">
           通过批发零售套利和分时租赁策略，投资虚拟商品获取稳定收益
         </p>

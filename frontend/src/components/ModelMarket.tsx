@@ -112,10 +112,14 @@ export function ModelMarket() {
       {/* Hero Section */}
       <div className="model-hero">
         <div className="model-hero-content">
-          <h1>🧠 引擎 B：量化模型信号交易</h1>
+          <h1>🧠 量化信号 RWA Token 交易所</h1>
           <p className="model-hero-subtitle">
-            AI 版彭博终端 - 低频高额，链上业绩追溯
+            基于 AINFT Nova 资产化平台 · 量化金融领域的首个治理层
           </p>
+          <div className="ainft-integration-badge">
+            <span className="badge-icon">🤝</span>
+            <span className="badge-text">Powered by AINFT Nova & MAS Framework</span>
+          </div>
           <div className="model-hero-stats">
             <div className="stat-item">
               <div className="stat-value">100+</div>
