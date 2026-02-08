@@ -103,18 +103,18 @@ export const TradeList = () => {
         if (!tokenContract || !escrowContract) return;
         setActionLoading(trade.id);
         try {
-            const allowance = await tokenContract.allowance(account, ContractAddresses.Escrow);
+            const allowance = await tokenContract.allowance(account, ContractAddresses.contracts.Escrow);
             const allowanceBN = BigInt(allowance.toString());
             const amountBN = BigInt(trade.amount.toString());
 
             if (allowanceBN < amountBN) {
-                const approveData = tokenContract.approve(ContractAddresses.Escrow, amountBN.toString()).data;
+                const approveData = tokenContract.approve(ContractAddresses.contracts.Escrow, amountBN.toString()).data;
                 // @ts-ignore
                 const txHash = await window.conflux.request({
                     method: 'cfx_sendTransaction',
                     params: [{
                         from: account,
-                        to: ContractAddresses.MockERC20,
+                        to: ContractAddresses.contracts.MockERC20,
                         data: approveData
                     }]
                 });
@@ -129,7 +129,7 @@ export const TradeList = () => {
                 method: 'cfx_sendTransaction',
                 params: [{
                     from: account,
-                    to: ContractAddresses.Escrow,
+                    to: ContractAddresses.contracts.Escrow,
                     data: depositData
                 }]
             });
@@ -153,7 +153,7 @@ export const TradeList = () => {
                 method: 'cfx_sendTransaction',
                 params: [{
                     from: account,
-                    to: ContractAddresses.Escrow,
+                    to: ContractAddresses.contracts.Escrow,
                     data: data
                 }]
             });
@@ -177,7 +177,7 @@ export const TradeList = () => {
                 method: 'cfx_sendTransaction',
                 params: [{
                     from: account,
-                    to: ContractAddresses.Escrow,
+                    to: ContractAddresses.contracts.Escrow,
                     data: data
                 }]
             });

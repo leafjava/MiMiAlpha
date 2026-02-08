@@ -38,7 +38,7 @@ export interface AIResponse {
  */
 export class AIService {
   private static instance: AIService | null = null
-  private apiUrl: string
+  private apiUrl: string = AI_CONFIG.API_BASE_URL
 
   constructor() {
     if (AIService.instance) {

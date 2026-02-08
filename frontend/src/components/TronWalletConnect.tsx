@@ -1,19 +1,7 @@
 import { useState, useEffect } from 'react';
 import './TronWalletConnect.css';
 
-declare global {
-  interface Window {
-    tronWeb?: any;
-    tronLink?: any;
-    okxwallet?: {
-      tronLink?: {
-        ready?: boolean;
-        tronWeb?: any;
-        request?: (args: { method: string }) => Promise<any>;
-      };
-    };
-  }
-}
+// Window interface is declared in AppContext.tsx
 
 interface TronWalletConnectProps {
   onConnect?: (address: string) => void;

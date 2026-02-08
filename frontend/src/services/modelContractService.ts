@@ -1,21 +1,7 @@
 // 量化模型合约交互服务
 // 支持 TronLink 和 OKX 钱包
 
-declare global {
-  interface Window {
-    tronWeb?: any;
-    tronLink?: any;
-    okxwallet?: {
-      tronLink?: {
-        ready?: boolean;
-        tronWeb?: any;
-        request?: (args: { method: string }) => Promise<any>;
-      };
-    };
-    // OKX 可能直接注入 tronWeb
-    okxTronWeb?: any;
-  }
-}
+// Window interface is declared in AppContext.tsx
 
 // 本地测试模式（不需要真实钱包）
 // 设置为 true：使用模拟模式，无需钱包

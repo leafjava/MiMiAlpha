@@ -1,14 +1,6 @@
 import { useState, useEffect } from 'react';
 
-declare global {
-  interface Window {
-    tronWeb?: any;
-    tronLink?: any;
-    okxwallet?: {
-      tronLink?: any;
-    };
-  }
-}
+// Window interface is declared in AppContext.tsx
 
 export function useContract() {
   const [address, setAddress] = useState<string>('');

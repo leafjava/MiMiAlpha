@@ -81,13 +81,13 @@ function AppProviderInner({ children }: { children: ReactNode }) {
         // Setup initial contracts (read-only until account connected)
         const escrow = sdk.Contract({
             abi: EscrowArtifact.abi,
-            address: ContractAddresses.Escrow
+            address: ContractAddresses.contracts.Escrow
         });
         setEscrowContract(escrow);
 
         const token = sdk.Contract({
             abi: MockERC20Artifact.abi,
-            address: ContractAddresses.MockERC20
+            address: ContractAddresses.contracts.MockERC20
         });
         setTokenContract(token);
 
@@ -253,8 +253,11 @@ export const useApp = () => useContext(AppContext);
 // Declare window.conflux and window.ethereum
 declare global {
     interface Window {
-        conflux: any;
-        ethereum: any;
-        okxwallet: any;
+        conflux?: any;
+        ethereum?: any;
+        okxwallet?: any;
+        tronWeb?: any;
+        tronLink?: any;
+        okxTronWeb?: any;
     }
 }

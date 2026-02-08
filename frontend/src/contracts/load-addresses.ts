@@ -32,8 +32,8 @@ export function getContractAddresses(chainId?: number) {
   
   // 默认返回本地地址
   return {
-    usdt: localAddresses.contracts?.MockERC20 || localAddresses.contracts?.USDT,
-    modelSubscription: localAddresses.contracts?.ModelSubscription,
+    usdt: localAddresses.contracts?.MockERC20 || '',
+    modelSubscription: '',
     network: 'local',
     explorer: null,
   };

@@ -1,10 +1,65 @@
 import { useState } from 'react';
 import './PitchDeck.css';
 
+interface Problem {
+  icon: string;
+  title: string;
+  desc: string;
+  example: string;
+}
+
+interface Solution {
+  icon: string;
+  title: string;
+  desc: string;
+}
+
+interface Feature {
+  title: string;
+  desc: string;
+  screenshot: string;
+  highlights: string[];
+}
+
+interface TechStack {
+  name: string;
+  tech: string;
+}
+
+interface TeamMember {
+  name: string;
+  role: string;
+  avatar: string;
+}
+
+interface SlideData {
+  id: number;
+  type: string;
+  title?: string;
+  subtitle?: string;
+  tagline?: string;
+  team?: string | { members: TeamMember[] };
+  background?: string;
+  problems?: Problem[];
+  solutions?: Solution[];
+  features?: Feature[];
+  tech?: {
+    stack: TechStack[];
+    architecture: string[];
+  };
+  summary?: string[];
+  nextSteps?: string[];
+  contact?: {
+    demo: string;
+    github: string;
+    email: string;
+  };
+}
+
 export function PitchDeck() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const slides = [
+  const slides: SlideData[] = [
     // 第 1 页：封面
     {
       id: 1,
@@ -113,7 +168,7 @@ export function PitchDeck() {
           { name: 'Backend Dev', role: '后端开发 & API 设计', avatar: '👨‍💻' },
           { name: 'Smart Contract', role: '智能合约 & 区块链', avatar: '👩‍💻' }
         ]
-      }
+      } as { members: TeamMember[] }
     },
     // 第 5 页：结尾
     {
@@ -171,7 +226,7 @@ export function PitchDeck() {
               <h1 className="project-title">{currentSlideData.title}</h1>
               <h2 className="project-subtitle">{currentSlideData.subtitle}</h2>
               <p className="tagline">{currentSlideData.tagline}</p>
-              <div className="team-name">{currentSlideData.team}</div>
+              <div className="team-name">{typeof currentSlideData.team === 'string' ? currentSlideData.team : 'MiMiAlpha Team'}</div>
               <div className="badges">
                 <span className="badge">基于 AINFT MAS 框架</span>
                 <span className="badge">TRON 挑战2</span>
@@ -188,7 +243,7 @@ export function PitchDeck() {
               <div className="problems-section">
                 <h3 className="section-title">❌ x402 协议带来的挑战</h3>
                 <div className="problems-grid">
-                  {currentSlideData.problems.map((problem, idx) => (
+                  {currentSlideData.problems?.map((problem, idx) => (
                     <div key={idx} className="problem-card">
                       <div className="problem-icon">{problem.icon}</div>
                       <h4>{problem.title}</h4>
@@ -203,7 +258,7 @@ export function PitchDeck() {
               <div className="solutions-section">
                 <h3 className="section-title">✅ Smart Facilitator 解决方案</h3>
                 <div className="solutions-grid">
-                  {currentSlideData.solutions.map((solution, idx) => (
+                  {currentSlideData.solutions?.map((solution, idx) => (
                     <div key={idx} className="solution-card">
                       <div className="solution-icon">{solution.icon}</div>
                       <h4>{solution.title}</h4>
@@ -229,7 +284,7 @@ export function PitchDeck() {
           <div className="slide slide-demo">
             <h2 className="slide-title">{currentSlideData.title}</h2>
             <div className="demo-grid">
-              {currentSlideData.features.map((feature, idx) => (
+              {currentSlideData.features?.map((feature, idx) => (
                 <div key={idx} className="demo-card">
                   <h3>{feature.title}</h3>
                   <div className="screenshot-placeholder">
@@ -261,7 +316,7 @@ export function PitchDeck() {
             <div className="tech-section">
               <h3 className="section-title">🔧 技术栈</h3>
               <div className="tech-stack">
-                {currentSlideData.tech.stack.map((item, idx) => (
+                {currentSlideData.tech?.stack.map((item, idx) => (
                   <div key={idx} className="tech-item">
                     <span className="tech-name">{item.name}</span>
                     <span className="tech-detail">{item.tech}</span>
@@ -271,7 +326,7 @@ export function PitchDeck() {
               
               <h3 className="section-title" style={{ marginTop: '2rem' }}>🏗️ 架构流程</h3>
               <div className="architecture">
-                {currentSlideData.tech.architecture.map((step, idx) => (
+                {currentSlideData.tech?.architecture.map((step, idx) => (
                   <div key={idx} className={`arch-step ${step === '↓' ? 'arrow' : ''}`}>
                     {step}
                   </div>
@@ -283,7 +338,7 @@ export function PitchDeck() {
             <div className="team-section">
               <h3 className="section-title">👥 团队成员</h3>
               <div className="team-grid">
-                {currentSlideData.team.members.map((member, idx) => (
+                {currentSlideData.team && typeof currentSlideData.team !== 'string' && currentSlideData.team.members.map((member: TeamMember, idx: number) => (
                   <div key={idx} className="team-member">
                     <div className="member-avatar">{member.avatar}</div>
                     <h4>{member.name}</h4>
@@ -303,7 +358,7 @@ export function PitchDeck() {
               <div className="summary-section">
                 <h3>🎯 项目亮点</h3>
                 <ul className="summary-list">
-                  {currentSlideData.summary.map((item, idx) => (
+                  {currentSlideData.summary?.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
                 </ul>
@@ -312,7 +367,7 @@ export function PitchDeck() {
               <div className="next-steps-section">
                 <h3>🚀 后续计划</h3>
                 <ul className="next-steps-list">
-                  {currentSlideData.nextSteps.map((step, idx) => (
+                  {currentSlideData.nextSteps?.map((step, idx) => (
                     <li key={idx}>{step}</li>
                   ))}
                 </ul>
@@ -323,15 +378,15 @@ export function PitchDeck() {
                 <div className="contact-info">
                   <div className="contact-item">
                     <span className="contact-label">Demo:</span>
-                    <span className="contact-value">{currentSlideData.contact.demo}</span>
+                    <span className="contact-value">{currentSlideData.contact?.demo}</span>
                   </div>
                   <div className="contact-item">
                     <span className="contact-label">GitHub:</span>
-                    <span className="contact-value">{currentSlideData.contact.github}</span>
+                    <span className="contact-value">{currentSlideData.contact?.github}</span>
                   </div>
                   <div className="contact-item">
                     <span className="contact-label">Email:</span>
-                    <span className="contact-value">{currentSlideData.contact.email}</span>
+                    <span className="contact-value">{currentSlideData.contact?.email}</span>
                   </div>
                 </div>
               </div>

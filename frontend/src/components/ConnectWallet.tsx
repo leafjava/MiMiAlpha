@@ -2,15 +2,7 @@ import { useState, useEffect } from 'react';
 import { Wallet, LogIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-declare global {
-  interface Window {
-    tronWeb?: any;
-    tronLink?: any;
-    okxwallet?: {
-      tronLink?: any;
-    };
-  }
-}
+// Window interface is declared in AppContext.tsx
 
 // 检测钱包类型的辅助函数
 const getWalletIcon = () => {

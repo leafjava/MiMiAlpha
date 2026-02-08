@@ -20,7 +20,7 @@ export const Faucet = () => {
                 method: 'cfx_sendTransaction',
                 params: [{
                     from: account,
-                    to: ContractAddresses.MockERC20,
+                    to: ContractAddresses.contracts.MockERC20,
                     data: data
                 }]
             });
