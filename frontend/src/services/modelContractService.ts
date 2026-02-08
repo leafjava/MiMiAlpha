@@ -1,12 +1,26 @@
 // 量化模型合约交互服务
-// 使用 TronWeb 与智能合约交互
+// 支持 TronLink 和 OKX 钱包
 
 declare global {
   interface Window {
     tronWeb?: any;
     tronLink?: any;
+    okxwallet?: {
+      tronLink?: {
+        ready?: boolean;
+        tronWeb?: any;
+        request?: (args: { method: string }) => Promise<any>;
+      };
+    };
+    // OKX 可能直接注入 tronWeb
+    okxTronWeb?: any;
   }
 }
+
+// 本地测试模式（不需要真实钱包）
+// 设置为 true：使用模拟模式，无需钱包
+// 设置为 false：使用真实钱包（TronLink 或 OKX）
+const LOCAL_TEST_MODE = true; // 暂时改回测试模式，等钱包问题解决后再改为 false
 
 // USDT TRC20 合约地址（Nile 测试网）
 const USDT_CONTRACT = 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj'; // Nile testnet USDT
@@ -81,33 +95,107 @@ const USDT_ABI = [
 
 export class ModelContractService {
   private tronWeb: any;
+  private walletType: 'tronlink' | 'okx' | 'local' | null = null;
 
   constructor() {
     this.tronWeb = null;
   }
 
-  // 初始化 TronWeb
+  // 初始化 TronWeb（支持 TronLink、OKX 钱包和本地测试）
   async initialize(): Promise<boolean> {
     try {
-      // 检查 TronLink 是否安装
-      if (window.tronWeb && window.tronWeb.ready) {
-        this.tronWeb = window.tronWeb;
+      // 本地测试模式
+      if (LOCAL_TEST_MODE) {
+        console.log('🧪 本地测试模式已启用');
+        this.walletType = 'local';
         return true;
       }
 
-      // 等待 TronLink 加载
+      console.log('🔍 开始检测钱包...');
+      console.log('window.okxwallet:', window.okxwallet);
+      console.log('window.tronWeb:', window.tronWeb);
+      console.log('window.tronLink:', window.tronLink);
+
+      // 方法1: 检查 OKX 钱包的 tronLink 接口
+      if (window.okxwallet?.tronLink) {
+        console.log('✅ 检测到 OKX 钱包 (tronLink 接口)');
+        
+        // 等待 OKX 钱包完全加载
+        await this.waitForOKXWallet();
+        
+        // OKX 钱包可能通过 window.tronWeb 注入
+        if (window.tronWeb) {
+          this.tronWeb = window.tronWeb;
+          this.walletType = 'okx';
+          console.log('✅ OKX 钱包初始化成功（通过 window.tronWeb）');
+          return true;
+        }
+        
+        // 或者通过 okxwallet.tronLink.tronWeb
+        if (window.okxwallet.tronLink.tronWeb) {
+          this.tronWeb = window.okxwallet.tronLink.tronWeb;
+          this.walletType = 'okx';
+          console.log('✅ OKX 钱包初始化成功（通过 okxwallet.tronLink.tronWeb）');
+          return true;
+        }
+      }
+
+      // 方法2: 检查 OKX 直接注入的 tronWeb
+      if (window.okxTronWeb) {
+        console.log('✅ 检测到 OKX 钱包 (直接注入)');
+        this.tronWeb = window.okxTronWeb;
+        this.walletType = 'okx';
+        return true;
+      }
+
+      // 方法3: 检查 TronLink 钱包
+      if (window.tronWeb && window.tronWeb.ready) {
+        console.log('✅ 检测到 TronLink 钱包');
+        this.tronWeb = window.tronWeb;
+        this.walletType = 'tronlink';
+        return true;
+      }
+
+      // 等待钱包加载
+      console.log('⏳ 等待钱包加载...');
       await this.waitForTronWeb();
       
-      if (window.tronWeb && window.tronWeb.ready) {
+      if (window.tronWeb) {
         this.tronWeb = window.tronWeb;
+        this.walletType = window.okxwallet ? 'okx' : 'tronlink';
+        console.log(`✅ 钱包初始化成功: ${this.walletType}`);
         return true;
       }
 
-      throw new Error('TronLink 未安装或未登录');
+      console.error('❌ 未检测到任何钱包');
+      throw new Error('未检测到 TronLink 或 OKX 钱包，请安装其中之一');
     } catch (error) {
-      console.error('初始化 TronWeb 失败:', error);
+      console.error('初始化钱包失败:', error);
       return false;
     }
+  }
+
+  // 等待 OKX 钱包加载
+  private waitForOKXWallet(): Promise<void> {
+    return new Promise((resolve) => {
+      let attempts = 0;
+      const maxAttempts = 50;
+      
+      const check = setInterval(() => {
+        attempts++;
+        
+        // OKX 钱包通常会注入 window.tronWeb
+        if (window.tronWeb || window.okxwallet?.tronLink?.tronWeb) {
+          console.log(`✅ OKX 钱包加载完成 (尝试 ${attempts} 次)`);
+          clearInterval(check);
+          resolve();
+        } else if (attempts >= maxAttempts) {
+          console.log('⚠️ OKX 钱包加载超时，但继续尝试');
+          clearInterval(check);
+          resolve();
+        }
+      }, 100);
+    });
   }
 
   // 等待 TronWeb 加载
@@ -132,20 +220,80 @@ export class ModelContractService {
 
   // 获取当前用户地址
   async getCurrentAddress(): Promise<string | null> {
-    if (!this.tronWeb) {
+    if (!this.tronWeb && !LOCAL_TEST_MODE) {
       await this.initialize();
     }
 
-    if (this.tronWeb && this.tronWeb.defaultAddress.base58) {
-      return this.tronWeb.defaultAddress.base58;
+    // 本地测试模式返回模拟地址
+    if (LOCAL_TEST_MODE) {
+      return 'TTestAddress1234567890abcdefghijk';
+    }
+
+    if (this.tronWeb) {
+      // 尝试多种方式获取地址
+      try {
+        // 方式1: defaultAddress.base58 (TronLink 标准)
+        if (this.tronWeb.defaultAddress?.base58) {
+          const addr = this.tronWeb.defaultAddress.base58;
+          console.log('✅ 获取地址成功 (defaultAddress.base58):', addr);
+          return typeof addr === 'string' ? addr : null;
+        }
+        
+        // 方式2: 直接调用 address 属性
+        if (this.tronWeb.address) {
+          const addr = this.tronWeb.address;
+          console.log('✅ 获取地址成功 (address):', addr);
+          // 如果是对象，尝试转换
+          if (typeof addr === 'object' && addr.base58) {
+            return addr.base58;
+          }
+          return typeof addr === 'string' ? addr : null;
+        }
+        
+        // 方式3: 使用 tronWeb.trx.getAccount
+        if (this.tronWeb.trx?.getAccount) {
+          const account = await this.tronWeb.trx.getAccount();
+          if (account && account.address) {
+            const addr = this.tronWeb.address.fromHex(account.address.toString());
+            console.log('✅ 获取地址成功 (getAccount):', addr);
+            return addr;
+          }
+        }
+        
+        // 方式4: 调用 request 方法 (OKX 可能需要)
+        if (this.tronWeb.request) {
+          const accounts = await this.tronWeb.request({ method: 'tron_requestAccounts' });
+          if (accounts && accounts.length > 0) {
+            console.log('✅ 获取地址成功 (request):', accounts[0]);
+            return accounts[0];
+          }
+        }
+        
+        console.error('❌ 无法获取地址，tronWeb 对象:', this.tronWeb);
+      } catch (error) {
+        console.error('❌ 获取地址失败:', error);
+      }
     }
 
     return null;
   }
 
+  // 获取钱包类型
+  getWalletType(): string {
+    if (LOCAL_TEST_MODE) return '本地测试模式';
+    if (this.walletType === 'okx') return 'OKX 钱包';
+    if (this.walletType === 'tronlink') return 'TronLink 钱包';
+    return '未连接';
+  }
+
   // 获取 USDT 余额
   async getUSDTBalance(address: string): Promise<number> {
     try {
+      // 本地测试模式返回模拟余额
+      if (LOCAL_TEST_MODE) {
+        return 10000; // 模拟 10000 USDT
+      }
+
       if (!this.tronWeb) {
         await this.initialize();
       }
@@ -192,10 +340,20 @@ export class ModelContractService {
     amount: number
   ): Promise<{ success: boolean; txId?: string; error?: string }> {
     try {
+      // 本地测试模式模拟交易
+      if (LOCAL_TEST_MODE) {
+        console.log('🧪 本地测试：模拟购买信号', { modelContract, providerAddress, amount });
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 模拟网络延迟
+        return {
+          success: true,
+          txId: '0x' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        };
+      }
+
       if (!this.tronWeb) {
         const initialized = await this.initialize();
         if (!initialized) {
-          return { success: false, error: '请先安装并登录 TronLink 钱包' };
+          return { success: false, error: `请先安装并登录 ${this.walletType === 'okx' ? 'OKX' : 'TronLink'} 钱包` };
         }
       }
 
@@ -243,10 +401,20 @@ export class ModelContractService {
     amount: number
   ): Promise<{ success: boolean; txId?: string; error?: string }> {
     try {
+      // 本地测试模式模拟交易
+      if (LOCAL_TEST_MODE) {
+        console.log('🧪 本地测试：模拟订阅模型', { modelContract, providerAddress, amount });
+        await new Promise(resolve => setTimeout(resolve, 1500)); // 模拟网络延迟
+        return {
+          success: true,
+          txId: '0x' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        };
+      }
+
       if (!this.tronWeb) {
         const initialized = await this.initialize();
         if (!initialized) {
-          return { success: false, error: '请先安装并登录 TronLink 钱包' };
+          return { success: false, error: `请先安装并登录 ${this.walletType === 'okx' ? 'OKX' : 'TronLink'} 钱包` };
         }
       }
 

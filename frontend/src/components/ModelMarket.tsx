@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import './ModelMarket.css';
-import { modelContractService } from '../services/modelContractService';
+import { useContract } from '../hooks/useContract';
+import { useSmartFacilitator } from '../hooks/useSmartFacilitator';
+import { useToken } from '../hooks/useToken';
+import { useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { parseEther } from 'viem';
+import { SMART_FACILITATOR_ADDRESS, SmartFacilitatorAbi } from '../lib/contracts';
 
 interface Model {
   id: string;
@@ -37,7 +42,7 @@ const mockModels: Model[] = [
   {
     id: '1',
     name: '黄金价格预测模型',
-    provider: 'TJFJTCgJCmq1ghzZEagDTifHNtNgK4rnRL',
+    provider: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
     description: '基于机器学习的黄金价格预测模型，夏普比率 2.5，历史准确率 82%',
     type: 'gold',
     sharpeRatio: 2.5,
@@ -47,7 +52,7 @@ const mockModels: Model[] = [
     monthlySubscription: 50,
     stakedAmount: 100,
     avgConfidence: 78,
-    contractAddress: 'TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL',
+    contractAddress: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ $2,100', confidence: 85, result: 'accurate' },
       { date: '2024-02-06', prediction: 'HOLD', confidence: 72, result: 'accurate' },
@@ -57,7 +62,7 @@ const mockModels: Model[] = [
   {
     id: '2',
     name: 'BTC 趋势预测',
-    provider: 'TLPbmb5Qma7yLKJZWjD8PWdVDB6FhXy8Yx',
+    provider: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
     description: '比特币短期趋势预测，专注于 4 小时级别波动捕捉',
     type: 'crypto',
     sharpeRatio: 1.8,
@@ -67,7 +72,7 @@ const mockModels: Model[] = [
     monthlySubscription: 30,
     stakedAmount: 80,
     avgConfidence: 72,
-    contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    contractAddress: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ $45,000', confidence: 78, result: 'pending' },
       { date: '2024-02-06', prediction: 'SELL @ $44,500', confidence: 75, result: 'accurate' },
@@ -76,7 +81,7 @@ const mockModels: Model[] = [
   {
     id: '3',
     name: '美股大盘指数模型',
-    provider: 'TGzz8gjYiYRqpfmDwnLxfgPuLVNmpCswVp',
+    provider: '0x90F79bf6EB2c4f870365E785982E1f101E93b906',
     description: 'S&P 500 指数日内波动预测，适合日内交易者',
     type: 'stock',
     sharpeRatio: 2.1,
@@ -86,7 +91,7 @@ const mockModels: Model[] = [
     monthlySubscription: 40,
     stakedAmount: 120,
     avgConfidence: 76,
-    contractAddress: 'TUpMhErZL2fhh4sVNULAbNKLokS4GjC1F4',
+    contractAddress: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ 4,850', confidence: 82, result: 'pending' },
     ]
@@ -100,32 +105,34 @@ export function ModelMarket() {
   const [tronStats, setTronStats] = useState<TronStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 
-  // 合约交互状态
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [usdtBalance, setUsdtBalance] = useState<number>(0);
+  // 使用订阅市场相同的 hooks
+  const { account, connectWallet, isConnected } = useContract();
+  
+  // 直接使用 writeContract 而不是通过 useSmartFacilitator
+  const { writeContract, data: txHash, isPending: isTxPending } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess: isTxSuccess } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
+  
+  // 获取 ETH 余额
+  const { data: ethBalanceData } = useBalance({
+    address: account as `0x${string}` | undefined,
+  });
+  
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
-
-  // 初始化钱包
+  
+  // 使用 account 作为 walletAddress，使用 ETH 余额
+  const walletAddress = account;
+  const ethBalance = ethBalanceData ? parseFloat(ethBalanceData.formatted) : 0;
+  
+  // 调试：打印余额
   useEffect(() => {
-    const initWallet = async () => {
-      const address = await modelContractService.getCurrentAddress();
-      if (address) {
-        setWalletAddress(address);
-        const balance = await modelContractService.getUSDTBalance(address);
-        setUsdtBalance(balance);
-      }
-    };
+    console.log('🔍 ModelMarket - ETH balance:', ethBalance, 'ETH');
+  }, [ethBalance]);
 
-    initWallet();
-
-    // 监听账户变化（如果 TronLink 支持）
-    if (window.tronLink && typeof window.tronLink.on === 'function') {
-      window.tronLink.on('accountsChanged', () => {
-        initWallet();
-      });
-    }
-  }, []);
+  // 删除旧的钱包初始化代码
+  // useEffect 已被移除，使用 useContract hook 代替
 
   // 获取 TRON 链上数据
   useEffect(() => {
@@ -192,9 +199,17 @@ export function ModelMarket() {
     }
   };
 
-  const formatAddress = (addr: string) => {
-    if (!addr || addr.length < 10) return addr;
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  const formatAddress = (addr: string | null | undefined | any) => {
+    if (!addr) return '';
+    // 如果是对象，尝试获取 base58 属性
+    if (typeof addr === 'object') {
+      if (addr.base58) return formatAddress(addr.base58);
+      return '';
+    }
+    // 确保是字符串
+    const addrStr = String(addr);
+    if (addrStr.length < 10) return addrStr;
+    return `${addrStr.slice(0, 6)}...${addrStr.slice(-4)}`;
   };
 
   const formatNumber = (num: number) => {
@@ -210,87 +225,117 @@ export function ModelMarket() {
 
   // 购买单次信号
   const handlePurchaseSignal = async (model: Model) => {
-    if (!walletAddress) {
-      alert('❌ 请先连接 TronLink 钱包');
-      return;
+    if (!account) {
+      try {
+        await connectWallet();
+      } catch (error) {
+        alert('❌ 请先连接钱包');
+        return;
+      }
     }
 
-    if (usdtBalance < model.pricePerSignal) {
-      alert(`❌ USDT 余额不足\n\n当前余额: ${usdtBalance.toFixed(2)} USDT\n需要: ${model.pricePerSignal} USDT\n\n💡 请前往 https://nileex.io 获取测试币`);
+    if (ethBalance < model.pricePerSignal) {
+      alert(`❌ ETH 余额不足\n\n当前余额: ${ethBalance.toFixed(4)} ETH\n需要: ${model.pricePerSignal} ETH`);
       return;
     }
 
     setIsPurchasing(true);
 
     try {
-      const result = await modelContractService.purchaseSignal(
-        model.contractAddress || '',
-        model.provider,
-        model.pricePerSignal
-      );
+      console.log('🚀 执行支付:', {
+        agentAddress: account,
+        recipient: model.provider,
+        amount: model.pricePerSignal.toString(),
+        service: `Purchase signal from ${model.name}`
+      });
 
-      if (result.success) {
-        const txLink = modelContractService.getTronScanLink(result.txId || '', true);
-        alert(`✅ 购买成功！\n\n交易哈希: ${result.txId}\n\n查看交易: ${txLink}`);
-        
-        // 更新余额
-        const newBalance = await modelContractService.getUSDTBalance(walletAddress);
-        setUsdtBalance(newBalance);
-        
-        // 关闭弹窗
-        setSelectedModel(null);
-      } else {
-        alert(`❌ 购买失败\n\n${result.error}`);
-      }
+      // 直接调用 writeContract
+      writeContract({
+        address: SMART_FACILITATOR_ADDRESS,
+        abi: SmartFacilitatorAbi,
+        functionName: 'executePayment',
+        args: [
+          account as `0x${string}`,
+          model.provider as `0x${string}`,
+          parseEther(model.pricePerSignal.toString()),
+          `Purchase signal from ${model.name}`,
+        ],
+      });
+
+      alert(`✅ 购买交易已提交！\n\n服务：${model.name}\n金额：${model.pricePerSignal} ETH\n\n请在钱包中确认交易...`);
+      
+      // 不立即关闭弹窗，等待交易确认
     } catch (error: any) {
-      console.error('购买失败:', error);
+      console.error('❌ 购买失败:', error);
       alert(`❌ 购买失败\n\n${error.message || '未知错误'}`);
-    } finally {
       setIsPurchasing(false);
     }
   };
 
   // 订阅模型
   const handleSubscribe = async (model: Model) => {
-    if (!walletAddress) {
-      alert('❌ 请先连接 TronLink 钱包');
-      return;
+    if (!account) {
+      try {
+        await connectWallet();
+      } catch (error) {
+        alert('❌ 请先连接钱包');
+        return;
+      }
     }
 
-    if (usdtBalance < model.monthlySubscription) {
-      alert(`❌ USDT 余额不足\n\n当前余额: ${usdtBalance.toFixed(2)} USDT\n需要: ${model.monthlySubscription} USDT\n\n💡 请前往 https://nileex.io 获取测试币`);
+    if (ethBalance < model.monthlySubscription) {
+      alert(`❌ ETH 余额不足\n\n当前余额: ${ethBalance.toFixed(4)} ETH\n需要: ${model.monthlySubscription} ETH`);
       return;
     }
 
     setIsSubscribing(true);
 
     try {
-      const result = await modelContractService.subscribeModel(
-        model.contractAddress || '',
-        model.provider,
-        model.monthlySubscription
-      );
+      const paymentParams = {
+        agentAddress: account as `0x${string}`,
+        recipient: model.provider as `0x${string}`,
+        amount: parseEther(model.monthlySubscription.toString()),
+        service: `Subscribe to ${model.name} (30 days)`
+      };
+      
+      console.log('🚀 执行支付:', paymentParams);
+      console.log('📝 合约地址:', SMART_FACILITATOR_ADDRESS);
 
-      if (result.success) {
-        const txLink = modelContractService.getTronScanLink(result.txId || '', true);
-        alert(`✅ 订阅成功！\n\n交易哈希: ${result.txId}\n\n查看交易: ${txLink}\n\n您现在可以接收该模型的所有信号（30 天有效期）`);
-        
-        // 更新余额
-        const newBalance = await modelContractService.getUSDTBalance(walletAddress);
-        setUsdtBalance(newBalance);
-        
-        // 关闭弹窗
-        setSelectedModel(null);
-      } else {
-        alert(`❌ 订阅失败\n\n${result.error}`);
-      }
+      // 直接调用 writeContract
+      writeContract({
+        address: SMART_FACILITATOR_ADDRESS,
+        abi: SmartFacilitatorAbi,
+        functionName: 'executePayment',
+        args: [
+          paymentParams.agentAddress,
+          paymentParams.recipient,
+          paymentParams.amount,
+          paymentParams.service,
+        ],
+      });
+
+      console.log('✅ writeContract 调用完成');
+      
+      alert(`✅ 订阅交易已提交！\n\n服务：${model.name}\n金额：${model.monthlySubscription} ETH\n有效期：30 天\n\n请在钱包中确认交易...`);
+      
+      // 不立即关闭弹窗，等待交易确认
     } catch (error: any) {
-      console.error('订阅失败:', error);
+      console.error('❌ 订阅失败:', error);
       alert(`❌ 订阅失败\n\n${error.message || '未知错误'}`);
-    } finally {
       setIsSubscribing(false);
     }
   };
+  
+  // 监听交易成功
+  useEffect(() => {
+    if (isTxSuccess && txHash) {
+      console.log('✅ 交易成功！哈希:', txHash);
+      setIsPurchasing(false);
+      setIsSubscribing(false);
+      setSelectedModel(null);
+      alert(`🎉 交易确认成功！\n\n交易哈希: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
+    }
+  }, [isTxSuccess, txHash]);
 
   return (
     <div className="model-market">
@@ -497,11 +542,11 @@ export function ModelMarket() {
                 <div className="model-pricing">
                   <div className="price-option">
                     <span className="price-label">单次信号</span>
-                    <span className="price-value">${model.pricePerSignal}</span>
+                    <span className="price-value">{model.pricePerSignal} ETH</span>
                   </div>
                   <div className="price-option">
                     <span className="price-label">月度订阅</span>
-                    <span className="price-value">${model.monthlySubscription}</span>
+                    <span className="price-value">{model.monthlySubscription} ETH</span>
                   </div>
                 </div>
 
@@ -668,7 +713,7 @@ export function ModelMarket() {
             <div className="modal-pricing">
               <div className="pricing-option">
                 <h4>单次购买</h4>
-                <div className="pricing-value">${selectedModel.pricePerSignal}</div>
+                <div className="pricing-value">{selectedModel.pricePerSignal} ETH</div>
                 <p>购买单个信号</p>
                 <button 
                   className="subscribe-btn secondary"
@@ -681,7 +726,7 @@ export function ModelMarket() {
               <div className="pricing-option featured">
                 <div className="featured-badge">推荐</div>
                 <h4>月度订阅</h4>
-                <div className="pricing-value">${selectedModel.monthlySubscription}</div>
+                <div className="pricing-value">{selectedModel.monthlySubscription} ETH</div>
                 <p>无限制接收所有信号</p>
                 <button 
                   className="subscribe-btn primary"
@@ -712,10 +757,10 @@ export function ModelMarket() {
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '0.85rem', color: '#a1a1aa', marginBottom: '0.25rem' }}>
-                      USDT 余额
+                      ETH 余额
                     </div>
                     <div style={{ fontSize: '1.1rem', color: '#10B981', fontWeight: 600 }}>
-                      ${usdtBalance.toFixed(2)}
+                      {ethBalance.toFixed(4)} ETH
                     </div>
                   </div>
                 </div>
