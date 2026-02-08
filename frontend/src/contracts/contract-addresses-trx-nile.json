@@ -1,0 +1,15 @@
+{
+  "network": "nile",
+  "chainId": 3448148188,
+  "timestamp": "2026-02-08T17:02:50.743Z",
+  "deployer": "TXbQ8vC34TytH56r9uV2xndg5NGPP8EiWn",
+  "paymentMethod": "TRX",
+  "modelPrice": "1 TRX",
+  "contracts": {
+    "ModelSubscriptionTRX": "41c3584a693f9eaa6216a518e78a7821c4f25027c4",
+    "ModelSubscriptionTRXBase58": "TTn6Y1UwTbqQGXmwZJPqXNi1x5BpdqHtFN"
+  },
+  "explorer": {
+    "modelSubscription": "https://nile.tronscan.org/#/contract/TTn6Y1UwTbqQGXmwZJPqXNi1x5BpdqHtFN"
+  }
+}

@@ -12,11 +12,12 @@ import { InvestmentPool } from './components/InvestmentPool';
 import { FacilitatorXHome } from './components/FacilitatorXHome';
 import { SubscriptionMarket } from './components/SubscriptionMarket';
 import { ModelMarket } from './components/ModelMarket';
+import { ModelMarket2 } from './components/ModelMarket2';
 import { TechShowcase } from './components/TechShowcase';
 import { AgentManager } from './components/AgentManager';
 import './index.css';
 
-type Page = 'home' | 'subscription' | 'model' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit' | 'agent';
+type Page = 'home' | 'subscription' | 'model' | 'model2' | 'tech' | 'pool' | 'market' | 'risk' | 'dispute' | 'credit' | 'agent';
 
 function AppContent() {
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
@@ -107,6 +108,22 @@ function AppContent() {
               }}
             >
               🧠 模型市场
+            </button>
+            
+            <button
+              onClick={() => setCurrentPage('model2')}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: currentPage === 'model2' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
+                color: currentPage === 'model2' ? '#fff' : '#a1a1aa',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              🤖 模型市场二
             </button>
             
             <button
@@ -211,6 +228,8 @@ function AppContent() {
         {currentPage === 'subscription' && <SubscriptionMarket />}
         
         {currentPage === 'model' && <ModelMarket />}
+        
+        {currentPage === 'model2' && <ModelMarket2 />}
         
         {currentPage === 'tech' && <TechShowcase />}
 

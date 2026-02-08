@@ -121,6 +121,14 @@ export function useSmartFacilitator() {
     service: string
   ) => {
     try {
+      console.log('📝 [useSmartFacilitator] executePayment 参数:', {
+        agentAddress,
+        recipientAddress,
+        amount,
+        service,
+        parsedAmount: parseEther(amount).toString()
+      });
+      
       writeContract({
         address: SMART_FACILITATOR_ADDRESS,
         abi: SmartFacilitatorAbi,
@@ -131,9 +139,12 @@ export function useSmartFacilitator() {
           parseEther(amount),
           service,
         ],
+        chainId: 1337, // 指定 Hardhat 本地网络
       });
+      
+      console.log('✅ [useSmartFacilitator] writeContract 已调用');
     } catch (error) {
-      console.error('Execute payment failed:', error);
+      console.error('❌ [useSmartFacilitator] Execute payment failed:', error);
       throw error;
     }
   };

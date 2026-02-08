@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import './ModelMarket.css';
 import { useContract } from '../hooks/useContract';
 import { useSmartFacilitator } from '../hooks/useSmartFacilitator';
-import { useToken } from '../hooks/useToken';
-import { useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { parseEther } from 'viem';
-import { SMART_FACILITATOR_ADDRESS, SmartFacilitatorAbi } from '../lib/contracts';
+import { useBalance } from 'wagmi';
 
 interface Model {
   id: string;
@@ -107,12 +104,7 @@ export function ModelMarket() {
 
   // 使用订阅市场相同的 hooks
   const { account, connectWallet, isConnected } = useContract();
-  
-  // 直接使用 writeContract 而不是通过 useSmartFacilitator
-  const { writeContract, data: txHash, isPending: isTxPending } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess: isTxSuccess } = useWaitForTransactionReceipt({
-    hash: txHash,
-  });
+  const { executePayment, loading: facilitatorLoading, isSuccess: facilitatorSuccess, hash: facilitatorHash } = useSmartFacilitator();
   
   // 获取 ETH 余额
   const { data: ethBalanceData } = useBalance({
@@ -228,10 +220,18 @@ export function ModelMarket() {
     if (!account) {
       try {
         await connectWallet();
+        // 等待钱包连接后，检查并切换网络
+        await new Promise(resolve => setTimeout(resolve, 500));
       } catch (error) {
         alert('❌ 请先连接钱包');
         return;
       }
+    }
+
+    // 检查是否在正确的网络
+    if (!isConnected) {
+      alert('❌ 钱包未连接');
+      return;
     }
 
     if (ethBalance < model.pricePerSignal) {
@@ -249,19 +249,16 @@ export function ModelMarket() {
         service: `Purchase signal from ${model.name}`
       });
 
-      // 直接调用 writeContract
-      writeContract({
-        address: SMART_FACILITATOR_ADDRESS,
-        abi: SmartFacilitatorAbi,
-        functionName: 'executePayment',
-        args: [
-          account as `0x${string}`,
-          model.provider as `0x${string}`,
-          parseEther(model.pricePerSignal.toString()),
-          `Purchase signal from ${model.name}`,
-        ],
-      });
+      // 使用 executePayment（和订阅市场一样）
+      await executePayment(
+        account,
+        model.provider,
+        model.pricePerSignal.toString(),
+        `Purchase signal from ${model.name}`
+      );
 
+      console.log('✅ executePayment 调用完成');
+      
       alert(`✅ 购买交易已提交！\n\n服务：${model.name}\n金额：${model.pricePerSignal} ETH\n\n请在钱包中确认交易...`);
       
       // 不立即关闭弹窗，等待交易确认
@@ -291,30 +288,22 @@ export function ModelMarket() {
     setIsSubscribing(true);
 
     try {
-      const paymentParams = {
-        agentAddress: account as `0x${string}`,
-        recipient: model.provider as `0x${string}`,
-        amount: parseEther(model.monthlySubscription.toString()),
+      console.log('🚀 执行支付:', {
+        agentAddress: account,
+        recipient: model.provider,
+        amount: model.monthlySubscription.toString(),
         service: `Subscribe to ${model.name} (30 days)`
-      };
-      
-      console.log('🚀 执行支付:', paymentParams);
-      console.log('📝 合约地址:', SMART_FACILITATOR_ADDRESS);
-
-      // 直接调用 writeContract
-      writeContract({
-        address: SMART_FACILITATOR_ADDRESS,
-        abi: SmartFacilitatorAbi,
-        functionName: 'executePayment',
-        args: [
-          paymentParams.agentAddress,
-          paymentParams.recipient,
-          paymentParams.amount,
-          paymentParams.service,
-        ],
       });
 
-      console.log('✅ writeContract 调用完成');
+      // 使用 executePayment（和订阅市场一样）
+      await executePayment(
+        account,
+        model.provider,
+        model.monthlySubscription.toString(),
+        `Subscribe to ${model.name} (30 days)`
+      );
+
+      console.log('✅ executePayment 调用完成');
       
       alert(`✅ 订阅交易已提交！\n\n服务：${model.name}\n金额：${model.monthlySubscription} ETH\n有效期：30 天\n\n请在钱包中确认交易...`);
       
@@ -328,14 +317,22 @@ export function ModelMarket() {
   
   // 监听交易成功
   useEffect(() => {
-    if (isTxSuccess && txHash) {
-      console.log('✅ 交易成功！哈希:', txHash);
+    if (facilitatorSuccess && facilitatorHash) {
+      console.log('✅ 交易成功！哈希:', facilitatorHash);
       setIsPurchasing(false);
       setIsSubscribing(false);
       setSelectedModel(null);
-      alert(`🎉 交易确认成功！\n\n交易哈希: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
+      alert(`🎉 交易确认成功！\n\n交易哈希: ${facilitatorHash.slice(0, 10)}...${facilitatorHash.slice(-8)}`);
     }
-  }, [isTxSuccess, txHash]);
+  }, [facilitatorSuccess, facilitatorHash]);
+
+  // 添加网络提示
+  useEffect(() => {
+    if (isConnected && account) {
+      // 可以在这里添加网络检查逻辑
+      console.log('✅ 钱包已连接:', account);
+    }
+  }, [isConnected, account]);
 
   return (
     <div className="model-market">

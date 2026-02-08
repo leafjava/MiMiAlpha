@@ -1,0 +1,18 @@
+{
+  "network": "nile",
+  "chainId": 3448148188,
+  "timestamp": "2026-02-08T16:57:41.484Z",
+  "deployer": "TXbQ8vC34TytH56r9uV2xndg5NGPP8EiWn",
+  "contracts": {
+    "MockERC20": "41adc2007ec30f0210cb65d88d90fc5744803ec584",
+    "MockERC20Base58": "TRoxJjfP6UvX7j3fwzqsHG1xrRb3Jc4uQA",
+    "USDT": "41adc2007ec30f0210cb65d88d90fc5744803ec584",
+    "USDTBase58": "TRoxJjfP6UvX7j3fwzqsHG1xrRb3Jc4uQA",
+    "ModelSubscription": "4104fbb67d76a9c47252c61e8c0424af4a5390a7b1",
+    "ModelSubscriptionBase58": "TARZF9BYKhFqcJGryLRLLwMnyqyaGESpi1"
+  },
+  "explorer": {
+    "usdt": "https://nile.tronscan.org/#/contract/TRoxJjfP6UvX7j3fwzqsHG1xrRb3Jc4uQA",
+    "modelSubscription": "https://nile.tronscan.org/#/contract/TARZF9BYKhFqcJGryLRLLwMnyqyaGESpi1"
+  }
+}

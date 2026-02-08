@@ -26,6 +26,14 @@ module.exports = {
       url: "http://127.0.0.1:8545",
       chainId: 1337
     },
+    // TRON Nile 测试网
+    nile: {
+      url: "https://nile.trongrid.io",
+      accounts: process.env.PRIVATE_KEY ? [`0x${process.env.PRIVATE_KEY}`] : [],
+      chainId: 3448148188,
+      timeout: 100000,
+      gasPrice: 420000000000
+    },
     // Goerli 测试网（以太坊）
     goerli: {
       url: process.env.GOERLI_RPC_URL || "https://goerli.infura.io/v3/YOUR-PROJECT-ID",
