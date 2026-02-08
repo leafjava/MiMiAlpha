@@ -43,6 +43,28 @@ VIRTUAL_GOODS = {
         "icon": "🧠",
         "description": "Anthropic Claude Pro 会员，200K 上下文窗口"
     },
+    "vizard_ai": {
+        "name": "Vizard AI",
+        "category": "AI工具",
+        "wholesale_price": 12.0,
+        "retail_price": 20.0,
+        "rental_price_per_day": 1.8,
+        "profit_margin": 0.67,
+        "rental_margin": 3.5,
+        "icon": "🎬",
+        "description": "AI 视频到文本转换器，自动生成字幕和剪辑"
+    },
+    "spline_pro": {
+        "name": "Spline Pro",
+        "category": "设计工具",
+        "wholesale_price": 10.0,
+        "retail_price": 18.0,
+        "rental_price_per_day": 1.5,
+        "profit_margin": 0.80,
+        "rental_margin": 3.5,
+        "icon": "🎨",
+        "description": "3D 设计工具，轻松创建交互式 3D 体验"
+    },
     "vpn_premium": {
         "name": "VPN Premium",
         "category": "网络工具",
@@ -53,6 +75,39 @@ VIRTUAL_GOODS = {
         "rental_margin": 4.0,
         "icon": "🔒",
         "description": "高速 VPN 服务，支持全球节点"
+    },
+    "92ziyuan": {
+        "name": "92资源站会员",
+        "category": "资源站",
+        "wholesale_price": 5.0,
+        "retail_price": 12.0,
+        "rental_price_per_day": 0.8,
+        "profit_margin": 1.40,
+        "rental_margin": 3.8,
+        "icon": "📚",
+        "description": "92资源站 VIP 会员，海量资源免费下载"
+    },
+    "666root": {
+        "name": "666ROOT会员",
+        "category": "资源站",
+        "wholesale_price": 6.0,
+        "retail_price": 15.0,
+        "rental_price_per_day": 1.0,
+        "profit_margin": 1.50,
+        "rental_margin": 4.0,
+        "icon": "🔓",
+        "description": "666ROOT 破解资源站会员，安卓应用破解版"
+    },
+    "kebaiwan": {
+        "name": "课百万会员",
+        "category": "资源站",
+        "wholesale_price": 8.0,
+        "retail_price": 18.0,
+        "rental_price_per_day": 1.2,
+        "profit_margin": 1.25,
+        "rental_margin": 3.5,
+        "icon": "📖",
+        "description": "课百万在线课程平台会员，海量课程资源"
     },
     "steam_card_50": {
         "name": "Steam $50 礼品卡",
@@ -86,6 +141,50 @@ VIRTUAL_GOODS = {
         "rental_margin": 2.75,
         "icon": "🎵",
         "description": "Spotify 高级会员，无广告高音质"
+    },
+    "game_auto_script": {
+        "name": "游戏自动化脚本",
+        "category": "游戏工具",
+        "wholesale_price": 20.0,
+        "retail_price": 50.0,
+        "rental_price_per_day": 3.0,
+        "profit_margin": 1.50,
+        "rental_margin": 3.5,
+        "icon": "🎮",
+        "description": "游戏自动跑刀脚本，支持多款热门游戏，24小时挂机"
+    },
+    "quant_model_gold": {
+        "name": "黄金量化模型",
+        "category": "量化交易",
+        "wholesale_price": 100.0,
+        "retail_price": 200.0,
+        "rental_price_per_day": 15.0,
+        "profit_margin": 1.00,
+        "rental_margin": 3.5,
+        "icon": "📈",
+        "description": "黄金价格预测量化模型，夏普比率 2.8，年化收益 45%，云端运行"
+    },
+    "quant_model_btc": {
+        "name": "BTC量化模型",
+        "category": "量化交易",
+        "wholesale_price": 150.0,
+        "retail_price": 300.0,
+        "rental_price_per_day": 20.0,
+        "profit_margin": 1.00,
+        "rental_margin": 3.0,
+        "icon": "₿",
+        "description": "比特币交易量化模型，夏普比率 3.2，年化收益 68%，实时信号"
+    },
+    "quant_model_stock": {
+        "name": "A股量化模型",
+        "category": "量化交易",
+        "wholesale_price": 80.0,
+        "retail_price": 180.0,
+        "rental_price_per_day": 12.0,
+        "profit_margin": 1.25,
+        "rental_margin": 3.5,
+        "icon": "📊",
+        "description": "A股市场量化模型，夏普比率 2.5，年化收益 38%，选股策略"
     }
 }
 

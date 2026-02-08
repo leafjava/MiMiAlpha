@@ -148,7 +148,7 @@ def get_asset_composition():
             "quantity": 45,
             "unit_value": 15.0,
             "total_value": 675.0,
-            "percentage": 5.6
+            "percentage": 4.5
         },
         {
             "name": "Claude Pro",
@@ -156,7 +156,23 @@ def get_asset_composition():
             "quantity": 30,
             "unit_value": 18.0,
             "total_value": 540.0,
-            "percentage": 4.5
+            "percentage": 3.6
+        },
+        {
+            "name": "Vizard AI",
+            "icon": "🎬",
+            "quantity": 40,
+            "unit_value": 12.0,
+            "total_value": 480.0,
+            "percentage": 3.2
+        },
+        {
+            "name": "Spline Pro",
+            "icon": "�",
+            "quantity": 50,
+            "unit_value": 10.0,
+            "total_value": 500.0,
+            "percentage": 3.3
         },
         {
             "name": "VPN Premium",
@@ -164,7 +180,31 @@ def get_asset_composition():
             "quantity": 200,
             "unit_value": 3.0,
             "total_value": 600.0,
-            "percentage": 5.0
+            "percentage": 4.0
+        },
+        {
+            "name": "92资源站会员",
+            "icon": "📚",
+            "quantity": 80,
+            "unit_value": 5.0,
+            "total_value": 400.0,
+            "percentage": 2.7
+        },
+        {
+            "name": "666ROOT会员",
+            "icon": "�",
+            "quantity": 70,
+            "unit_value": 6.0,
+            "total_value": 420.0,
+            "percentage": 2.8
+        },
+        {
+            "name": "课百万会员",
+            "icon": "📖",
+            "quantity": 60,
+            "unit_value": 8.0,
+            "total_value": 480.0,
+            "percentage": 3.2
         },
         {
             "name": "Steam 礼品卡",
@@ -172,7 +212,7 @@ def get_asset_composition():
             "quantity": 150,
             "unit_value": 47.5,
             "total_value": 7125.0,
-            "percentage": 59.4
+            "percentage": 47.5
         },
         {
             "name": "Netflix 4K",
@@ -180,7 +220,7 @@ def get_asset_composition():
             "quantity": 80,
             "unit_value": 12.0,
             "total_value": 960.0,
-            "percentage": 8.0
+            "percentage": 6.4
         },
         {
             "name": "Spotify Premium",
@@ -188,15 +228,47 @@ def get_asset_composition():
             "quantity": 130,
             "unit_value": 8.0,
             "total_value": 1040.0,
-            "percentage": 8.7
+            "percentage": 5.2
+        },
+        {
+            "name": "游戏自动化脚本",
+            "icon": "🎮",
+            "quantity": 20,
+            "unit_value": 20.0,
+            "total_value": 400.0,
+            "percentage": 2.0
+        },
+        {
+            "name": "黄金量化模型",
+            "icon": "📈",
+            "quantity": 5,
+            "unit_value": 100.0,
+            "total_value": 500.0,
+            "percentage": 2.5
+        },
+        {
+            "name": "BTC量化模型",
+            "icon": "₿",
+            "quantity": 3,
+            "unit_value": 150.0,
+            "total_value": 450.0,
+            "percentage": 2.3
+        },
+        {
+            "name": "A股量化模型",
+            "icon": "📊",
+            "quantity": 8,
+            "unit_value": 80.0,
+            "total_value": 640.0,
+            "percentage": 3.2
         },
         {
             "name": "现金储备",
             "icon": "💵",
             "quantity": 1,
-            "unit_value": 1060.0,
-            "total_value": 1060.0,
-            "percentage": 8.8
+            "unit_value": 1570.0,
+            "total_value": 1570.0,
+            "percentage": 7.9
         }
     ]
     
@@ -206,11 +278,15 @@ def get_asset_composition():
         "total_assets_value": round(total_value, 2),
         "assets": assets,
         "categories": {
-            "AI工具": 1215.0,
+            "AI工具": 2195.0,
+            "设计工具": 500.0,
             "网络工具": 600.0,
+            "资源站": 1300.0,
             "游戏": 7125.0,
+            "游戏工具": 400.0,
             "流媒体": 2000.0,
-            "现金": 1060.0
+            "量化交易": 1590.0,
+            "现金": 1570.0
         },
         "timestamp": datetime.now().isoformat()
     }
