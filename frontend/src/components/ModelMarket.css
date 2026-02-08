@@ -919,3 +919,176 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* x402 Integration Section */
+.x402-integration-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.x402-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+}
+
+.x402-icon {
+  font-size: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.x402-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3B82F6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.x402-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.x402-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.x402-feature:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.x402-feature .feature-icon {
+  font-size: 1.2rem;
+}
+
+.x402-feature .feature-text {
+  font-size: 0.9rem;
+  color: #d4d4d8;
+  font-weight: 500;
+}
+
+/* x402 Protection Badge on Model Card */
+.x402-protection-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  margin: 0.75rem 0;
+}
+
+.x402-protection-badge .protection-icon {
+  font-size: 1rem;
+  color: #3B82F6;
+}
+
+.x402-protection-badge .protection-text {
+  font-size: 0.85rem;
+  color: #3B82F6;
+  font-weight: 600;
+}
+
+/* x402 Protection Details in Modal */
+.x402-protection-details {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(59, 130, 246, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.x402-protection-details h4 {
+  color: #3B82F6;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.x402-protection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.protection-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.protection-item:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateX(4px);
+}
+
+.protection-item-icon {
+  font-size: 1.5rem;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+}
+
+.protection-item-content {
+  flex: 1;
+}
+
+.protection-item-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #3B82F6;
+  margin-bottom: 0.25rem;
+}
+
+.protection-item-desc {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  line-height: 1.4;
+}
+
+/* Responsive Design for x402 Features */
+@media (max-width: 768px) {
+  .x402-features {
+    grid-template-columns: 1fr;
+  }
+  
+  .x402-protection-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .x402-integration-section {
+    padding: 1rem;
+  }
+}

@@ -42,9 +42,9 @@ const mockModels: Model[] = [
     sharpeRatio: 2.5,
     accuracy: 82,
     totalSignals: 100,
-    pricePerSignal: 500,
-    monthlySubscription: 5000,
-    stakedAmount: 10000,
+    pricePerSignal: 5,
+    monthlySubscription: 50,
+    stakedAmount: 100,
     avgConfidence: 78,
     contractAddress: 'TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL',
     recentSignals: [
@@ -62,9 +62,9 @@ const mockModels: Model[] = [
     sharpeRatio: 1.8,
     accuracy: 75,
     totalSignals: 150,
-    pricePerSignal: 300,
-    monthlySubscription: 3000,
-    stakedAmount: 8000,
+    pricePerSignal: 3,
+    monthlySubscription: 30,
+    stakedAmount: 80,
     avgConfidence: 72,
     contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
     recentSignals: [
@@ -81,9 +81,9 @@ const mockModels: Model[] = [
     sharpeRatio: 2.1,
     accuracy: 79,
     totalSignals: 80,
-    pricePerSignal: 400,
-    monthlySubscription: 4000,
-    stakedAmount: 12000,
+    pricePerSignal: 4,
+    monthlySubscription: 40,
+    stakedAmount: 120,
     avgConfidence: 76,
     contractAddress: 'TUpMhErZL2fhh4sVNULAbNKLokS4GjC1F4',
     recentSignals: [
@@ -239,7 +239,7 @@ export function ModelMarket() {
               <div className="stat-label">活跃模型</div>
             </div>
             <div className="stat-item">
-              <div className="stat-value">$2.5M</div>
+              <div className="stat-value">$25K</div>
               <div className="stat-label">月交易额</div>
             </div>
             <div className="stat-item">
@@ -249,6 +249,32 @@ export function ModelMarket() {
             <div className="stat-item">
               <div className="stat-value">2.3</div>
               <div className="stat-label">平均夏普比率</div>
+            </div>
+          </div>
+          
+          {/* x402 Integration Badge */}
+          <div className="x402-integration-section">
+            <div className="x402-badge">
+              <span className="x402-icon">⚡</span>
+              <span className="x402-text">Protected by x402 Smart Facilitator</span>
+            </div>
+            <div className="x402-features">
+              <div className="x402-feature">
+                <span className="feature-icon">🛡️</span>
+                <span className="feature-text">支付拦截与治理</span>
+              </div>
+              <div className="x402-feature">
+                <span className="feature-icon">💰</span>
+                <span className="feature-text">微支付聚合优化</span>
+              </div>
+              <div className="x402-feature">
+                <span className="feature-icon">📝</span>
+                <span className="feature-text">语义化审计追踪</span>
+              </div>
+              <div className="x402-feature">
+                <span className="feature-icon">⚖️</span>
+                <span className="feature-text">动态定价仲裁</span>
+              </div>
             </div>
           </div>
         </div>
@@ -367,6 +393,11 @@ export function ModelMarket() {
                   </div>
                 </div>
 
+                <div className="x402-protection-badge">
+                  <span className="protection-icon">⚡</span>
+                  <span className="protection-text">x402 支付保护</span>
+                </div>
+
                 <div className="model-stake">
                   🔒 质押金额: <strong>${model.stakedAmount.toLocaleString()}</strong>
                 </div>
@@ -429,7 +460,7 @@ export function ModelMarket() {
 
               <div className="form-group">
                 <label>质押金额 (USDT)</label>
-                <input type="number" placeholder="最低 1000 USDT" />
+                <input type="number" placeholder="最低 10 USDT" />
                 <small className="form-hint">
                   质押金用于保证信号质量，如果连续出现错误信号将被罚没
                 </small>
@@ -438,7 +469,7 @@ export function ModelMarket() {
               <div className="stake-info">
                 <h3>💎 质押机制说明</h3>
                 <ul>
-                  <li>✓ 最低质押：1,000 USDT</li>
+                  <li>✓ 最低质押：10 USDT</li>
                   <li>✓ 信号准确率 &lt; 70%：罚没 10%</li>
                   <li>✓ 连续 3 次错误：自动退款订阅者 50%</li>
                   <li>✓ 质押金不足：模型自动暂停</li>
@@ -550,6 +581,40 @@ export function ModelMarket() {
                 <li>✓ 质押金保障</li>
                 <li>✓ Smart Facilitator 监管</li>
               </ul>
+            </div>
+
+            <div className="x402-protection-details">
+              <h4>⚡ x402 智能支付保护</h4>
+              <div className="x402-protection-grid">
+                <div className="protection-item">
+                  <div className="protection-item-icon">🛡️</div>
+                  <div className="protection-item-content">
+                    <div className="protection-item-title">支付拦截</div>
+                    <div className="protection-item-desc">所有订阅支付经过 Smart Facilitator 验证</div>
+                  </div>
+                </div>
+                <div className="protection-item">
+                  <div className="protection-item-icon">💰</div>
+                  <div className="protection-item-content">
+                    <div className="protection-item-title">限额保护</div>
+                    <div className="protection-item-desc">单次支付不超过 $10，月度不超过 $100</div>
+                  </div>
+                </div>
+                <div className="protection-item">
+                  <div className="protection-item-icon">📝</div>
+                  <div className="protection-item-content">
+                    <div className="protection-item-title">审计追踪</div>
+                    <div className="protection-item-desc">每笔支付生成人类可读的审计日志</div>
+                  </div>
+                </div>
+                <div className="protection-item">
+                  <div className="protection-item-icon">⚖️</div>
+                  <div className="protection-item-content">
+                    <div className="protection-item-title">价格仲裁</div>
+                    <div className="protection-item-desc">自动对比市场均价，异常溢价触发熔断</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

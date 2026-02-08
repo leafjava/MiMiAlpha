@@ -94,22 +94,6 @@ function AppContent() {
             </button>
             
             <button
-              onClick={() => setCurrentPage('subscription')}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: currentPage === 'subscription' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
-                color: currentPage === 'subscription' ? '#fff' : '#a1a1aa',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-            >
-              🔄 订阅共享
-            </button>
-            
-            <button
               onClick={() => setCurrentPage('model')}
               style={{
                 padding: '0.5rem 1rem',
@@ -171,38 +155,6 @@ function AppContent() {
               }}
             >
               ⚖️ 争议仲裁
-            </button>
-            
-            <button
-              onClick={() => setCurrentPage('credit')}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: currentPage === 'credit' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
-                color: currentPage === 'credit' ? '#fff' : '#a1a1aa',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-            >
-              🏆 信用评分
-            </button>
-            
-            <button
-              onClick={() => setCurrentPage('agent')}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: currentPage === 'agent' ? 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)' : 'transparent',
-                color: currentPage === 'agent' ? '#fff' : '#a1a1aa',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-            >
-              🤖 Agent 管理
             </button>
           </div>
         </div>
