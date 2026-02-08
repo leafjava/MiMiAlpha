@@ -333,10 +333,10 @@ TEST_X402_APIS.bat
 
 | 服务类型 | 服务名称 | 人类可读格式示例 |
 |---------|---------|----------------|
-| `chatgpt-plus` | ChatGPT Plus API | "Agent_A 调用了 ChatGPT Plus API，使用 gpt-4 模型，消耗 50,000 Tokens，支付 0.5 USDT" |
-| `deepl-translate` | DeepL 翻译接口 | "Agent_B 调用了 DeepL 翻译接口，翻译 10,000 字符，支付 0.2 USDT" |
-| `quant-signal-btc` | BTC 量化信号 | "Agent_C 购买了 BTC 1h 量化信号，置信度 85%，支付 500 USDT" |
-| `vpn-access` | VPN 访问权 | "Agent_D 购买了 VPN 访问权 1 小时，支付 0.1 USDT" |
+| `quant-signal-btc` | BTC 量化信号 | "Agent_A 购买了 BTC 1h 量化信号，置信度 88%，支付 500 USDT" |
+| `quant-signal-eth` | ETH 量化信号 | "Agent_B 购买了 ETH 4h 量化信号，置信度 85%，支付 300 USDT" |
+| `quant-signal-gold` | 黄金价格预测 | "Agent_C 购买了 GOLD 1d 量化信号，置信度 92%，支付 400 USDT" |
+| `quant-strategy-hft` | 高频交易策略 | "Agent_D 订阅了高频交易策略，预期收益 15%，风险等级 high，支付 1000 USDT" |
 
 ---
 
@@ -345,13 +345,13 @@ TEST_X402_APIS.bat
 ### 场景 1: 高频微支付聚合
 
 ```python
-# 模拟 100 笔高频 API 调用
+# 模拟 100 笔高频量化信号订阅
 for i in range(100):
     requests.post('http://localhost:8007/api/micropayment/add', json={
         'agent_address': '0xAgent',
-        'recipient': '0xProvider',
+        'recipient': '0xQuantProvider',
         'amount': 10000,  # 0.01 USDT
-        'service': f'API Call #{i+1}'
+        'service': f'量化信号推送 #{i+1}'
     })
 
 # 结果: 自动聚合为 2 批，节省 98% Energy
@@ -366,10 +366,10 @@ tx_hash = "0x1234567890abcdef..."
 # 解析为人类可读格式
 response = requests.post('http://localhost:8008/api/x402/parse-transaction', json={
     'tx_hash': tx_hash,
-    'agent': 'Agent_Trading_Bot'
+    'agent': 'Agent_Quant'
 })
 
-# 输出: "Agent_Trading_Bot 调用了 ChatGPT Plus API，消耗 50,000 Tokens，支付 0.5 USDT"
+# 输出: "Agent_Quant 购买了 BTC 1h 量化信号，置信度 88%，支付 500 USDT"
 ```
 
 ### 场景 3: 生成审计报告

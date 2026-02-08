@@ -1,61 +1,27 @@
 # x402 协议集成方案
 
-## 一、x402 协议在 FacilitatorX 中的角色
+## 一、x402 协议在 Smart Facilitator 中的角色
 
 ### 官方定位
 > x402 协议为 AI Agent 注入了原生的实时支付能力
 
-### FacilitatorX 的定位
+### Smart Facilitator 的定位
 > Smart Facilitator 作为 AI Agent 与 x402 服务端之间的**非侵入式中间件**
 
 ```
-AI Agent → Smart Facilitator (拦截/审计/优化) → x402 服务端 → 实际服务提供商
+AI Trading Agent → Smart Facilitator (拦截/审计/优化) → x402 服务端 → 量化模型提供商
 ```
 
 ---
 
 ## 二、x402 集成架构
 
-### 2.1 引擎 A：订阅权交易中的 x402
+### 量化模型交易中的 x402
 
-**场景**：用户通过 AI Agent 自动购买 ChatGPT Plus 访问权
+**场景**：AI Trading Agent 自动购买量化交易信号
 
 ```typescript
 // AI Agent 发起 x402 支付请求
-const x402Request = {
-  method: "x402/payment",
-  params: {
-    service: "chatgpt-plus-access",
-    provider: "0x1234...5678",
-    amount: "0.5 USDD",
-    duration: "1 hour"
-  }
-}
-
-// Smart Facilitator 拦截并处理
-class SmartFacilitator {
-  async interceptX402Payment(request) {
-    // 1. 多维支付治理
-    await this.checkPaymentPolicy(request);
-    
-    // 2. 高频微支付聚合
-    await this.aggregateMicroPayment(request);
-    
-    // 3. 语义化审计
-    await this.logSemanticAudit(request);
-    
-    // 4. 转发到 x402 服务端
-    return await this.forwardToX402(request);
-  }
-}
-```
-
-### 2.2 引擎 B：量化信号交易中的 x402
-
-**场景**：AI Agent 自动购买量化交易信号
-
-```typescript
-// AI Agent 发起大额 x402 支付
 const x402Request = {
   method: "x402/payment",
   params: {
@@ -66,19 +32,23 @@ const x402Request = {
   }
 }
 
-// Smart Facilitator 执行多签降级
+// Smart Facilitator 拦截并处理
 class SmartFacilitator {
   async interceptX402Payment(request) {
-    if (request.params.amount > 100) {
-      // 大额支付需要用户二次确认
-      await this.requestUserApproval(request);
-    }
+    // 1. 多维支付治理
+    await this.checkPaymentPolicy(request);
     
-    // 动态定价仲裁
+    // 2. 动态定价仲裁
     await this.checkPriceFairness(request);
     
-    // 质押验证
+    // 3. 质押验证
     await this.verifyProviderStake(request);
+    
+    // 4. 语义化审计
+    await this.logSemanticAudit(request);
+    
+    // 5. 转发到 x402 服务端
+    return await this.forwardToX402(request);
   }
 }
 ```

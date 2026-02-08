@@ -31,9 +31,9 @@ def test_add_payments():
     for i in range(10):
         payment = {
             "agent_address": agent_address,
-            "recipient": f"0xRecipient{i % 3}",  # 3 个不同的接收方
+            "recipient": f"0xQuantProvider{i % 3}",  # 3 个不同的量化模型提供商
             "amount": 100000,  # 0.1 USDT
-            "service": f"ChatGPT API Call #{i+1}"
+            "service": f"量化信号订阅 #{i+1}"
         }
         
         response = requests.post(f"{BASE_URL}/api/micropayment/add", json=payment)
@@ -135,14 +135,14 @@ def test_high_frequency():
     
     agent_address = "0xHighFrequencyAgent"
     
-    print("模拟 100 笔高频微支付...")
+    print("模拟 100 笔高频微支付（量化信号订阅）...")
     
     for i in range(100):
         payment = {
             "agent_address": agent_address,
-            "recipient": f"0xProvider{i % 5}",
+            "recipient": f"0xQuantProvider{i % 5}",  # 5 个不同的量化模型提供商
             "amount": 10000,  # 0.01 USDT
-            "service": f"API Call #{i+1}"
+            "service": f"量化信号推送 #{i+1}"
         }
         
         response = requests.post(f"{BASE_URL}/api/micropayment/add", json=payment)

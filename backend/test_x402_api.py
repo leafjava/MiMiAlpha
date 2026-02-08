@@ -28,40 +28,45 @@ def test_simulate_transactions():
     # 模拟不同类型的交易
     transactions = [
         {
-            "agent": "Agent_ChatBot",
-            "service_type": "chatgpt-plus",
-            "amount": 500000,  # 0.5 USDT
-            "metadata": {
-                "model": "gpt-4",
-                "requests": 10,
-                "tokens_used": 50000
-            }
-        },
-        {
-            "agent": "Agent_Translator",
-            "service_type": "deepl-translate",
-            "amount": 200000,  # 0.2 USDT
-            "metadata": {
-                "tokens_used": 10000,
-                "source_lang": "en",
-                "target_lang": "zh"
-            }
-        },
-        {
-            "agent": "Agent_Trading_Bot",
+            "agent": "Agent_Quant_BTC",
             "service_type": "quant-signal-btc",
             "amount": 500000000,  # 500 USDT
             "metadata": {
                 "timeframe": "1h",
-                "confidence": 85
+                "confidence": 88,
+                "signal_type": "trend",
+                "target_price": 52000
             }
         },
         {
-            "agent": "Agent_VPN_User",
-            "service_type": "vpn-access",
-            "amount": 100000,  # 0.1 USDT
+            "agent": "Agent_Quant_ETH",
+            "service_type": "quant-signal-eth",
+            "amount": 300000000,  # 300 USDT
             "metadata": {
-                "duration": 3600  # 1 hour
+                "timeframe": "4h",
+                "confidence": 85,
+                "signal_type": "breakout",
+                "target_price": 3200
+            }
+        },
+        {
+            "agent": "Agent_Gold_Trader",
+            "service_type": "quant-signal-gold",
+            "amount": 400000000,  # 400 USDT
+            "metadata": {
+                "timeframe": "1d",
+                "confidence": 92,
+                "signal_type": "reversal",
+                "target_price": 2100
+            }
+        },
+        {
+            "agent": "Agent_HFT",
+            "service_type": "quant-strategy-hft",
+            "amount": 1000000000,  # 1000 USDT
+            "metadata": {
+                "expected_return": 15,
+                "risk_level": "high"
             }
         }
     ]
@@ -133,8 +138,8 @@ def test_filter_logs():
     print(f"  找到 {result['total']} 条日志")
     
     # 按服务类型过滤
-    print("\n按服务类型过滤 (chatgpt-plus):")
-    response = requests.get(f"{BASE_URL}/api/x402/audit-logs?service_type=chatgpt-plus&limit=5")
+    print("\n按服务类型过滤 (quant-signal-btc):")
+    response = requests.get(f"{BASE_URL}/api/x402/audit-logs?service_type=quant-signal-btc&limit=5")
     result = response.json()
     print(f"  找到 {result['total']} 条日志")
 
@@ -209,18 +214,18 @@ def test_comprehensive_scenario():
     
     # 模拟一天的交易
     daily_transactions = [
-        # 早上：使用 ChatGPT
-        {"agent": "Agent_Assistant", "service_type": "chatgpt-plus", "amount": 300000, "metadata": {"model": "gpt-4", "tokens_used": 30000}},
-        {"agent": "Agent_Assistant", "service_type": "chatgpt-plus", "amount": 400000, "metadata": {"model": "gpt-4", "tokens_used": 40000}},
+        # 早上：购买 BTC 信号
+        {"agent": "Agent_Quant", "service_type": "quant-signal-btc", "amount": 300000000, "metadata": {"timeframe": "1h", "confidence": 88}},
+        {"agent": "Agent_Quant", "service_type": "quant-signal-eth", "amount": 400000000, "metadata": {"timeframe": "4h", "confidence": 85}},
         
-        # 中午：翻译文档
-        {"agent": "Agent_Assistant", "service_type": "deepl-translate", "amount": 150000, "metadata": {"tokens_used": 5000}},
+        # 中午：购买黄金信号
+        {"agent": "Agent_Gold_Trader", "service_type": "quant-signal-gold", "amount": 500000000, "metadata": {"timeframe": "1d", "confidence": 92}},
         
-        # 下午：购买量化信号
-        {"agent": "Agent_Trading_Bot", "service_type": "quant-signal-btc", "amount": 500000000, "metadata": {"timeframe": "1h", "confidence": 88}},
+        # 下午：订阅高频策略
+        {"agent": "Agent_HFT", "service_type": "quant-strategy-hft", "amount": 1000000000, "metadata": {"expected_return": 15, "risk_level": "high"}},
         
-        # 晚上：使用 VPN
-        {"agent": "Agent_Assistant", "service_type": "vpn-access", "amount": 200000, "metadata": {"duration": 7200}},
+        # 晚上：购买外汇信号
+        {"agent": "Agent_Forex", "service_type": "quant-signal-forex", "amount": 200000000, "metadata": {"timeframe": "4h", "confidence": 80}},
     ]
     
     print("模拟交易中...")
@@ -253,30 +258,30 @@ def test_human_readable_examples():
     
     examples = [
         {
-            "name": "ChatGPT API 调用",
+            "name": "BTC 量化信号",
             "data": {
-                "agent": "Agent_Developer",
-                "service_type": "chatgpt-plus",
-                "amount": 500000,
-                "metadata": {"model": "gpt-4", "tokens_used": 50000, "requests": 10}
+                "agent": "Agent_BTC_Trader",
+                "service_type": "quant-signal-btc",
+                "amount": 500000000,
+                "metadata": {"timeframe": "1h", "confidence": 88, "target_price": 52000}
             }
         },
         {
-            "name": "DeepL 翻译",
+            "name": "ETH 量化信号",
             "data": {
-                "agent": "Agent_Translator",
-                "service_type": "deepl-translate",
-                "amount": 300000,
-                "metadata": {"tokens_used": 15000, "source_lang": "en", "target_lang": "zh"}
-            }
-        },
-        {
-            "name": "量化信号购买",
-            "data": {
-                "agent": "Agent_Quant",
+                "agent": "Agent_ETH_Trader",
                 "service_type": "quant-signal-eth",
-                "amount": 800000000,
-                "metadata": {"timeframe": "4h", "confidence": 92}
+                "amount": 300000000,
+                "metadata": {"timeframe": "4h", "confidence": 85, "target_price": 3200}
+            }
+        },
+        {
+            "name": "高频交易策略",
+            "data": {
+                "agent": "Agent_HFT",
+                "service_type": "quant-strategy-hft",
+                "amount": 1000000000,
+                "metadata": {"expected_return": 15, "risk_level": "high"}
             }
         }
     ]

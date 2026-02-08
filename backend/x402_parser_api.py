@@ -26,18 +26,18 @@ TRONGRID_API_KEY = os.getenv('TRONGRID_API_KEY', '')
 # 审计日志存储
 audit_logs = []
 
-# x402 服务类型映射
+# x402 服务类型映射（只保留量化模型相关）
 X402_SERVICES = {
-    'chatgpt-plus': 'ChatGPT Plus API',
-    'claude-pro': 'Claude Pro API',
-    'deepl-translate': 'DeepL 翻译接口',
-    'openai-api': 'OpenAI API',
-    'midjourney': 'Midjourney 生成',
     'quant-signal-btc': 'BTC 量化信号',
     'quant-signal-eth': 'ETH 量化信号',
-    'vpn-access': 'VPN 访问权',
-    'netflix-4k': 'Netflix 4K 订阅',
-    'spotify-premium': 'Spotify Premium'
+    'quant-signal-gold': '黄金价格预测',
+    'quant-signal-sp500': '标普500指数预测',
+    'quant-signal-forex': '外汇波动预测',
+    'quant-signal-commodity': '商品期货预测',
+    'quant-signal-crypto': '加密货币组合预测',
+    'quant-strategy-hft': '高频交易策略',
+    'quant-strategy-arbitrage': '套利策略',
+    'quant-strategy-options': '期权策略'
 }
 
 # ============ 辅助函数 ============
@@ -94,17 +94,18 @@ def decode_x402_data(raw_data):
         # 假设 x402 数据格式：
         # [service_type][amount][timestamp][metadata]
         
-        # 这里使用模拟数据
+        # 这里使用模拟数据 - 量化信号
         return {
             'protocol': 'x402',
             'version': '1.0',
-            'service_type': 'chatgpt-plus',
-            'amount': 500000,  # 0.5 USDT
-            'tokens_used': 50000,
-            'duration': 3600,  # 1 hour
+            'service_type': 'quant-signal-btc',
+            'amount': 500000000,  # 500 USDT
+            'confidence': 88,
+            'timeframe': '1h',
             'metadata': {
-                'model': 'gpt-4',
-                'requests': 10
+                'signal_type': 'trend',
+                'target_price': 52000,
+                'stop_loss': 50000
             }
         }
     except Exception as e:
@@ -121,21 +122,20 @@ def parse_service_details(x402_data):
         'service_type': service_type
     }
     
-    # 根据服务类型添加特定详情
-    if 'chatgpt' in service_type or 'openai' in service_type:
-        details['model'] = metadata.get('model', 'gpt-3.5-turbo')
-        details['requests'] = metadata.get('requests', 0)
-        details['tokens'] = x402_data.get('tokens_used', 0)
+    # 量化信号服务详情
+    if 'quant-signal' in service_type:
+        asset = service_type.split('-')[-1].upper()
+        details['asset'] = asset
+        details['timeframe'] = x402_data.get('timeframe', '1h')
+        details['confidence'] = x402_data.get('confidence', 0)
+        details['signal_type'] = metadata.get('signal_type', 'trend')
+        details['target_price'] = metadata.get('target_price', 0)
     
-    elif 'quant-signal' in service_type:
-        details['asset'] = service_type.split('-')[-1].upper()
-        details['timeframe'] = metadata.get('timeframe', '1h')
-        details['confidence'] = metadata.get('confidence', 0)
-    
-    elif 'translate' in service_type:
-        details['tokens'] = x402_data.get('tokens_used', 0)
-        details['source_lang'] = metadata.get('source_lang', 'auto')
-        details['target_lang'] = metadata.get('target_lang', 'zh')
+    elif 'quant-strategy' in service_type:
+        strategy_type = service_type.split('-')[-1]
+        details['strategy_type'] = strategy_type
+        details['expected_return'] = metadata.get('expected_return', 0)
+        details['risk_level'] = metadata.get('risk_level', 'medium')
     
     return details
 
@@ -145,19 +145,11 @@ def generate_human_readable(agent, service_details, amount, x402_data):
     service_type = service_details['service_type']
     
     # 根据服务类型生成不同的描述
-    if 'chatgpt' in service_type or 'openai' in service_type:
-        return f"{agent} 调用了 {service_name}，使用 {service_details.get('model', 'GPT')} 模型，消耗 {service_details.get('tokens', 0):,} Tokens，支付 {amount / 1e6:.2f} USDT"
-    
-    elif 'quant-signal' in service_type:
+    if 'quant-signal' in service_type:
         return f"{agent} 购买了 {service_details.get('asset', 'BTC')} {service_details.get('timeframe', '1h')} 量化信号，置信度 {service_details.get('confidence', 0)}%，支付 {amount / 1e6:.2f} USDT"
     
-    elif 'translate' in service_type:
-        return f"{agent} 调用了 {service_name}，翻译 {service_details.get('tokens', 0):,} 字符，支付 {amount / 1e6:.2f} USDT"
-    
-    elif 'vpn' in service_type or 'netflix' in service_type or 'spotify' in service_type:
-        duration = x402_data.get('duration', 0)
-        hours = duration // 3600
-        return f"{agent} 购买了 {service_name} {hours} 小时访问权，支付 {amount / 1e6:.2f} USDT"
+    elif 'quant-strategy' in service_type:
+        return f"{agent} 订阅了 {service_name}，预期收益 {service_details.get('expected_return', 0)}%，风险等级 {service_details.get('risk_level', 'medium')}，支付 {amount / 1e6:.2f} USDT"
     
     else:
         return f"{agent} 使用了 {service_name} 服务，支付 {amount / 1e6:.2f} USDT"
