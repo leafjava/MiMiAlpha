@@ -116,10 +116,6 @@ export function InvestmentPool() {
           </div>
         </div>
       </div>
-        <p className="pool-subtitle">
-          通过批发零售套利和分时租赁策略，投资虚拟商品获取稳定收益
-        </p>
-      </div>
 
       {/* 核心指标 */}
       <div className="metrics-grid">
