@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './ModelMarket.css';
 
 interface Model {
@@ -14,6 +14,7 @@ interface Model {
   monthlySubscription: number;
   stakedAmount: number;
   avgConfidence: number;
+  contractAddress?: string; // TRON 合约地址
   recentSignals: {
     date: string;
     prediction: string;
@@ -22,11 +23,20 @@ interface Model {
   }[];
 }
 
+interface TronStats {
+  trxPrice: number;
+  totalTransactions: number;
+  totalAccounts: number;
+  tps: number;
+  blockHeight: number;
+  energyPrice: number;
+}
+
 const mockModels: Model[] = [
   {
     id: '1',
     name: '黄金价格预测模型',
-    provider: '0x1234...5678',
+    provider: 'TJFJTCgJCmq1ghzZEagDTifHNtNgK4rnRL',
     description: '基于机器学习的黄金价格预测模型，夏普比率 2.5，历史准确率 82%',
     type: 'gold',
     sharpeRatio: 2.5,
@@ -36,6 +46,7 @@ const mockModels: Model[] = [
     monthlySubscription: 5000,
     stakedAmount: 10000,
     avgConfidence: 78,
+    contractAddress: 'TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ $2,100', confidence: 85, result: 'accurate' },
       { date: '2024-02-06', prediction: 'HOLD', confidence: 72, result: 'accurate' },
@@ -45,7 +56,7 @@ const mockModels: Model[] = [
   {
     id: '2',
     name: 'BTC 趋势预测',
-    provider: '0xabcd...ef01',
+    provider: 'TLPbmb5Qma7yLKJZWjD8PWdVDB6FhXy8Yx',
     description: '比特币短期趋势预测，专注于 4 小时级别波动捕捉',
     type: 'crypto',
     sharpeRatio: 1.8,
@@ -55,6 +66,7 @@ const mockModels: Model[] = [
     monthlySubscription: 3000,
     stakedAmount: 8000,
     avgConfidence: 72,
+    contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ $45,000', confidence: 78, result: 'pending' },
       { date: '2024-02-06', prediction: 'SELL @ $44,500', confidence: 75, result: 'accurate' },
@@ -63,7 +75,7 @@ const mockModels: Model[] = [
   {
     id: '3',
     name: '美股大盘指数模型',
-    provider: '0x9876...5432',
+    provider: 'TGzz8gjYiYRqpfmDwnLxfgPuLVNmpCswVp',
     description: 'S&P 500 指数日内波动预测，适合日内交易者',
     type: 'stock',
     sharpeRatio: 2.1,
@@ -73,6 +85,7 @@ const mockModels: Model[] = [
     monthlySubscription: 4000,
     stakedAmount: 12000,
     avgConfidence: 76,
+    contractAddress: 'TUpMhErZL2fhh4sVNULAbNKLokS4GjC1F4',
     recentSignals: [
       { date: '2024-02-07', prediction: 'BUY @ 4,850', confidence: 82, result: 'pending' },
     ]
@@ -83,6 +96,50 @@ export function ModelMarket() {
   const [activeTab, setActiveTab] = useState<'browse' | 'publish'>('browse');
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
   const [filterType, setFilterType] = useState<'all' | 'gold' | 'crypto' | 'stock' | 'forex'>('all');
+  const [tronStats, setTronStats] = useState<TronStats | null>(null);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+  // 获取 TRON 链上数据
+  useEffect(() => {
+    const fetchTronStats = async () => {
+      try {
+        // 获取 TRX 价格（使用 CoinGecko API）
+        const priceResponse = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tron&vs_currencies=usd');
+        const priceData = await priceResponse.json();
+        
+        // 获取 TRON 网络统计（使用 TronScan API）
+        const statsResponse = await fetch('https://apilist.tronscanapi.com/api/system/status');
+        const statsData = await statsResponse.json();
+        
+        setTronStats({
+          trxPrice: priceData.tron?.usd || 0.15,
+          totalTransactions: statsData.totalTransaction || 8500000000,
+          totalAccounts: statsData.totalAddress || 250000000,
+          tps: statsData.tps || 2000,
+          blockHeight: statsData.blockHeight || 68000000,
+          energyPrice: 420, // Sun per Energy unit
+        });
+      } catch (error) {
+        console.error('Failed to fetch TRON stats:', error);
+        // 使用默认值
+        setTronStats({
+          trxPrice: 0.15,
+          totalTransactions: 8500000000,
+          totalAccounts: 250000000,
+          tps: 2000,
+          blockHeight: 68000000,
+          energyPrice: 420,
+        });
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+
+    fetchTronStats();
+    // 每 30 秒更新一次
+    const interval = setInterval(fetchTronStats, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const filteredModels = filterType === 'all' 
     ? mockModels 
@@ -107,18 +164,74 @@ export function ModelMarket() {
     }
   };
 
+  const formatAddress = (addr: string) => {
+    if (!addr || addr.length < 10) return addr;
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000000) {
+      return `${(num / 1000000000).toFixed(2)}B`;
+    } else if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(2)}M`;
+    } else if (num >= 1000) {
+      return `${(num / 1000).toFixed(2)}K`;
+    }
+    return num.toString();
+  };
+
   return (
     <div className="model-market">
+      {/* TRON Network Stats Banner */}
+      <div className="tron-stats-banner">
+        <div className="tron-stats-container">
+          <div className="tron-logo">
+            <span className="tron-icon">⚡</span>
+            <span className="tron-text">TRON Network</span>
+          </div>
+          {isLoadingStats ? (
+            <div className="stats-loading">加载中...</div>
+          ) : tronStats && (
+            <div className="tron-stats-grid">
+              <div className="tron-stat">
+                <div className="tron-stat-label">TRX 价格</div>
+                <div className="tron-stat-value">${tronStats.trxPrice.toFixed(4)}</div>
+              </div>
+              <div className="tron-stat">
+                <div className="tron-stat-label">总交易数</div>
+                <div className="tron-stat-value">{formatNumber(tronStats.totalTransactions)}</div>
+              </div>
+              <div className="tron-stat">
+                <div className="tron-stat-label">总账户数</div>
+                <div className="tron-stat-value">{formatNumber(tronStats.totalAccounts)}</div>
+              </div>
+              <div className="tron-stat">
+                <div className="tron-stat-label">TPS</div>
+                <div className="tron-stat-value">{tronStats.tps}</div>
+              </div>
+              <div className="tron-stat">
+                <div className="tron-stat-label">区块高度</div>
+                <div className="tron-stat-value">{formatNumber(tronStats.blockHeight)}</div>
+              </div>
+              <div className="tron-stat">
+                <div className="tron-stat-label">Energy 价格</div>
+                <div className="tron-stat-value">{tronStats.energyPrice} Sun</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Hero Section */}
       <div className="model-hero">
         <div className="model-hero-content">
           <h1>🧠 量化信号 RWA Token 交易所</h1>
           <p className="model-hero-subtitle">
-            基于 AINFT Nova 资产化平台 · 量化金融领域的首个治理层
+            基于 TRON 链 · AINFT Nova 资产化平台 · 量化金融领域的首个治理层
           </p>
           <div className="ainft-integration-badge">
             <span className="badge-icon">🤝</span>
-            <span className="badge-text">Powered by AINFT Nova & MAS Framework</span>
+            <span className="badge-text">Powered by AINFT Nova & MAS Framework on TRON</span>
           </div>
           <div className="model-hero-stats">
             <div className="stat-item">
@@ -204,8 +317,23 @@ export function ModelMarket() {
                 </div>
                 
                 <div className="model-provider">
-                  提供者: <span className="provider-address">{model.provider}</span>
+                  提供者: <span className="provider-address" title={model.provider}>{formatAddress(model.provider)}</span>
                 </div>
+                
+                {model.contractAddress && (
+                  <div className="model-contract">
+                    <span className="contract-label">📜 合约:</span>
+                    <a 
+                      href={`https://nile.tronscan.org/#/contract/${model.contractAddress}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contract-link"
+                      title={model.contractAddress}
+                    >
+                      {formatAddress(model.contractAddress)}
+                    </a>
+                  </div>
+                )}
                 
                 <p className="model-description">{model.description}</p>
                 

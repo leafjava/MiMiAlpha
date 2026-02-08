@@ -770,3 +770,152 @@
   font-size: 16px;
   margin-bottom: 8px;
 }
+
+/* TRON Network Stats Banner */
+.tron-stats-banner {
+  background: linear-gradient(135deg, #FF0013 0%, #C70011 100%);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(255, 0, 19, 0.3);
+}
+
+.tron-stats-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.tron-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.tron-icon {
+  font-size: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.tron-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stats-loading {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 1rem;
+}
+
+.tron-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.tron-stat {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tron-stat:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tron-stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.tron-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+}
+
+/* Model Contract Address */
+.model-contract {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 165, 0, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 165, 0, 0.2);
+}
+
+.contract-label {
+  font-size: 0.85rem;
+  color: #FFA500;
+  font-weight: 600;
+}
+
+.contract-link {
+  color: #3B82F6;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
+}
+
+.contract-link:hover {
+  color: #60A5FA;
+  text-decoration: underline;
+}
+
+/* Provider Address Styling */
+.provider-address {
+  font-family: 'Courier New', monospace;
+  color: #FFA500;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tron-stats-banner {
+    padding: 1rem;
+  }
+  
+  .tron-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .tron-stat-value {
+    font-size: 1.2rem;
+  }
+  
+  .model-contract {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .tron-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
