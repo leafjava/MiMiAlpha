@@ -143,132 +143,100 @@ def get_asset_composition():
     
     assets = [
         {
-            "name": "ChatGPT Plus",
-            "icon": "🤖",
-            "quantity": 45,
-            "unit_value": 15.0,
-            "total_value": 675.0,
-            "percentage": 4.5
-        },
-        {
-            "name": "Claude Pro",
-            "icon": "🧠",
-            "quantity": 30,
-            "unit_value": 18.0,
-            "total_value": 540.0,
-            "percentage": 3.6
-        },
-        {
-            "name": "Vizard AI",
-            "icon": "🎬",
-            "quantity": 40,
-            "unit_value": 12.0,
-            "total_value": 480.0,
-            "percentage": 3.2
-        },
-        {
-            "name": "Spline Pro",
-            "icon": "�",
-            "quantity": 50,
-            "unit_value": 10.0,
-            "total_value": 500.0,
-            "percentage": 3.3
-        },
-        {
-            "name": "VPN Premium",
-            "icon": "🔒",
-            "quantity": 200,
-            "unit_value": 3.0,
-            "total_value": 600.0,
-            "percentage": 4.0
-        },
-        {
-            "name": "92资源站会员",
-            "icon": "📚",
-            "quantity": 80,
-            "unit_value": 5.0,
-            "total_value": 400.0,
-            "percentage": 2.7
-        },
-        {
-            "name": "666ROOT会员",
-            "icon": "�",
-            "quantity": 70,
-            "unit_value": 6.0,
-            "total_value": 420.0,
-            "percentage": 2.8
-        },
-        {
-            "name": "课百万会员",
-            "icon": "📖",
-            "quantity": 60,
-            "unit_value": 8.0,
-            "total_value": 480.0,
-            "percentage": 3.2
-        },
-        {
-            "name": "Steam 礼品卡",
-            "icon": "🎮",
-            "quantity": 150,
-            "unit_value": 47.5,
-            "total_value": 7125.0,
-            "percentage": 47.5
-        },
-        {
-            "name": "Netflix 4K",
-            "icon": "🎬",
-            "quantity": 80,
-            "unit_value": 12.0,
-            "total_value": 960.0,
-            "percentage": 6.4
-        },
-        {
-            "name": "Spotify Premium",
-            "icon": "🎵",
-            "quantity": 130,
-            "unit_value": 8.0,
-            "total_value": 1040.0,
-            "percentage": 5.2
-        },
-        {
-            "name": "游戏自动化脚本",
-            "icon": "🎮",
-            "quantity": 20,
-            "unit_value": 20.0,
-            "total_value": 400.0,
-            "percentage": 2.0
-        },
-        {
-            "name": "黄金量化模型",
-            "icon": "📈",
-            "quantity": 5,
+            "name": "黄金价格预测模型",
+            "icon": "🥇",
+            "quantity": 10,
             "unit_value": 100.0,
-            "total_value": 500.0,
-            "percentage": 2.5
+            "total_value": 1000.0,
+            "percentage": 8.3
         },
         {
-            "name": "BTC量化模型",
+            "name": "BTC趋势预测模型",
             "icon": "₿",
-            "quantity": 3,
+            "quantity": 8,
             "unit_value": 150.0,
-            "total_value": 450.0,
-            "percentage": 2.3
+            "total_value": 1200.0,
+            "percentage": 10.0
         },
         {
-            "name": "A股量化模型",
-            "icon": "📊",
-            "quantity": 8,
+            "name": "美股指数预测模型",
+            "icon": "📈",
+            "quantity": 12,
             "unit_value": 80.0,
-            "total_value": 640.0,
-            "percentage": 3.2
+            "total_value": 960.0,
+            "percentage": 8.0
+        },
+        {
+            "name": "外汇波动预测模型",
+            "icon": "💱",
+            "quantity": 15,
+            "unit_value": 60.0,
+            "total_value": 900.0,
+            "percentage": 7.5
+        },
+        {
+            "name": "商品期货预测模型",
+            "icon": "📊",
+            "quantity": 10,
+            "unit_value": 90.0,
+            "total_value": 900.0,
+            "percentage": 7.5
+        },
+        {
+            "name": "加密货币预测模型",
+            "icon": "🪙",
+            "quantity": 8,
+            "unit_value": 120.0,
+            "total_value": 960.0,
+            "percentage": 8.0
+        },
+        {
+            "name": "A股量化策略",
+            "icon": "🎯",
+            "quantity": 12,
+            "unit_value": 70.0,
+            "total_value": 840.0,
+            "percentage": 7.0
+        },
+        {
+            "name": "港股量化策略",
+            "icon": "🇭🇰",
+            "quantity": 10,
+            "unit_value": 75.0,
+            "total_value": 750.0,
+            "percentage": 6.25
+        },
+        {
+            "name": "期权策略模型",
+            "icon": "📉",
+            "quantity": 6,
+            "unit_value": 180.0,
+            "total_value": 1080.0,
+            "percentage": 9.0
+        },
+        {
+            "name": "套利策略组合",
+            "icon": "⚖️",
+            "quantity": 8,
+            "unit_value": 110.0,
+            "total_value": 880.0,
+            "percentage": 7.3
+        },
+        {
+            "name": "高频交易模型",
+            "icon": "⚡",
+            "quantity": 5,
+            "unit_value": 200.0,
+            "total_value": 1000.0,
+            "percentage": 8.3
         },
         {
             "name": "现金储备",
             "icon": "💵",
             "quantity": 1,
-            "unit_value": 1570.0,
-            "total_value": 1570.0,
-            "percentage": 7.9
+            "unit_value": 2530.0,
+            "total_value": 2530.0,
+            "percentage": 21.1
         }
     ]
     
@@ -278,15 +246,13 @@ def get_asset_composition():
         "total_assets_value": round(total_value, 2),
         "assets": assets,
         "categories": {
-            "AI工具": 2195.0,
-            "设计工具": 500.0,
-            "网络工具": 600.0,
-            "资源站": 1300.0,
-            "游戏": 7125.0,
-            "游戏工具": 400.0,
-            "流媒体": 2000.0,
-            "量化交易": 1590.0,
-            "现金": 1570.0
+            "黄金预测": 1000.0,
+            "加密货币": 2160.0,
+            "股票指数": 1800.0,
+            "外汇商品": 1800.0,
+            "量化策略": 2720.0,
+            "高频交易": 1000.0,
+            "现金": 2530.0
         },
         "timestamp": datetime.now().isoformat()
     }

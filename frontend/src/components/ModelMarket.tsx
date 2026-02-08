@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './ModelMarket.css';
 import { useContract } from '../hooks/useContract';
 import { useSmartFacilitator } from '../hooks/useSmartFacilitator';
+import { LiveTradingSignals } from './LiveTradingSignals';
 
 interface Model {
   id: string;
@@ -37,22 +38,22 @@ interface TronStats {
 const initialMockModels: Model[] = [
   {
     id: '1',
-    name: '黄金价格预测模型',
+    name: 'PPO Ultimate 黄金价格预测模型',
     provider: 'TXbQ8vC34TytH56r9uV2xndg5NGPP8EiWn',
-    description: '基于机器学习的黄金价格预测模型，夏普比率 2.5，历史准确率 82%',
+    description: '基于深度强化学习(PPO)的黄金价格预测模型，使用 127 个特征，包含多时间框架分析(M5/M15/H1/H4/D1/W1)、宏观经济指标(Bitcoin/EUR/VIX/Oil/Silver/GLD)和市场微观结构。训练数据跨度 11 年(2015-2026)，历史准确率 82%，夏普比率 2.5',
     type: 'gold',
     sharpeRatio: 2.5,
     accuracy: 82,
     totalSignals: 100,
-    pricePerSignal: 1, // 改为 1 TRX
-    monthlySubscription: 1, // 改为 1 TRX
+    pricePerSignal: 1,
+    monthlySubscription: 20,
     stakedAmount: 100,
-    avgConfidence: 78,
+    avgConfidence: 85,
     contractAddress: 'TTn6Y1UwTbqQGXmwZJPqXNi1x5BpdqHtFN',
     recentSignals: [
-      { date: '2024-02-07', prediction: 'BUY @ $2,100', confidence: 85, result: 'accurate' },
-      { date: '2024-02-06', prediction: 'HOLD', confidence: 72, result: 'accurate' },
-      { date: '2024-02-05', prediction: 'SELL @ $2,050', confidence: 80, result: 'accurate' },
+      { date: '2026-02-09', prediction: 'BUY @ $2,845.50', confidence: 87, result: 'accurate' },
+      { date: '2026-02-09', prediction: 'SELL @ $2,853.20', confidence: 82, result: 'accurate' },
+      { date: '2026-02-09', prediction: 'BUY @ $2,841.50', confidence: 91, result: 'accurate' },
     ]
   },
   {
@@ -1055,6 +1056,11 @@ export function ModelMarket() {
                 <li>✓ Smart Facilitator 监管</li>
               </ul>
             </div>
+
+            {/* 实时交易信号 - 仅黄金模型显示 */}
+            {selectedModel.id === '1' && (
+              <LiveTradingSignals />
+            )}
 
             <div className="x402-protection-details">
               <h4>⚡ x402 智能支付保护</h4>

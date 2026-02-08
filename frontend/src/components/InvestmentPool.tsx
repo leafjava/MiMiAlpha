@@ -223,22 +223,12 @@ export function InvestmentPool() {
         <h2>📦 资产组成</h2>
         <div className="assets-list">
           {assets.map((asset, index) => {
-            // 映射资产名称和图标
-            const assetMapping: { [key: string]: { name: string; icon: string } } = {
-              'VPN Premium': { name: '美股指数预测模型', icon: '📈' },
-              'Steam 礼品卡': { name: '外汇波动预测模型', icon: '💱' },
-              'Netflix 4K': { name: '商品期货预测模型', icon: '📊' },
-              'Spotify Premium': { name: '加密货币预测模型', icon: '🪙' },
-              '瑜伽馆会员': { name: '量化策略组合', icon: '🎯' }
-            };
-
-            const mappedAsset = assetMapping[asset.name] || { name: asset.name, icon: asset.icon };
-
+            // 直接使用资产名称和图标，不需要映射
             return (
               <div key={index} className="asset-item">
-                <div className="asset-icon">{mappedAsset.icon}</div>
+                <div className="asset-icon">{asset.icon}</div>
                 <div className="asset-info">
-                  <div className="asset-name">{mappedAsset.name}</div>
+                  <div className="asset-name">{asset.name}</div>
                   <div className="asset-quantity">{asset.quantity} 个模型</div>
                 </div>
                 <div className="asset-value">
