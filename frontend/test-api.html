@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 API 连接测试</h1>
+    <p>测试前端是否能正确连接到后端API</p>
+
+    <div class="test-section">
+        <h3>1. 测试 AI 助手 API</h3>
+        <button onclick="testAIChat()">测试 /v1/assistant/chat</button>
+        <div id="ai-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. 测试收益计算 API</h3>
+        <button onclick="testYield()">测试 /api/yield/overview</button>
+        <div id="yield-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. 测试风险评估 API</h3>
+        <button onclick="testRisk()">测试 /api/risk/assess</button>
+        <div id="risk-result" class="result"></div>
+    </div>
+
+    <script>
+        async function testAIChat() {
+            const resultDiv = document.getElementById('ai-result');
+            resultDiv.innerHTML = '测试中...';
+            
+            try {
+                const response = await fetch('/v1/assistant/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: 'user', content: '你好' }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✅ 成功!</span>\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ 失败!</span>\n${error.message}`;
+            }
+        }
+
+        async function testYield() {
+            const resultDiv = document.getElementById('yield-result');
+            resultDiv.innerHTML = '测试中...';
+            
+            try {
+                const response = await fetch('/api/yield/overview');
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✅ 成功!</span>\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ 失败!</span>\n${error.message}`;
+            }
+        }
+
+        async function testRisk() {
+            const resultDiv = document.getElementById('risk-result');
+            resultDiv.innerHTML = '测试中...';
+            
+            try {
+                const response = await fetch('/api/risk/assess', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        address: '0x1234567890123456789012345678901234567890',
+                        amount: 1000
+                    })
+                });
+
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✅ 成功!</span>\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ 失败!</span>\n${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
