@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './InvestmentPool.css';
+import { mockYieldData, mockAssets, calculateInvestorYield } from '../services/mockData';
 
 interface VaultStats {
   tvl: number;
@@ -52,20 +53,9 @@ export function InvestmentPool() {
 
   const fetchData = async () => {
     try {
-      // 使用环境变量配置的后端地址
-      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
-      const yieldApiUrl = apiUrl.replace(':8000', ':8005');
-      
-      // 获取收益总览
-      const overviewRes = await fetch(`${yieldApiUrl}/api/yield/overview`);
-      const overviewData = await overviewRes.json();
-      setOverview(overviewData);
-
-      // 获取资产组成
-      const assetsRes = await fetch(`${yieldApiUrl}/api/yield/assets`);
-      const assetsData = await assetsRes.json();
-      setAssets(assetsData.assets);
-
+      // 使用模拟数据
+      setOverview(mockYieldData);
+      setAssets(mockAssets);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -75,18 +65,7 @@ export function InvestmentPool() {
 
   const calculateYield = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
-      const yieldApiUrl = apiUrl.replace(':8000', ':8005');
-      
-      const response = await fetch(`${yieldApiUrl}/api/yield/investor`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: parseFloat(investAmount),
-          days: 30
-        })
-      });
-      const data = await response.json();
+      const data = calculateInvestorYield(parseFloat(investAmount), 30);
       setCalculatedYield(data);
     } catch (error) {
       console.error('Failed to calculate yield:', error);

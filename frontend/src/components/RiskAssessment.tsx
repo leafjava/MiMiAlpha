@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import './RiskAssessment.css';
 import { TronService } from '../services/tronService';
+import { assessRisk } from '../services/mockData';
+import { aiRiskAssessment } from '../services/aiAnalysisService';
 
 interface TransactionHistory {
   hash: string;
@@ -211,50 +213,23 @@ export const RiskAssessment = () => {
         await loadAddressRelations();
       }
 
-      // 调用后端风险评估 API
-      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
-      const riskApiUrl = apiUrl.replace(':8000', ':5003');
-      
-      const response = await fetch(`${riskApiUrl}/api/risk/assess`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: parseFloat(fundFlow?.total_out || '0'),
-          description: `地址风险评估：${address}`,
-          transaction_history: transactionHistory.slice(0, 5).map(tx => ({
-            from: tx.from,
-            to: tx.to,
-            value: tx.value,
-            timestamp: tx.timestamp
-          })),
-          blacklist_status: blacklistCheck?.is_blacklisted || false,
-          risk_tags: blacklistCheck?.risk_tags || [],
-          fund_flow: {
-            total_in: fundFlow?.total_in || '0',
-            total_out: fundFlow?.total_out || '0',
-            transaction_count: fundFlow?.transaction_count || 0
-          }
-        }),
+      // 调用 AI 分析服务
+      const aiResult = await aiRiskAssessment({
+        address,
+        amount: parseFloat(fundFlow?.total_out || '0'),
+        transactionHistory: transactionHistory.slice(0, 5),
+        blacklistStatus: blacklistCheck?.is_blacklisted || false,
+        riskTags: blacklistCheck?.risk_tags || []
       });
-
-      if (!response.ok) {
-        throw new Error(`API 错误: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
       
-      // 后端返回的 risk_score 是风险分数（越高越危险）
-      // 需要转换为安全分数（越高越安全）
-      const riskScore = data.risk_score || 0;
-      const safetyScore = 100 - riskScore; // 转换为安全分数
+      // 转换为安全分数（越高越安全）
+      const safetyScore = 100 - aiResult.risk_score;
       
-      // 转换后端返回的数据格式
+      // 设置 AI 评估结果
       setAiAssessment({
         overall_score: safetyScore,
-        risk_level: data.risk_level || 'low',
-        summary: data.risk_reasons?.join('；') || data.recommendation || '风险评估完成',
+        risk_level: aiResult.risk_level,
+        summary: aiResult.risk_reasons.join('；'),
         detailed_analysis: {
           address_validation: `地址格式${TronService.isValidAddress(address) ? '正确' : '异常'}`,
           transaction_pattern: `交易总数：${transactionHistory.length} 笔，${transactionHistory.length > 0 ? '最近交易：' + new Date(transactionHistory[0].timestamp).toLocaleString() : '无交易记录'}`,
@@ -262,9 +237,10 @@ export const RiskAssessment = () => {
           relationship_analysis: `关联地址：${addressRelations.length} 个，${addressRelations.filter(r => r.risk_level === 'high').length} 个高风险地址`
         },
         recommendations: [
-          data.recommendation || '建议定期检查交易记录',
-          `建议托管天数：${data.suggested_escrow_days || 3} 天`,
-          ...(data.risk_reasons || []).filter((r: string) => r.includes('AI 分析'))
+          aiResult.recommendation,
+          `建议托管天数：${aiResult.suggested_escrow_days} 天`,
+          '定期监控交易活动',
+          '保持良好的交易记录'
         ],
         generated_at: new Date().toLocaleString('zh-CN'),
       });
@@ -272,14 +248,21 @@ export const RiskAssessment = () => {
     } catch (error: any) {
       console.error('AI 评估失败:', error);
       
-      let errorMessage = 'AI 评估失败';
-      if (error.message.includes('Failed to fetch')) {
-        errorMessage = `无法连接到后端服务\n\n请检查：\n1. 后端服务是否已启动\n2. 网络连接是否正常`;
-      } else {
-        errorMessage = `${error.message}`;
-      }
+      setAiAssessment({
+        overall_score: 0,
+        risk_level: 'unknown',
+        summary: `AI 评估失败: ${error.message || '未知错误'}`,
+        detailed_analysis: {
+          address_validation: '评估失败',
+          transaction_pattern: '评估失败',
+          fund_flow_analysis: '评估失败',
+          relationship_analysis: '评估失败'
+        },
+        recommendations: ['请稍后重试', '检查网络连接'],
+        generated_at: new Date().toLocaleString('zh-CN'),
+      });
       
-      alert(`❌ ${errorMessage}`);
+      alert(`❌ AI 评估失败: ${error.message || '未知错误'}`);
     } finally {
       setIsLoadingAI(false);
     }

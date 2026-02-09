@@ -8,16 +8,25 @@ Referrer Policy: strict-origin-when-cross-origin
 
 ## 解决方案
 
-### 方案1：使用 Vite 代理（本地开发，已配置）✅
+### 方案1：使用 Vite 代理 + 混合后端（本地开发，已配置）✅
 
 **优点：**
 - 无需修改后端
 - 立即生效
 - 适合本地开发
+- 支持多个后端服务器
 
 **配置：**
 1. `vite.config.ts` 已添加代理配置
 2. `.env` 已修改为使用相对路径
+3. 代理规则：
+   - `/v1/*` → PythonAnywhere（AI助手）
+   - `/api/yield/*` → 阿里云 47.93.166.48:8005
+   - `/api/risk/*` → 阿里云 47.93.166.48:5003
+   - `/api/assets/*` → 阿里云 47.93.166.48:8004
+   - `/api/credit/*` → 阿里云 47.93.166.48:8003
+   - `/api/dispute/*` → 阿里云 47.93.166.48:5004
+   - `/api/governance/*` → 阿里云 47.93.166.48:8006
 
 **使用方法：**
 ```bash
@@ -25,7 +34,7 @@ cd frontend
 npm run dev
 ```
 
-现在所有 API 请求会通过 Vite 代理转发到 PythonAnywhere，避免跨域问题。
+现在所有 API 请求会通过 Vite 代理转发到对应的后端服务器，避免跨域问题。
 
 ---
 
@@ -169,6 +178,23 @@ A:
 1. 确保重启了 Vite 开发服务器
 2. 清除浏览器缓存
 3. 检查 `.env` 文件是否正确使用相对路径
+
+### Q: 为什么还在访问 47.93.166.48:8005？
+A: 这是因为代码中的默认值问题。已修复：
+- 修改前：`const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000'`
+- 修改后：`const apiUrl = import.meta.env.VITE_AI_API_URL`
+
+当环境变量为空字符串时，会直接使用相对路径（如 `/api/yield/overview`）
+
+### Q: 如何验证配置是否正确？
+A: 
+1. 运行 `verify-config.bat` 检查配置
+2. 启动开发服务器后，打开浏览器开发者工具
+3. 查看 Network 标签，请求应该是：
+   - ✅ `http://localhost:5173/v1/assistant/chat`
+   - ✅ `http://localhost:5173/api/yield/overview`
+   - ❌ 不应该是 `http://47.93.166.48:xxxx`
+   - ❌ 不应该是 `https://a37615959.pythonanywhere.com`
 
 ### Q: 生产环境怎么办？
 A: 生产环境有几个选择：

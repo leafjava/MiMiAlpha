@@ -191,7 +191,9 @@ export function PopupAssistant({ isOpen, onClose }: PopupAssistantProps) {
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Powered by Ollama (本地推理)</span>
+            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+              {import.meta.env.VITE_OPENAI_API_KEY ? 'Powered by OpenAI' : 'Powered by Mock AI'}
+            </span>
             <span style={{ width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></span>
           </div>
         </div>

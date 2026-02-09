@@ -49,8 +49,8 @@ export const CreditScore = () => {
     setResult(null);
 
     try {
-      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
-      const creditApiUrl = apiUrl.replace(':8000', ':8003');
+      const apiUrl = import.meta.env.VITE_AI_API_URL;
+      const creditApiUrl = apiUrl ? apiUrl.replace(':8000', ':8003') : '';
       
       const response = await fetch(`${creditApiUrl}/api/credit/analyze`, {
         method: 'POST',

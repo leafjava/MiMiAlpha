@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Marketplace.css';
+import { mockProducts, processOrder } from '../services/mockData';
 
 interface Product {
   id: string;
@@ -32,12 +33,8 @@ export function Marketplace() {
 
   const fetchProducts = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
-      const assetsApiUrl = apiUrl.replace(':8000', ':8004');
-      
-      const response = await fetch(`${assetsApiUrl}/api/assets/products`);
-      const data = await response.json();
-      setProducts(data.products);
+      // 使用模拟数据
+      setProducts(mockProducts);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch products:', error);
@@ -55,8 +52,8 @@ export function Marketplace() {
     if (!selectedProduct) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
-      const assetsApiUrl = apiUrl.replace(':8000', ':8004');
+      const apiUrl = import.meta.env.VITE_AI_API_URL;
+      const assetsApiUrl = apiUrl ? apiUrl.replace(':8000', ':8004') : '';
       
       const response = await fetch(`${assetsApiUrl}/api/assets/order`, {
         method: 'POST',
