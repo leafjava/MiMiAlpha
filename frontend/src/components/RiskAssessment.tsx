@@ -245,18 +245,27 @@ export const RiskAssessment = () => {
 
       const data = await response.json();
       
+      // 后端返回的 risk_score 是风险分数（越高越危险）
+      // 需要转换为安全分数（越高越安全）
+      const riskScore = data.risk_score || 0;
+      const safetyScore = 100 - riskScore; // 转换为安全分数
+      
       // 转换后端返回的数据格式
       setAiAssessment({
-        overall_score: data.risk_score || 75,
+        overall_score: safetyScore,
         risk_level: data.risk_level || 'low',
-        summary: data.summary || '风险评估完成',
+        summary: data.risk_reasons?.join('；') || data.recommendation || '风险评估完成',
         detailed_analysis: {
           address_validation: `地址格式${TronService.isValidAddress(address) ? '正确' : '异常'}`,
-          transaction_pattern: `交易总数：${transactionHistory.length} 笔`,
-          fund_flow_analysis: `总流入：${fundFlow?.total_in || '0'}，总流出：${fundFlow?.total_out || '0'}`,
-          relationship_analysis: `关联地址：${addressRelations.length} 个`
+          transaction_pattern: `交易总数：${transactionHistory.length} 笔，${transactionHistory.length > 0 ? '最近交易：' + new Date(transactionHistory[0].timestamp).toLocaleString() : '无交易记录'}`,
+          fund_flow_analysis: `总流入：${fundFlow?.total_in || '0 TRX'}，总流出：${fundFlow?.total_out || '0 TRX'}，交易笔数：${fundFlow?.transaction_count || 0}`,
+          relationship_analysis: `关联地址：${addressRelations.length} 个，${addressRelations.filter(r => r.risk_level === 'high').length} 个高风险地址`
         },
-        recommendations: data.recommendations || ['建议定期检查交易记录'],
+        recommendations: [
+          data.recommendation || '建议定期检查交易记录',
+          `建议托管天数：${data.suggested_escrow_days || 3} 天`,
+          ...(data.risk_reasons || []).filter((r: string) => r.includes('AI 分析'))
+        ],
         generated_at: new Date().toLocaleString('zh-CN'),
       });
 

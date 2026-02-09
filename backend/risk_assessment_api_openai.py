@@ -103,50 +103,107 @@ def health():
 @app.route('/api/risk/assess', methods=['POST'])
 def assess_risk():
     """
-    风险评估接口
-    输入：交易金额、描述、买卖双方地址
+    风险评估接口 - 综合评估版本
+    输入：交易金额、描述、历史交易、黑名单状态、资金流动、地址关联
     输出：风险评分、风险等级、风险原因、建议
     """
     data = request.json
     
-    amount = data.get('amount', '')
+    amount = data.get('amount', 0)
     description = data.get('description', '')
     buyer_address = data.get('buyer_address', '')
     seller_address = data.get('seller_address', '')
     
-    print(f"\n[{datetime.now().strftime('%H:%M:%S')}] 收到风险评估请求")
-    print(f"金额: {amount}, 描述长度: {len(description)}")
+    # 新增：综合数据
+    transaction_history = data.get('transaction_history', [])
+    blacklist_status = data.get('blacklist_status', False)
+    risk_tags = data.get('risk_tags', [])
+    fund_flow = data.get('fund_flow', {})
+    address_relations = data.get('address_relations', [])
+    
+    print(f"\n[{datetime.now().strftime('%H:%M:%S')}] 收到综合风险评估请求")
+    print(f"金额: {amount}, 历史交易: {len(transaction_history)}笔, 黑名单: {blacklist_status}")
     
     # 基础风险分析
     risk_factors = []
     base_score = 0
     
-    # 1. 金额风险
-    amount_score, amount_reason = analyze_amount_risk(amount)
-    base_score += amount_score
-    if amount_score > 30:
-        risk_factors.append(f"金额风险: {amount_reason}")
+    # 1. 黑名单检测（最高优先级）
+    if blacklist_status:
+        base_score += 80
+        risk_factors.append("⚠️ 地址在黑名单中")
     
-    # 2. 关键词检测
+    if risk_tags:
+        tag_score = min(len(risk_tags) * 10, 30)
+        base_score += tag_score
+        risk_factors.append(f"风险标签: {', '.join(risk_tags[:3])}")
+    
+    # 2. 历史交易分析
+    if transaction_history:
+        tx_count = len(transaction_history)
+        if tx_count < 3:
+            base_score += 20
+            risk_factors.append(f"交易历史较少（{tx_count}笔）")
+        elif tx_count > 100:
+            base_score -= 10  # 交易多反而降低风险
+            risk_factors.append(f"交易历史丰富（{tx_count}笔）")
+    else:
+        base_score += 30
+        risk_factors.append("无交易历史记录")
+    
+    # 3. 资金流动分析
+    if fund_flow:
+        total_in = float(fund_flow.get('total_in', '0').replace(' TRX', ''))
+        total_out = float(fund_flow.get('total_out', '0').replace(' TRX', ''))
+        tx_count = fund_flow.get('transaction_count', 0)
+        
+        # 资金流入流出比例异常
+        if total_in > 0 and total_out > 0:
+            ratio = total_out / total_in
+            if ratio > 10 or ratio < 0.1:
+                base_score += 25
+                risk_factors.append(f"资金流动比例异常（流出/流入={ratio:.2f}）")
+        
+        # 大额资金但交易次数少
+        if (total_in + total_out) > 1000 and tx_count < 5:
+            base_score += 20
+            risk_factors.append("大额资金但交易次数少")
+    
+    # 4. 地址关联分析
+    if address_relations:
+        high_risk_count = sum(1 for r in address_relations if r.get('risk_level') == 'high')
+        if high_risk_count > 0:
+            base_score += high_risk_count * 15
+            risk_factors.append(f"关联{high_risk_count}个高风险地址")
+    
+    # 5. 金额风险
+    if amount > 0:
+        amount_score, amount_reason = analyze_amount_risk(amount)
+        base_score += amount_score
+        if amount_score > 30:
+            risk_factors.append(f"金额风险: {amount_reason}")
+    
+    # 6. 关键词检测
     scam_keywords = detect_scam_keywords(description)
     if scam_keywords:
         keyword_score = min(len(scam_keywords) * 15, 50)
         base_score += keyword_score
         risk_factors.append(f"检测到可疑关键词: {', '.join(scam_keywords[:3])}")
     
-    # 3. 地址风险
-    buyer_score, buyer_reason = analyze_address_risk(buyer_address)
-    seller_score, seller_reason = analyze_address_risk(seller_address)
+    # 7. 地址风险
+    if buyer_address:
+        buyer_score, buyer_reason = analyze_address_risk(buyer_address)
+        if buyer_score > 30:
+            base_score += buyer_score * 0.5
+            risk_factors.append(f"买家地址: {buyer_reason}")
     
-    if buyer_score > 30:
-        base_score += buyer_score * 0.5
-        risk_factors.append(f"买家地址: {buyer_reason}")
+    if seller_address:
+        seller_score, seller_reason = analyze_address_risk(seller_address)
+        if seller_score > 30:
+            base_score += seller_score * 0.5
+            risk_factors.append(f"卖家地址: {seller_reason}")
     
-    if seller_score > 30:
-        base_score += seller_score * 0.5
-        risk_factors.append(f"卖家地址: {seller_reason}")
-    
-    # 4. 描述完整性
+    # 8. 描述完整性
     if not description or len(description) < 10:
         base_score += 20
         risk_factors.append("交易描述过于简单")
@@ -155,25 +212,39 @@ def assess_risk():
     ai_analysis = ""
     if client:
         try:
-            prompt = f"""你是一个专业的交易风险分析师。请分析以下交易信息的风险：
+            # 构建综合分析提示词
+            prompt = f"""你是一个专业的区块链安全分析师。请基于以下 TRON 地址的综合数据进行风险评估：
 
-交易金额: {amount} cUSD
+【基本信息】
+交易金额: {amount} TRX
 交易描述: {description}
-买家地址: {buyer_address}
-卖家地址: {seller_address}
 
-请从以下角度分析风险：
-1. 交易描述是否合理
-2. 是否存在诈骗迹象
-3. 金额是否异常
-4. 其他潜在风险
+【历史交易】
+交易总数: {len(transaction_history)} 笔
+{f"最近交易: {transaction_history[0] if transaction_history else '无'}" if transaction_history else "无交易记录"}
 
-请用简洁的中文回答（100字以内），只说明主要风险点。"""
+【黑名单检测】
+黑名单状态: {'是' if blacklist_status else '否'}
+风险标签: {', '.join(risk_tags) if risk_tags else '无'}
+
+【资金流动】
+总流入: {fund_flow.get('total_in', '0')}
+总流出: {fund_flow.get('total_out', '0')}
+交易笔数: {fund_flow.get('transaction_count', 0)}
+
+【地址关联】
+关联地址数: {len(address_relations)}
+高风险地址: {sum(1 for r in address_relations if r.get('risk_level') == 'high')}
+
+【已检测风险】
+{chr(10).join(f'- {r}' for r in risk_factors[:5]) if risk_factors else '- 暂无明显风险'}
+
+请用简洁的中文（80字以内）总结主要风险点和建议。"""
 
             response = client.chat.completions.create(
                 model=OPENAI_MODEL,
                 messages=[
-                    {"role": "system", "content": "你是一个专业的交易风险分析师，需要客观评估交易风险。"},
+                    {"role": "system", "content": "你是一个专业的区块链安全分析师，需要客观评估地址风险。"},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.3,
@@ -181,7 +252,7 @@ def assess_risk():
             )
             
             ai_analysis = response.choices[0].message.content.strip()
-            print(f"✅ AI 分析完成")
+            print(f"✅ AI 综合分析完成")
                 
         except Exception as e:
             print(f"⚠️  AI 分析失败: {str(e)}")

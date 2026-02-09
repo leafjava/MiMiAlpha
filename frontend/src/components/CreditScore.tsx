@@ -49,7 +49,10 @@ export const CreditScore = () => {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:8003/api/credit/analyze', {
+      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
+      const creditApiUrl = apiUrl.replace(':8000', ':8003');
+      
+      const response = await fetch(`${creditApiUrl}/api/credit/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

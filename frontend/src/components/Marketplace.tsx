@@ -32,7 +32,10 @@ export function Marketplace() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:8004/api/assets/products');
+      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
+      const assetsApiUrl = apiUrl.replace(':8000', ':8004');
+      
+      const response = await fetch(`${assetsApiUrl}/api/assets/products`);
       const data = await response.json();
       setProducts(data.products);
       setLoading(false);
@@ -52,7 +55,10 @@ export function Marketplace() {
     if (!selectedProduct) return;
 
     try {
-      const response = await fetch('http://localhost:8004/api/assets/order', {
+      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
+      const assetsApiUrl = apiUrl.replace(':8000', ':8004');
+      
+      const response = await fetch(`${assetsApiUrl}/api/assets/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

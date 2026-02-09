@@ -52,13 +52,17 @@ export function InvestmentPool() {
 
   const fetchData = async () => {
     try {
+      // 使用环境变量配置的后端地址
+      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
+      const yieldApiUrl = apiUrl.replace(':8000', ':8005');
+      
       // 获取收益总览
-      const overviewRes = await fetch('http://localhost:8005/api/yield/overview');
+      const overviewRes = await fetch(`${yieldApiUrl}/api/yield/overview`);
       const overviewData = await overviewRes.json();
       setOverview(overviewData);
 
       // 获取资产组成
-      const assetsRes = await fetch('http://localhost:8005/api/yield/assets');
+      const assetsRes = await fetch(`${yieldApiUrl}/api/yield/assets`);
       const assetsData = await assetsRes.json();
       setAssets(assetsData.assets);
 
@@ -71,7 +75,10 @@ export function InvestmentPool() {
 
   const calculateYield = async () => {
     try {
-      const response = await fetch('http://localhost:8005/api/yield/investor', {
+      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
+      const yieldApiUrl = apiUrl.replace(':8000', ':8005');
+      
+      const response = await fetch(`${yieldApiUrl}/api/yield/investor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
