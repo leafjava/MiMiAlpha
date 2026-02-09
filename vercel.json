@@ -1,0 +1,32 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/risk/:path*",
+      "destination": "http://47.93.166.48:5003/api/risk/:path*"
+    },
+    {
+      "source": "/api/assistant/:path*",
+      "destination": "http://47.93.166.48:8000/v1/assistant/:path*"
+    },
+    {
+      "source": "/api/dispute/:path*",
+      "destination": "http://47.93.166.48:5004/api/dispute/:path*"
+    },
+    {
+      "source": "/api/governance/:path*",
+      "destination": "http://47.93.166.48:8006/api/governance/:path*"
+    },
+    {
+      "source": "/api/credit/:path*",
+      "destination": "http://47.93.166.48:8003/api/credit/:path*"
+    },
+    {
+      "source": "/api/assets/:path*",
+      "destination": "http://47.93.166.48:8004/api/assets/:path*"
+    },
+    {
+      "source": "/api/yield/:path*",
+      "destination": "http://47.93.166.48:8005/api/yield/:path*"
+    }
+  ]
+}
