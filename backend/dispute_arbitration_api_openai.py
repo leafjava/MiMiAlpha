@@ -13,7 +13,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+# 配置 CORS，允许所有来源（生产环境应该限制具体域名）
+CORS(app, resources={
+    r"/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 # OpenAI API 配置
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")

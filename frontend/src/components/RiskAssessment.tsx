@@ -211,97 +211,52 @@ export const RiskAssessment = () => {
         await loadAddressRelations();
       }
 
-      // 构建提示词
-      const prompt = `你是一个区块链安全专家。请基于以下 TRON 链上数据对地址进行综合风险评估。
-
-【地址信息】
-地址：${address}
-格式验证：${TronService.isValidAddress(address) ? 'TRON 地址有效（T 开头，34 位）' : '地址格式异常'}
-
-【历史交易】
-交易总数：${transactionHistory.length} 笔
-${transactionHistory.length > 0 ? `最近交易：${formatTime(transactionHistory[0].timestamp)}` : '无交易记录'}
-${transactionHistory.slice(0, 3).map(tx => `- ${formatAddress(tx.from)} → ${formatAddress(tx.to)}: ${tx.value}`).join('\n')}
-
-【黑名单检测】
-黑名单状态：${blacklistCheck?.is_blacklisted ? '是' : '否'}
-风险标签：${blacklistCheck?.risk_tags.join(', ') || '无'}
-
-【资金流动】
-总流入：${fundFlow?.total_in || '0 TRX'}
-总流出：${fundFlow?.total_out || '0 TRX'}
-交易笔数：${fundFlow?.transaction_count || 0}
-关联地址：${fundFlow?.unique_addresses || 0} 个
-可疑模式：${fundFlow?.suspicious_patterns.join('; ') || '无'}
-
-【地址关联】
-关联地址数：${addressRelations.length}
-${addressRelations.slice(0, 3).map(r => `- ${formatAddress(r.address)}: ${r.relation_type}, ${r.interaction_count}次交互, ${r.risk_level}风险`).join('\n')}
-
-请严格按照以下 JSON 格式返回评估结果（不要添加任何其他文字）：
-
-{
-  "overall_score": 75,
-  "risk_level": "low",
-  "summary": "该地址为正常交易地址，交易模式规律，未发现明显风险",
-  "detailed_analysis": {
-    "address_validation": "地址格式正确，符合 TRON 标准",
-    "transaction_pattern": "交易频率正常，金额合理，时间分布均匀",
-    "fund_flow_analysis": "资金流入流出比例正常，未发现异常大额转账",
-    "relationship_analysis": "关联地址风险较低，交互模式正常"
-  },
-  "recommendations": [
-    "建议定期检查交易记录",
-    "注意监控大额转账",
-    "保持警惕，避免与高风险地址交互"
-  ]
-}
-
-评分标准：
-- 0-30分：极高风险（critical）
-- 31-50分：高风险（high）
-- 51-70分：中等风险（medium）
-- 71-100分：低风险（low）
-
-只返回 JSON，不要其他内容。`;
-
-      // 调用 Ollama API
-      const response = await fetch(`${ollamaUrl}/api/generate`, {
+      // 调用后端风险评估 API
+      const apiUrl = import.meta.env.VITE_AI_API_URL || 'http://47.93.166.48:8000';
+      const riskApiUrl = apiUrl.replace(':8000', ':5003');
+      
+      const response = await fetch(`${riskApiUrl}/api/risk/assess`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: ollamaModel,
-          prompt: prompt,
-          stream: false,
-          format: 'json',
+          amount: parseFloat(fundFlow?.total_out || '0'),
+          description: `地址风险评估：${address}`,
+          transaction_history: transactionHistory.slice(0, 5).map(tx => ({
+            from: tx.from,
+            to: tx.to,
+            value: tx.value,
+            timestamp: tx.timestamp
+          })),
+          blacklist_status: blacklistCheck?.is_blacklisted || false,
+          risk_tags: blacklistCheck?.risk_tags || [],
+          fund_flow: {
+            total_in: fundFlow?.total_in || '0',
+            total_out: fundFlow?.total_out || '0',
+            transaction_count: fundFlow?.transaction_count || 0
+          }
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`Ollama API 错误: ${response.status} ${response.statusText}`);
+        throw new Error(`API 错误: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
       
-      // 解析 AI 返回的 JSON
-      let aiResult;
-      try {
-        aiResult = JSON.parse(data.response);
-      } catch (parseError) {
-        console.error('JSON 解析失败，原始响应:', data.response);
-        // 如果解析失败，尝试提取 JSON 部分
-        const jsonMatch = data.response.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          aiResult = JSON.parse(jsonMatch[0]);
-        } else {
-          throw new Error('AI 返回的不是有效的 JSON 格式');
-        }
-      }
-
+      // 转换后端返回的数据格式
       setAiAssessment({
-        ...aiResult,
+        overall_score: data.risk_score || 75,
+        risk_level: data.risk_level || 'low',
+        summary: data.summary || '风险评估完成',
+        detailed_analysis: {
+          address_validation: `地址格式${TronService.isValidAddress(address) ? '正确' : '异常'}`,
+          transaction_pattern: `交易总数：${transactionHistory.length} 笔`,
+          fund_flow_analysis: `总流入：${fundFlow?.total_in || '0'}，总流出：${fundFlow?.total_out || '0'}`,
+          relationship_analysis: `关联地址：${addressRelations.length} 个`
+        },
+        recommendations: data.recommendations || ['建议定期检查交易记录'],
         generated_at: new Date().toLocaleString('zh-CN'),
       });
 
@@ -309,12 +264,8 @@ ${addressRelations.slice(0, 3).map(r => `- ${formatAddress(r.address)}: ${r.rela
       console.error('AI 评估失败:', error);
       
       let errorMessage = 'AI 评估失败';
-      if (error.message.includes('404')) {
-        errorMessage = `模型 "${ollamaModel}" 未找到\n\n请检查：\n1. 模型名称是否正确\n2. 运行 ollama list 查看可用模型`;
-      } else if (error.message.includes('Failed to fetch')) {
-        errorMessage = `无法连接到 Ollama\n\n请检查：\n1. Ollama 是否已启动\n2. API 地址是否正确：${ollamaUrl}`;
-      } else if (error.message.includes('JSON')) {
-        errorMessage = `AI 返回格式错误\n\n${error.message}\n\n建议：\n1. 尝试使用 qwen3:4b-instruct 模型\n2. 确保模型支持 JSON 格式输出`;
+      if (error.message.includes('Failed to fetch')) {
+        errorMessage = `无法连接到后端服务\n\n请检查：\n1. 后端服务是否已启动\n2. 网络连接是否正常`;
       } else {
         errorMessage = `${error.message}`;
       }
@@ -454,60 +405,6 @@ ${addressRelations.slice(0, 3).map(r => `- ${formatAddress(r.address)}: ${r.rela
               </p>
               <p style={{ color: '#a1a1aa', fontSize: '0.85rem' }}>
                 • 区块浏览器：<a href="https://nile.tronscan.org" target="_blank" rel="noopener noreferrer" style={{ color: '#FFA500' }}>https://nile.tronscan.org</a>
-              </p>
-            </div>
-            
-            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '8px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-              <p style={{ color: '#3B82F6', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                🤖 Ollama 配置（用于 AI 综合评估）
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <div>
-                  <label style={{ color: '#a1a1aa', fontSize: '0.8rem', marginBottom: '0.25rem', display: 'block' }}>
-                    API 地址
-                  </label>
-                  <input
-                    type="text"
-                    value={ollamaUrl}
-                    onChange={(e) => setOllamaUrl(e.target.value)}
-                    placeholder="http://localhost:11434"
-                    style={{ 
-                      width: '100%',
-                      padding: '0.5rem', 
-                      background: 'rgba(0,0,0,0.3)', 
-                      border: '1px solid rgba(255,255,255,0.1)', 
-                      borderRadius: '4px',
-                      color: '#fff',
-                      fontSize: '0.85rem'
-                    }}
-                  />
-                </div>
-                <div>
-                  <label style={{ color: '#a1a1aa', fontSize: '0.8rem', marginBottom: '0.25rem', display: 'block' }}>
-                    模型选择
-                  </label>
-                  <select
-                    value={ollamaModel}
-                    onChange={(e) => setOllamaModel(e.target.value)}
-                    style={{ 
-                      width: '100%',
-                      padding: '0.5rem', 
-                      background: 'rgba(0,0,0,0.3)', 
-                      border: '1px solid rgba(255,255,255,0.1)', 
-                      borderRadius: '4px',
-                      color: '#fff',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <option value="qwen3:4b-instruct-2507-q4_K_M">qwen3:4b-instruct (推荐)</option>
-                    <option value="deepseek-coder:6.7b">deepseek-coder:6.7b</option>
-                    <option value="qwen3-embedding:0.6b-q8_0">qwen3-embedding (不推荐)</option>
-                  </select>
-                </div>
-              </div>
-              <p style={{ color: '#10B981', fontSize: '0.75rem', marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                ✅ 检测到本地模型：qwen3:4b-instruct, deepseek-coder:6.7b
               </p>
             </div>
           </div>
