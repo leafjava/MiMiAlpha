@@ -95,15 +95,14 @@ export const mockProducts = [
     name: "黄金价格预测模型 (PPO Ultimate)",
     category: "量化模型",
     description: "基于强化学习的黄金价格预测模型，历史胜率 68%",
-    price: 85000,
-    rental_price: 8500,
+    wholesale_price: 85000,
+    retail_price: 85000,
+    rental_price_per_day: 283,
+    profit_margin: 0,
     stock: 12,
-    performance: {
-      win_rate: 68,
-      sharpe_ratio: 2.3,
-      max_drawdown: 12,
-      total_return: 156
-    },
+    sold_this_month: 5,
+    rented_count: 8,
+    supports_rental: true,
     icon: "🥇"
   },
   {
@@ -111,15 +110,14 @@ export const mockProducts = [
     name: "比特币交易信号",
     category: "量化模型",
     description: "实时比特币交易信号，基于技术指标和链上数据",
-    price: 65000,
-    rental_price: 6500,
+    wholesale_price: 65000,
+    retail_price: 65000,
+    rental_price_per_day: 217,
+    profit_margin: 0,
     stock: 8,
-    performance: {
-      win_rate: 62,
-      sharpe_ratio: 1.9,
-      max_drawdown: 18,
-      total_return: 142
-    },
+    sold_this_month: 3,
+    rented_count: 12,
+    supports_rental: true,
     icon: "₿"
   },
   {
@@ -127,15 +125,14 @@ export const mockProducts = [
     name: "股票市场分析",
     category: "量化模型",
     description: "多因子股票选择模型，适合中长期投资",
-    price: 25000,
-    rental_price: 2500,
+    wholesale_price: 25000,
+    retail_price: 25000,
+    rental_price_per_day: 83,
+    profit_margin: 0,
     stock: 15,
-    performance: {
-      win_rate: 58,
-      sharpe_ratio: 1.6,
-      max_drawdown: 15,
-      total_return: 98
-    },
+    sold_this_month: 7,
+    rented_count: 15,
+    supports_rental: true,
     icon: "📈"
   },
   {
@@ -143,15 +140,14 @@ export const mockProducts = [
     name: "外汇交易策略",
     category: "量化模型",
     description: "主要货币对交易策略，日内交易为主",
-    price: 30833,
-    rental_price: 3083,
+    wholesale_price: 30833,
+    retail_price: 30833,
+    rental_price_per_day: 103,
+    profit_margin: 0,
     stock: 6,
-    performance: {
-      win_rate: 55,
-      sharpe_ratio: 1.4,
-      max_drawdown: 20,
-      total_return: 85
-    },
+    sold_this_month: 2,
+    rented_count: 6,
+    supports_rental: true,
     icon: "💱"
   }
 ];
@@ -163,8 +159,8 @@ export function processOrder(productId: string, type: 'purchase' | 'rental', qua
     throw new Error('产品不存在');
   }
   
-  const price = type === 'purchase' ? product.price : product.rental_price;
-  const totalCost = price * quantity * (type === 'rental' ? rentalDays / 30 : 1);
+  const price = type === 'purchase' ? product.retail_price : product.rental_price_per_day;
+  const totalCost = type === 'purchase' ? price * quantity : price * quantity * rentalDays;
   
   return {
     success: true,

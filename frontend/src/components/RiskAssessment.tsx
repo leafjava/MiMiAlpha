@@ -250,7 +250,7 @@ export const RiskAssessment = () => {
       
       setAiAssessment({
         overall_score: 0,
-        risk_level: 'unknown',
+        risk_level: 'low',
         summary: `AI 评估失败: ${error.message || '未知错误'}`,
         detailed_analysis: {
           address_validation: '评估失败',
