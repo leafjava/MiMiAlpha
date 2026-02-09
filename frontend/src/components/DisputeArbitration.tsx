@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './DisputeArbitration.css';
+import { aiDisputeAnalysis } from '../services/aiAnalysisService';
 
 interface Evidence {
   type: 'signal_data' | 'chain_record' | 'screenshot' | 'text';
@@ -156,31 +157,36 @@ export const DisputeArbitration = () => {
     setHumanReviewRequested(false);
 
     try {
-      // 模拟 AI 仲裁分析（实际应该调用本地 Ollama）
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       // 计算偏差百分比
       const predicted = parseFloat(formData.predicted_value) || 0;
       const actual = parseFloat(formData.actual_value) || 0;
       const deviation = predicted !== 0 ? Math.abs((actual - predicted) / predicted * 100) : 0;
-      const isWithinThreshold = deviation <= 5; // 5% 阈值
-
-      // 生成模拟结果
+      
+      // 调用 AI 仲裁分析
+      const aiResult = await aiDisputeAnalysis({
+        disputeType: '量化模型信号偏差',
+        description: `模型: ${formData.model_name}\n订阅者: ${formData.subscriber_claim}\n预测值: ${formData.predicted_value}\n实际值: ${formData.actual_value}\n偏差: ${deviation.toFixed(2)}%`,
+        amount: parseFloat(formData.transaction_amount),
+        buyerEvidence: formData.subscriber_claim,
+        sellerEvidence: `模型预测值: ${formData.predicted_value}`
+      });
+      
+      // 根据AI结果生成仲裁结果
+      const isWithinThreshold = deviation <= 5;
+      
       const mockResult: ArbitrationResult = {
         case_id: `DISPUTE-${Date.now()}`,
-        verdict: isWithinThreshold ? 'reject' : (deviation > 10 ? 'refund_full' : 'refund_partial'),
-        verdict_text: isWithinThreshold 
-          ? '驳回退款申请 - 信号在合理误差范围内'
-          : (deviation > 10 ? '全额退款 - 信号严重偏差' : '部分退款 - 信号存在偏差'),
-        refund_amount: isWithinThreshold ? 0 : (deviation > 10 ? parseFloat(formData.transaction_amount) : parseFloat(formData.transaction_amount) * 0.5),
-        confidence: isWithinThreshold ? 92 : (deviation > 10 ? 88 : 75),
+        verdict: aiResult.resolution.includes('全额') ? 'refund_full' : 
+                 aiResult.resolution.includes('部分') ? 'refund_partial' : 'reject',
+        verdict_text: aiResult.resolution,
+        refund_amount: aiResult.resolution.includes('全额') ? parseFloat(formData.transaction_amount) :
+                      aiResult.resolution.includes('部分') ? parseFloat(formData.transaction_amount) * 0.5 : 0,
+        confidence: aiResult.confidence,
         detailed_analysis: [
           `信号预测值: ${formData.predicted_value}`,
           `实际市场值: ${formData.actual_value}`,
           `偏差百分比: ${deviation.toFixed(2)}%`,
-          isWithinThreshold 
-            ? '✅ 偏差在 5% 阈值内，符合模型承诺的准确率范围'
-            : `❌ 偏差超过 5% 阈值（实际 ${deviation.toFixed(2)}%），不符合质量标准`,
+          aiResult.reasoning,
           `订阅者提供了 ${subscriberEvidence.length} 项证据`,
           `提供者提供了 ${providerEvidence.length} 项证据`,
           formData.transaction_hash ? `✅ 链上交易已验证: ${formData.transaction_hash.slice(0, 10)}...` : '⚠️ 未提供链上交易哈希',
@@ -189,26 +195,16 @@ export const DisputeArbitration = () => {
           predicted_value: formData.predicted_value,
           actual_value: formData.actual_value,
           deviation_percentage: deviation,
-          is_within_threshold: isWithinThreshold,
+          is_within_threshold: deviation <= 5,
         },
-        recommendations: isWithinThreshold 
-          ? [
-            '建议订阅者理解量化模型存在合理误差范围',
-            '可继续使用该模型服务',
-            '如对结果不满意，可申请人工复审',
-          ]
-          : [
-            '建议提供者改进模型准确率',
-            '建议订阅者获得退款后重新评估模型',
-            '如对 AI 判决不满意，双方均可申请人工介入',
-          ],
-        human_review_suggested: !isWithinThreshold && deviation > 8,
+        recommendations: aiResult.recommendations,
+        human_review_suggested: aiResult.confidence < 70,
       };
 
       setResult(mockResult);
     } catch (error) {
-      console.error('Arbitration error:', error);
-      alert('仲裁服务暂时不可用，请稍后重试');
+      console.error('AI仲裁分析失败:', error);
+      alert('AI仲裁服务暂时不可用，请稍后重试');
     } finally {
       setIsAnalyzing(false);
     }
